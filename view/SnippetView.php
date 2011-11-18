@@ -4,7 +4,7 @@ class SnippetView {
 	
 	/*
 	 * return html code for a single snippet
-	 * @param Snippet
+	 * @param Snippet a snippet Object
 	 * @return String
 	 */
 	public function singleView($aSnippet) {
