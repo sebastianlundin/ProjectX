@@ -1,6 +1,5 @@
 .DS_Store
 .project
 .settings
-.classpath
-proguard.cfg
-model/settings.php
+model/Settings.php
+nbproject/

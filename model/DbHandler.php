@@ -1,6 +1,6 @@
 <?php
 
-require_once 'settings.php';
+require_once 'Settings.php';
 
 class DbHandler {
 
@@ -27,7 +27,7 @@ class DbHandler {
         return true;
     }
 
-	public function __wakeup() {
+	public function wakeup() {
         $this->connect();
     }
 
