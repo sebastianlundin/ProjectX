@@ -17,8 +17,17 @@
  * @package ProjectX
  */
 class FormValidation {
-	//todo: validate tags
-	//todo: validate snippets
+	/**
+     * <p>Check that a string do not exceed maxlenght</p>
+     *
+     * @access public
+     * @param string str
+     * @param string maxlenght	 
+     * @return bool
+     */
+	public function valMaxLenght($str, $maxlenght) {
+		if(strlen($str) < $maxlenght ? true : false);
+	}
     /**
      * <p>Validate url</p>
      * <p>with or without http:// and https://</p>
@@ -79,7 +88,6 @@ class FormValidation {
      * @param	string	the optional replacement value
      * @return	string
      */
-    //Todo: This function is taken from codeigniter, maybe we should use a framework?
     function word_censor($str, $censored, $replacement = '') {
         if (!is_array($censored)) {
             return $str;
@@ -137,33 +145,6 @@ class FormValidation {
         }
         // return true, the email is valid.
         return true;
-    }
-    /**
-     * <p>Which tags do tou allow?</p>
-     *
-     * Allows <p> and <code> tags in an comments. Removes all other tags! If the code tag is * used this funtion uses the SyntaxHighlight class to highligt everything inside the
-     * code tag and returns the comment.
-     *
-     * @access public
-     * @param string email
-     * @return string comment
-     */
-    function strip_html_tags($text) {
-        $text = preg_replace(array(
-        // Remove invisible content
-        '@<head[^>]*?>.*?</head>@siu', '@<style[^>]*?>.*?</style>@siu', '@<script[^>]*?.*?</script>@siu', '@<object[^>]*?.*?</object>@siu', '@<embed[^>]*?.*?</embed>@siu', '@<applet[^>]*?.*?</applet>@siu', '@<noframes[^>]*?.*?</noframes>@siu', '@<noscript[^>]*?.*?</noscript>@siu', '@<noembed[^>]*?.*?</noembed>@siu',
-        // Add line breaks before and after blocks
-        '@</?((address)|(blockquote)|(center)|(del))@iu', '@</?((div)|(h[1-9])|(ins)|(isindex)|(p)|(pre))@iu', '@</?((dir)|(dl)|(dt)|(dd)|(li)|(menu)|(ol)|(ul))@iu', '@</?((table)|(th)|(td)|(caption))@iu', '@</?((form)|(button)|(fieldset)|(legend)|(input))@iu', '@</?((label)|(select)|(optgroup)|(option)|(textarea))@iu', '@</?((frameset)|(frame)|(iframe))@iu',), array(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', "
-$0", "
-$0", "
-$0", "
-$0", "
-$0", "
-$0", "
-$0", "
-$0",), $text);
-        // you can exclude some html tags here, in this case p and code tags
-        return strip_tags($text, '<p><code>');
     }
 }
 ?>
