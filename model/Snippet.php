@@ -5,7 +5,7 @@ class Snippet {
 	private $mID;
 	private $mAuthor;
 	private $mCode;
-	public $mTitle;
+	private $mTitle;
 	private $mDesc;
 	private $mLanguage;
 
@@ -17,27 +17,45 @@ class Snippet {
 		$this->mDesc = $aDesc;
 		$this->mLanguage = $aLanguage;
 	}
-	
+    
+	/*
+     * @return int ID of the snippet
+     */
 	public function getID() {
 		return $this->mID;
 	}
 	
+    /*
+     * @return String The author of the snippet
+     */
 	public function getAuthor() {
 		return $this->mAuthor;
 	}
 	
+    /*
+     * @return String The code snippet
+     */
 	public function getCode() {
 		return $this->mCode;
 	}
 	
+    /*
+     * @return String title of the snippet
+     */
 	public function getTitle() {
 		return $this->mTitle;
 	}
 	
+    /*
+     * @return String description of the snippet
+     */
 	public function getDesc() {
 		return $this->mDesc;
 	}
 	
+    /*
+     * @return String language of the snippet
+     */
 	public function getLanguage() {
 		return $this->mLanguage;
 	}
