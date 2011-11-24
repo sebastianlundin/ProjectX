@@ -4,7 +4,6 @@ require_once 'DbHandler.php';
 require_once 'Snippet.php';
 
 class SnippetHandler {
-<<<<<<< HEAD
 	
 	private $mDbHandler;
 	
@@ -34,14 +33,7 @@ class SnippetHandler {
         }
         $this->mDbHandler->Close();
         return $snippet;
-	}
-=======
-
-    private $mDbHandler;
-    
-    public function __construct() {
-        $this->mDbHandler = new DbHandler();
-    }    
+	} 
     
     /**
      * Get all the snippets
@@ -66,5 +58,4 @@ class SnippetHandler {
         
         return $snippets;
     }
->>>>>>> oskarhallen-master
 }

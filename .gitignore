@@ -1,11 +1,7 @@
 .DS_Store
 .project
 .settings
-<<<<<<< HEAD
 model/settings.php
 .classpath
 proguard.cfg
-=======
-model/Settings.php
 nbproject/
->>>>>>> oskarhallen-master

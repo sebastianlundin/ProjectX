@@ -1,7 +1,6 @@
 <?php
 
 class SnippetView {
-<<<<<<< HEAD
 	
 	/*
 	 * return html code for a single snippet
@@ -24,9 +23,6 @@ class SnippetView {
 	}
 	
 }
-
-
-=======
     
     /**
      * Transform an array of snippets to html-code
@@ -59,4 +55,3 @@ class SnippetView {
     }
     
 }
->>>>>>> oskarhallen-master
