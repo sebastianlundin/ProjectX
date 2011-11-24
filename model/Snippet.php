@@ -2,7 +2,6 @@
 
 class Snippet {
 
-<<<<<<< HEAD
 	private $mID;
 	private $mAuthor;
 	private $mCode;
@@ -19,28 +18,28 @@ class Snippet {
 		$this->mLanguage = $aLanguage;
 	}
     
-	/*
+	/**
      * @return int ID of the snippet
      */
 	public function getID() {
 		return $this->mID;
 	}
 	
-    /*
+    /**
      * @return String The author of the snippet
      */
 	public function getAuthor() {
 		return $this->mAuthor;
 	}
 	
-    /*
+    /**
      * @return String The code snippet
      */
 	public function getCode() {
 		return $this->mCode;
 	}
 	
-    /*
+    /**
      * @return String title of the snippet
      */
 	public function getTitle() {

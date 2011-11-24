@@ -2,7 +2,7 @@
 
 class SnippetView {
 	
-	/*
+	/**
 	 * return html code for a single snippet
 	 * @param Snippet a snippet Object
 	 * @return String
@@ -21,8 +21,6 @@ class SnippetView {
 		
 		return $html;		
 	}
-	
-}
     
     /**
      * Transform an array of snippets to html-code

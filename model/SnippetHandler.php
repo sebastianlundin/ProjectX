@@ -11,7 +11,7 @@ class SnippetHandler {
 		$this->mDbHandler = new DbHandler();
 	}
 	
-	/*
+	/**
 	 *Get a snippet by id
 	 * @param int $aID id of a snippet
 	 * @return Snippet
