@@ -1,0 +1,4 @@
+# Rewrite rules for public folder 
+RewriteEngine on 
+RewriteRule ^(.*)$ /public/$1 [QSA,L]
+
