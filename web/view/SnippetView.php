@@ -34,13 +34,10 @@ class SnippetView {
             $html .= '
                 <div class="snippet-list-item">
                     <div class="snippet-title">
-                        <h3>' . $snippet->getTitle() . '</h3>
+                        <h3><a href="?snippet='.$snippet->getID().'">' . $snippet->getTitle() . '</a></h3>
                     </div>
                     <div class="snippet-description">
-                        <p>' . $snippet->getDescription() . '</p>
-                    </div>
-                    <div class="snippet-code">
-                        <code>' . $snippet->getCode() . '</code>
+                        <p>' . $snippet->getDesc() . '</p>
                     </div>
                     <div class="snippet-author">
                         <p>Posted by: <i>' . $snippet->getTitle() . '</i></p>

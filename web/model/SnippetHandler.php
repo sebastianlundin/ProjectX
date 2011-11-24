@@ -42,6 +42,7 @@ class SnippetHandler {
     public function getAllSnippets() {
         $snippets = array();
         
+        $this->mDbHandler->__wakeup();
         if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet")) {
             $stmt->execute();
 

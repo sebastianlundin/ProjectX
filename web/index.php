@@ -1,13 +1,21 @@
 <?php
 
-require_once 'view/SnippetView.php';
-require_once 'model/SnippetHandler.php';
+require_once 'controller/MasterController.php';
 
-$mSnippetHandler = new snippetHandler();
-$mSnippetView = new SnippetView();
-
-$snippet = $mSnippetHandler->getSnippetByID(1);
-echo $mSnippetView->singleView($snippet);
+$mc = new MasterController();
+$html = $mc->doControl();
+?>
 
 
-echo $sv->listView($sh->getAllSnippets());
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>title</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <?php echo $html;?>
+  </body>
+</html>
