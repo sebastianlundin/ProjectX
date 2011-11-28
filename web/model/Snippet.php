@@ -9,8 +9,10 @@ class Snippet {
 	private $mDesc;
 	private $mLanguage;
 
-	public function __construct($aID,$aAuthor,$aCode,$aTitle,$aDesc,$aLanguage) {
-		$this->mID = $aID;
+	public function __construct($aAuthor,$aCode,$aTitle,$aDesc,$aLanguage,$aID = null) {
+		if($aID != null) {
+		    $this->mID = $aID;
+        }
 		$this->mAuthor = $aAuthor;
 		$this->mCode = $aCode;
 		$this->mTitle = $aTitle;
