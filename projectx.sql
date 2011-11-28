@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.5
+-- version 3.3.9
 -- http://www.phpmyadmin.net
 --
 -- Värd: 127.0.0.1
--- Skapad: 27 nov 2011 kl 01:03
--- Serverversion: 5.5.16
--- PHP-version: 5.3.8
+-- Skapad: 28 november 2011 kl 12:33
+-- Serverversion: 5.1.54
+-- PHP-version: 5.3.5
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -23,7 +22,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur `comment`
+-- Struktur för tabell `comment`
 --
 
 CREATE TABLE IF NOT EXISTS `comment` (
@@ -33,22 +32,21 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `userId` int(11) NOT NULL,
   PRIMARY KEY (`commentId`),
   KEY `snippetId` (`snippetId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=135 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=137 ;
 
 --
--- Dumpning av Data i tabell `comment`
+-- Data i tabell `comment`
 --
 
 INSERT INTO `comment` (`snippetId`, `commentId`, `commentText`, `userId`) VALUES
 (1, 129, 'detta är min första kommentar till opacityHack:-)', 6),
-(1, 130, 'detta är min andra kommentar till opacityHack', 6),
-(2, 132, 'detta är min första kommentar till test snippet2', 6),
-(2, 133, 'detta är min andra kommentar till test snippet 2', 6);
+(2, 133, 'detta är min andra kommentar till test snippet 2', 6),
+(10, 136, 'asd', 6);
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur `snippet`
+-- Struktur för tabell `snippet`
 --
 
 CREATE TABLE IF NOT EXISTS `snippet` (
@@ -56,23 +54,26 @@ CREATE TABLE IF NOT EXISTS `snippet` (
   `author` varchar(50) NOT NULL,
   `code` varchar(2500) NOT NULL,
   `title` varchar(50) NOT NULL,
-  `desc` varchar(500) NOT NULL,
+  `description` varchar(500) NOT NULL,
   `language` varchar(25) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 --
--- Dumpning av Data i tabell `snippet`
+-- Data i tabell `snippet`
 --
 
-INSERT INTO `snippet` (`id`, `author`, `code`, `title`, `desc`, `language`) VALUES
+INSERT INTO `snippet` (`id`, `author`, `code`, `title`, `description`, `language`) VALUES
 (1, 'Kim Åström', 'selector {   filter: alpha(opacity=60); /* MSIE/PC */   -moz-opacity: 0.6; /* Mozilla 1.6 and older */   opacity: 0.6; }', 'opacityHack', 'a hack for op', 'css'),
-(2, 'Marta', 'selector { code }', 'test snippet 2', 'test snippet 2', 'css');
+(2, 'Marta', 'selector { code }', 'test snippet 2', 'test snippet 2', 'css'),
+(12, 'kimsan', 'as', 'as', 'as', 'as'),
+(11, 'kimsan', 'hej snippet', 'en title', 'en desc', 'java'),
+(10, 'kimsan', 'da codeasdasd', 'Titasdle', 'desasdc', 'csasds');
 
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur `user`
+-- Struktur för tabell `user`
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -82,13 +83,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 --
--- Dumpning av Data i tabell `user`
+-- Data i tabell `user`
 --
 
 INSERT INTO `user` (`userId`, `userName`) VALUES
 (6, 'mania'),
 (7, 'Marta');
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
