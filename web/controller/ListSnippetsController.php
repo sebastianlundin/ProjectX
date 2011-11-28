@@ -1,25 +1,32 @@
 <?php
 	
-	require_once('MysqliModel.php');
-	require_once('CRUDSnippetModel.php');
-	require_once('CRUDSnippetView.php');
+	require_once dirname(__FILE__).'/../model/CRUDSnippetModel.php';
+	require_once dirname(__FILE__).'/../view/CRUDSnippetView.php';
+    require_once dirname(__FILE__).'/../model/DbHandler.php';
 
 	class ListSnippetsController {
-		private $mMysqliModel = null;
+		private $mDbHandler = null;
 		private $mCRUDSnippetView = null;
 
 		public function __construct() {
-			$this->mMysqliModel = new MysqliModel("localhost", "root", "root", "snippets");
-			$this->mCRUDSnippetModel = new CRUDSnippetModel($this->mMysqliModel);
+			$this->mDbHandler = new DbHandler();
+			$this->mCRUDSnippetModel = new CRUDSnippetModel($this->mDbHandler);
 			$this->mCRUDSnippetView = new CRUDSnippetView();
 		}
 
 		public function listSnippets() {
+			    
 			if ($this->mCRUDSnippetView->triedToGotoCreateView() == true) {
 				return $this->mCRUDSnippetView->createSnippet();
 			}
 			else if ($this->mCRUDSnippetView->triedTocreateSnippet() == true) {
-				$this->mCRUDSnippetModel->createSnippet($this->mCRUDSnippetView->getcreateSnippetName(), $this->mCRUDSnippetView->getcreateSnippetCode());
+                $code = $this->mCRUDSnippetView->getCreateSnippetCode();
+                $title = $this->mCRUDSnippetView->getSnippetTitle();
+                $desc = $this->mCRUDSnippetView->getSnippetDescription();
+                $language = $this->mCRUDSnippetView->getSnippetLanguage();
+                
+			    $snippet = new Snippet('kimsan', $code, $title, $desc, $language);
+				$this->mCRUDSnippetModel->createSnippet($snippet);
 			}
 			else if ($this->mCRUDSnippetView->triedToDeleteSnippet() == true) {
 				$this->mCRUDSnippetModel->deleteSnippet($this->mCRUDSnippetView->getSnippetID());
@@ -32,9 +39,6 @@
 				echo 'Snippet has been updated!';
 			}
 
-			return $this->mCRUDSnippetView->listSnippets($this->mCRUDSnippetModel->listSnippets());
+			return $this->mCRUDSnippetView->createSnippet();
 		}
 	}
-
-	$listSnippetsController = new ListSnippetsController();
-	echo $listSnippetsController->listSnippets();

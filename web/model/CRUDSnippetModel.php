@@ -1,6 +1,6 @@
 <?php
 
-	require_once('SnippetObject.php');
+	require_once dirname(__FILE__) . '/../object/SnippetObject.php';
 
 	class CRUDSnippetModel
 	{
@@ -10,47 +10,28 @@
 			$this->mDatabase = $aDatabase;
 		}
 
-		public function createSnippet($aSnippetName, $aSnippetCode) {
-			$databaseQuery = $this->mDatabase->PrepareStatement("INSERT INTO SnippetsTable (snippetName, snippetCode) VALUES (?, ?)");
-			$databaseQuery->bind_param('ss', $aSnippetName, $aSnippetCode);
-			$databaseQuery->execute();
-			if ($databaseQuery->affected_rows == null)
-			{
-				return false;
+		public function createSnippet(Snippet $aSnippet) {
+		    $this->mDatabase->__wakeup();
+            $author = $aSnippet->getAuthor();
+            $code = $aSnippet->getCode();
+            $title = $aSnippet->getTitle();
+            $desc = $aSnippet->getDesc();
+            $language = $aSnippet->getLanguage();
+            
+			if($databaseQuery = $this->mDatabase->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
+                $databaseQuery->bind_param('sssss', $author, $code, $title, $desc, $language);
+                $databaseQuery->execute();
+                if ($databaseQuery->affected_rows == null) {
+                    $databaseQuery->close();
+                    return false;
+                }
+                $databaseQuery->close();
+			} else {
+			    return false;
 			}
-			$databaseQuery->close();
+
+            $this->mDatabase->close();
 			return true;
-		}
-
-		public function listSnippets() {
-			$snippets = array();
-			$databaseQuery = $this->mDatabase->PrepareStatement("SELECT * FROM SnippetsTable");
-			$databaseQuery->execute();
-			$databaseQuery->store_result();
-			$databaseQuery->bind_result($SnippetName, $SnippetCode, $SnippetID);
-			while ($databaseQuery->fetch())
-			{
-				$snippets[] = new SnippetObject($SnippetName, $SnippetCode, $SnippetID);
-			}
-			$databaseQuery->free_result(); 
-			$databaseQuery->close();
-			return $snippets;
-		}
-
-		public function getSingleSnippetData($aSnippetID) {
-			$snippet = array();
-			$databaseQuery = $this->mDatabase->PrepareStatement("SELECT * FROM SnippetsTable WHERE snippetID = ?");
-			$databaseQuery->bind_param('i', $aSnippetID);
-			$databaseQuery->execute();
-			$databaseQuery->store_result();
-			$databaseQuery->bind_result($SnippetName, $SnippetCode, $SnippetID);
-			while ($databaseQuery->fetch())
-			{
-				$snippets[] = new SnippetObject($SnippetName, $SnippetCode, $SnippetID);
-			}
-			$databaseQuery->free_result(); 
-			$databaseQuery->close();
-			return $snippets;
 		}
 
 		public function updateSnippet($aSnippetName, $aSnippetCode, $aSnippetID) {

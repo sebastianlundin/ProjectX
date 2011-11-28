@@ -45,7 +45,7 @@ class SnippetView {
                         <p>' . $snippet->getDesc() . '</p>
                     </div>
                     <div class="snippet-author">
-                        <p>Posted by: <i>' . $snippet->getTitle() . '</i></p>
+                        <p>Posted by: <i>' . $snippet->getAuthor() . '</i></p>
                     </div>
                 </div>
             ';

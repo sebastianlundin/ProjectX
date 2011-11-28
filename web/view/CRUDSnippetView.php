@@ -7,8 +7,12 @@
 				<div id="createSnippetContainer">
 					<form action="" method="post">
 						<div id="createSnippetNameDiv">
-							<p>Name:</p>
-							<input type="text" name="createSnippetNameInput" id="createSnippetNameInput" /> 
+							<p>Title:</p>
+							<input type="text" name="snippetTitle" id="createSnippetNameInput" />
+	                        <p>Description:</p>
+                            <input type="text" name="snippetDescription" id="createSnippetNameInput" />
+                            <p>Language:</p>
+                            <input type="text" name="snippetLanguage" id="createSnippetNameInput" />
 						</div>
 
 						<div id="createSnippetCodeDiv">
@@ -107,6 +111,40 @@
 			return false;
 		}
 
+		
+        public function getSnippetTitle() {
+            $snippetName = $_POST["snippetTitle"];
+            if ($snippetName == null) {
+                return null;
+            }
+            else {
+                return $snippetName;
+            }
+            return false;
+        }
+        
+        public function getSnippetDescription() {
+            $snippetName = $_POST["snippetDescription"];
+            if ($snippetName == null) {
+                return null;
+            }
+            else {
+                return $snippetName;
+            }
+            return false;
+        }
+        
+        public function getSnippetLanguage() {
+            $snippetName = $_POST["snippetLanguage"];
+            if ($snippetName == null) {
+                return null;
+            }
+            else {
+                return $snippetName;
+            }
+            return false;
+        }
+        
 		public function getCreateSnippetCode() {
 			$snippetCode = $_POST["createSnippetCodeInput"];
 			if ($snippetCode == null) {
