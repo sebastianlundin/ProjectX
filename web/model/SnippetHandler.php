@@ -61,14 +61,14 @@ class SnippetHandler {
     }
     
 	public function createSnippet(Snippet $aSnippet) {
-        $this->mDatabase->__wakeup();
+        $this->mDbHandler->__wakeup();
         $author = $aSnippet->getAuthor();
         $code = $aSnippet->getCode();
         $title = $aSnippet->getTitle();
         $desc = $aSnippet->getDesc();
         $language = $aSnippet->getLanguage();
         
-    	if($databaseQuery = $this->mDatabase->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
+    	if($databaseQuery = $this->mDbHandler->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
             $databaseQuery->bind_param('sssss', $author, $code, $title, $desc, $language);
             $databaseQuery->execute();
             if ($databaseQuery->affected_rows == null) {
@@ -80,12 +80,12 @@ class SnippetHandler {
     	    return false;
     	}
     
-        $this->mDatabase->close();
+        $this->mDbHandler->close();
     	return true;
     }
 
 	public function updateSnippet($aSnippetName, $aSnippetCode, $aSnippetID) {
-		$databaseQuery = $this->mDatabase->PrepareStatement("UPDATE SnippetsTable SET snippetName = ?, snippetCode = ? WHERE snippetID = ?");
+		$databaseQuery = $this->mDbHandler->PrepareStatement("UPDATE SnippetsTable SET snippetName = ?, snippetCode = ? WHERE snippetID = ?");
 		$databaseQuery->bind_param('ssi', $$aSnippetName, $aSnippetCode, $aSnippetID);
 		$databaseQuery->execute();
 		if ($databaseQuery->affected_rows == null)
@@ -97,7 +97,7 @@ class SnippetHandler {
 	}
 
 	public function deleteSnippet($aSnippetID) {
-		$databaseQuery = $this->mDatabase->PrepareStatement("DELETE FROM SnippetsTable WHERE snippetID = ?");
+		$databaseQuery = $this->mDbHandler->PrepareStatement("DELETE FROM SnippetsTable WHERE snippetID = ?");
 		$databaseQuery->bind_param('i', $aSnippetID);
 		$databaseQuery->execute();
 		if ($databaseQuery->affected_rows == null)

@@ -1,44 +1,44 @@
 <?php
 	
-	require_once dirname(__FILE__).'/../model/CRUDSnippetModel.php';
-	require_once dirname(__FILE__).'/../view/CRUDSnippetView.php';
+	require_once dirname(__FILE__).'/../model/SnippetHandler.php';
+	require_once dirname(__FILE__).'/../view/SnippetView.php';
     require_once dirname(__FILE__).'/../model/DbHandler.php';
 
 	class SnippetController {
 		private $mDbHandler = null;
-		private $mCRUDSnippetView = null;
+		private $mSnippetView = null;
 
 		public function __construct() {
 			$this->mDbHandler = new DbHandler();
-			$this->mCRUDSnippetModel = new CRUDSnippetModel($this->mDbHandler);
-			$this->mCRUDSnippetView = new CRUDSnippetView();
+			$this->mSnippetHandler = new SnippetHandler($this->mDbHandler);
+			$this->mSnippetView = new SnippetView();
 		}
 
 		public function listSnippets() {
 			    
-			if ($this->mCRUDSnippetView->triedToGotoCreateView() == true) {
-				return $this->mCRUDSnippetView->createSnippet();
+			if ($this->mSnippetView->triedToGotoCreateView() == true) {
+				return $this->mSnippetView->createSnippet();
 			}
-			else if ($this->mCRUDSnippetView->triedTocreateSnippet() == true) {
-                $code = $this->mCRUDSnippetView->getCreateSnippetCode();
-                $title = $this->mCRUDSnippetView->getSnippetTitle();
-                $desc = $this->mCRUDSnippetView->getSnippetDescription();
-                $language = $this->mCRUDSnippetView->getSnippetLanguage();
+			else if ($this->mSnippetView->triedTocreateSnippet() == true) {
+                $code = $this->mSnippetView->getCreateSnippetCode();
+                $title = $this->mSnippetView->getSnippetTitle();
+                $desc = $this->mSnippetView->getSnippetDescription();
+                $language = $this->mSnippetView->getSnippetLanguage();
                 
 			    $snippet = new Snippet('kimsan', $code, $title, $desc, $language);
-				$this->mCRUDSnippetModel->createSnippet($snippet);
+				$this->mSnippetHandler->createSnippet($snippet);
 			}
-			else if ($this->mCRUDSnippetView->triedToDeleteSnippet() == true) {
-				$this->mCRUDSnippetModel->deleteSnippet($this->mCRUDSnippetView->getSnippetID());
+			else if ($this->mSnippetView->triedToDeleteSnippet() == true) {
+				$this->mSnippetHandler->deleteSnippet($this->mSnippetView->getSnippetID());
 			}
-			else if ($this->mCRUDSnippetView->triedToChangeSnippet() == true) {
-				return $this->mCRUDSnippetView->updateSnippet($this->mCRUDSnippetModel->getSingleSnippetData($this->mCRUDSnippetView->getSnippetIDLink()));
+			else if ($this->mSnippetView->triedToChangeSnippet() == true) {
+				return $this->mSnippetView->updateSnippet($this->mSnippetHandler->getSingleSnippetData($this->mSnippetView->getSnippetIDLink()));
 			}
-			else if ($this->mCRUDSnippetView->triedToSaveSnippet() == true) {
-				$this->mCRUDSnippetModel($this->mCRUDSnippetView->getUpdateSnippetID, $this->mCRUDSnippetView->getUpdateSnippetName, $this->mCRUDSnippetView->getUpdateSnippetCode);
+			else if ($this->mSnippetView->triedToSaveSnippet() == true) {
+				$this->mSnippetHandler($this->mSnippetView->getUpdateSnippetID, $this->mSnippetView->getUpdateSnippetName, $this->mSnippetView->getUpdateSnippetCode);
 				echo 'Snippet has been updated!';
 			}
 
-			return $this->mCRUDSnippetView->createSnippet();
+			return $this->mSnippetView->createSnippet();
 		}
 	}

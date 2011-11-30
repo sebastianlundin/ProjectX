@@ -3,7 +3,7 @@ require_once dirname(__FILE__).'/../model/SnippetHandler.php';
 require_once dirname(__FILE__).'/../view/SnippetView.php';
 require_once dirname(__FILE__).'/../model/CommentHandler.php';
 require_once dirname(__FILE__).'/../view/CommentView.php';
-require_once dirname(__FILE__).'/ListSnippetsController.php';
+require_once dirname(__FILE__).'/SnippetController.php';
 
 class MasterController {
     
@@ -11,7 +11,7 @@ class MasterController {
     private $mSnippetView;
     private $mCommentHandler;
     private $mCommentView;
-    private $mListSnippetController;
+    private $mSnippetController;
     private $mHtml;
     
     
@@ -20,7 +20,7 @@ class MasterController {
         $this->mSnippetView = new SnippetView();
         $this->mCommentHandler = new CommentHandler();
         $this->mCommentView = new CommentView();
-        $this->mListSnippetController = new ListSnippetsController();
+        $this->mSnippetController = new SnippetController();
         $this->mHtml = '';
     }
     
@@ -60,7 +60,7 @@ class MasterController {
         } 
         else if(isset($_GET['page']) && $_GET['page'] == 'addsnippet') 
         {
-            $this->mHtml .=$this->mListSnippetController->listSnippets();
+            $this->mHtml .=$this->mSnippetController->listSnippets();
         } 
         else 
         {
