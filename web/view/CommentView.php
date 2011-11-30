@@ -33,7 +33,7 @@ class CommentView
      * @return String
      * @parram array of the Comment object
      */
-    public function showAllCommentsForSnippet($comments) {
+    public function showAllCommentsForSnippet( $comments ) {
         $message = "";
         if (!empty($comments)) {
             for ($i = 0; $i < count($comments); $i++) {
@@ -70,7 +70,7 @@ class CommentView
      * @param Comment object
      * @return String
      */
-    public function editComment($comment) {
+    public function editComment( $comment ) {
         if ($comment)
             $form = ("
 					<form action='' method='POST'>

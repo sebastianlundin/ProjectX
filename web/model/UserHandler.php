@@ -12,8 +12,8 @@ class UserHandler
      * 
      * @return an array with User objects
      */
-    public function getAllUsers()
-    {
+    public function getAllUsers() {
+        
         $userArray = array();
         $result = array();
         

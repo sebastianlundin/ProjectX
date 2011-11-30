@@ -19,6 +19,7 @@ class CommentHandler
      * together with data of the User object 
      */
     public function getAllCommentsForSnippet( $snippetId ) {
+        
         $commentsArray = array();
         $sqlQuery = "   SELECT comment.snippetId, comment.commentId, comment.commentText, comment.userId, user.userName
                         FROM comment
@@ -51,6 +52,7 @@ class CommentHandler
      * @param snippetId, commentText and userId
      */
     public function addComment( $snippetId, $commentText, $userId ) {
+        
         $sqlQuery = "INSERT INTO comment (snippetId, commentText, userId) VALUES(?,?,?)";
         if ( $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery ) ) {
             $stmt->bind_param( "isi", $snippetId, $commentText, $userId );
@@ -70,6 +72,7 @@ class CommentHandler
      * @param commentId, commentText
      */
     public function updateComment( $commentId, $commentText ) {
+        
         $sqlQuery = "UPDATE comment SET commentText=? WHERE commentId=?";
 
         if ( $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery ) ) {
@@ -91,6 +94,7 @@ class CommentHandler
      * @param an id of the comment to delete
      */
     public function deleteComment( $commentId ) {
+        
         $sqlQuery = "DELETE FROM comment WHERE commentId=?";
 
         if ( $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery ) ) {
@@ -111,6 +115,7 @@ class CommentHandler
      * taking away all comments from the db
      */
     public function removeAllComments() {
+        
         $sqlQuery = "DELETE FROM comment";
 
         if ( $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery ) ) {
@@ -129,6 +134,7 @@ class CommentHandler
      * 
      */
     public function getCommentToEditByCommentId( $commentId ) {
+        
         $sqlQuery = "   SELECT comment.snippetId, comment.commentId, comment.commentText, comment.userId, user.userName
                         FROM comment
                         INNER JOIN user ON user.userId = comment.userId
