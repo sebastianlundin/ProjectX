@@ -25,7 +25,7 @@ class SnippetHandler {
 
             $stmt->bind_result($id, $author, $code, $title, $desc, $language);
             while($stmt->fetch()) {
-                $snippet = new Snippet($id,$author,$code,$title,$desc,$language);
+                $snippet = new Snippet($author,$code,$title,$desc,$language,$id);
             }
 
             $stmt->close();
@@ -48,7 +48,7 @@ class SnippetHandler {
 
             $stmt->bind_result($id, $code, $author, $title, $description, $language);
             while ($stmt->fetch()) {
-                $snippet = new Snippet($id, $code, $author ,$title ,$description, $language);
+                $snippet = new Snippet($code, $author ,$title ,$description, $language,$id);
                 array_push($snippets, $snippet);
             }
 
