@@ -2,26 +2,26 @@
 
 class Comment
 {
-    private $mSnippetId = NULL;
+    private $mSnippetId = null;
     //private $mCommentDate = NULL;
-    private $mCommentId = NULL;
-    private $mUserId = NULL;
-    private $mCommentText = NULL;
+    private $mCommentId = null;
+    private $mUserId = null;
+    private $mCommentText = null;
     //private $mCommentUp = NULL;
     //private $mCommentDown = NULL;
-    private $mUser = NULL;
-	
-//	public function __construct($aSnippetId, $aCommentDate, $aCommentId, $aUserId, $aCommentText, $aCommentUp, $aCommentDown) 
-//    {
-//        $this->mSnippetId = $aSnippetId;
-//		    $this->mCommentDate = $aCommentDate;
-//		$this->mCommentId = $aCommentId;
-//        $this->mUserId = $aUserId;
-//        $this->mCommentText = $aCommentText;
-//        $this->mCommentUp = $aCommentUp;
-//        $this->mCommentDown = $aCommentUp;
-//        
-//	}
+    private $mUser = null;
+
+    //	public function __construct($aSnippetId, $aCommentDate, $aCommentId, $aUserId, $aCommentText, $aCommentUp, $aCommentDown)
+    //    {
+    //        $this->mSnippetId = $aSnippetId;
+    //		    $this->mCommentDate = $aCommentDate;
+    //		$this->mCommentId = $aCommentId;
+    //        $this->mUserId = $aUserId;
+    //        $this->mCommentText = $aCommentText;
+    //        $this->mCommentUp = $aCommentUp;
+    //        $this->mCommentDown = $aCommentUp;
+    //
+    //	}
     /**
      * Comment::__construct()
      * 
@@ -30,28 +30,28 @@ class Comment
      * @param mixed $aUserId
      * @param mixed $aCommentText
      */
-    public function __construct($aSnippetId, $aCommentId, $aUserId, $aCommentText) {
+    public function __construct( $aSnippetId, $aCommentId, $aUserId, $aCommentText ) {
         $this->mSnippetId = $aSnippetId;
-		$this->mCommentId = $aCommentId;
+        $this->mCommentId = $aCommentId;
         $this->mUserId = $aUserId;
         $this->mCommentText = $aCommentText;
-	}
-    
+    }
+
     /**
      * Comment::setUser()
      * settr User object
      * @param User
      */
-    public function setUser($aUser){
+    public function setUser( $aUser ) {
         $this->mUser = $aUser;
     }
-    
+
     /**
      * Comment::getUser()
      * 
      * @return User object
      */
-    public function getUser(){
+    public function getUser() {
         return $this->mUser;
     }
 
@@ -63,58 +63,58 @@ class Comment
     public function getSnippetId() {
         return $this->mSnippetId;
     }
-	
-	/**
-	 * Comment::getCommentDate()
-	 * 
-	 * @return date where the comment where written
-	 */
-	public function getCommentDate() {
-		return $this->mCommentDate;
-	}
 
-	/**
-	 * Comment::getCommentId()
-	 * 
-	 * @return int ID of the comment
-	 */
-	public function getCommentId() {
-		return $this->mCommentId;
-	}
-    
+    /**
+     * Comment::getCommentDate()
+     * 
+     * @return date where the comment where written
+     */
+    public function getCommentDate() {
+        return $this->mCommentDate;
+    }
+
+    /**
+     * Comment::getCommentId()
+     * 
+     * @return int ID of the comment
+     */
+    public function getCommentId() {
+        return $this->mCommentId;
+    }
+
     /**
      * Comment::getUserId()
      * 
      * @return int ID of the user
      */
-    public function getUserId(){
-        return $this->mUserId;         
+    public function getUserId() {
+        return $this->mUserId;
     }
-    
+
     /**
      * Comment::getCommentText()
      * 
      * @return string; text of the comment
      */
-    public function getCommentText(){
+    public function getCommentText() {
         return $this->mCommentText;
     }
-    
+
     /**
      * Comment::getCommentUp()
      * 
      * @return int, how many finds the comment usefull
      */
-    public function getCommentUp(){
+    public function getCommentUp() {
         return $this->mCommentUp;
     }
-    
+
     /**
      * Comment::getCommentDown()
      * 
      * @return inte, how many dosn't' find the comment usefull
      */
-    public function getCommentDown(){
+    public function getCommentDown() {
         return $this->mCommentDown;
     }
 }

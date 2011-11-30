@@ -1,5 +1,8 @@
 <?php
 	
+/**
+ *     OBS! allt från denna fill ligger nu i SnippetController.php så att allt som har med snippet att göra finns i en fil
+ */
 	require_once dirname(__FILE__).'/../model/CRUDSnippetModel.php';
 	require_once dirname(__FILE__).'/../view/CRUDSnippetView.php';
     require_once dirname(__FILE__).'/../model/DbHandler.php';
