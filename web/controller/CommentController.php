@@ -32,6 +32,21 @@ class CommentController
                 $commentHandler->addComment( $snippetId, $text, $author );
             }
         }
+        
+        if($commentView->TriedToSubmitComment() == true)
+        {
+			//Denna if-sats är tillagd för att kontrollera Captcha-svaret
+			if($commentView->GetCaptchaAnswer() == $_SESSION['security_number']) {
+			   //adderar inlägget till databasen, filtruje ev. html taggar+RealEscapeString innan jag sparar i db
+			   $text = $commentView->GetCommentText();
+			   $text = $this->m_database->RealEscapeString($text);
+			   $author = $commentView->GetAuthorId();
+			   $author = $this->m_database->RealEscapeString($author);
+				/**
+				* hårdkodade värden på snippetId
+				*/
+				$commentHandler->AddComment(1, $text, $author);
+		   }        
         /**
          *          sedan får man kolla med rättigheter så att man kan ta bort en kommentar, antingen är man:
          *           -admin

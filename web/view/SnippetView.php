@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/../model/SyntaxHighlight.php';
+//require_once dirname(__FILE__).'/../model/Functions.php';
 
 class SnippetView {
 	

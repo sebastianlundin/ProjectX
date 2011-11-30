@@ -4,35 +4,35 @@ require_once dirname(__file__) . '/../model/Captcha.php';
 class CommentView
 {
     /**
-     * CommentView::doCommentForm()
-     * html form for adding a new comment
-     * @return String
-     */
+* CommentView::doCommentForm()
+* html form for adding a new comment
+* @return String
+*/
     public function doCommentForm() {
         $captcha = new Captcha();
         $form = ("
-					<form action='' method='POST'>
-                        <label for='commentText'>Kommentar: </label><br/> 
-                        <textarea name='commentText' rows = '5' cols ='40' maxlength='1500'></textarea>
-                        <br/>
-                        <label for='author'>Namn:(ange siffran 6 så länge)</label><br/> 
-                        <input type='text' name='commentAuthor' value = ''/>                        
-                        <br/>
-						<img src='secure.jpg' alt='Captcha image'/><br/>
-						<label for='secure'>Ange svaret till bilden:</label><br/>
-						<input type='text' name='secure' value='' /><br/>
-    					<input type='submit' name='submitComment' value='Skriv'/>
-					</form>
-			    ");
+                    <form action='' method='POST'>
+                    <label for='commentText'>Kommentar: </label><br/>
+                    <textarea name='commentText' rows = '5' cols ='40' maxlength='1500'></textarea>
+                    <br/>
+                    <label for='author'>Namn:(ange siffran 6 så länge)</label><br/>
+                    <input type='text' name='commentAuthor' value = ''/>
+                    <br/>
+                    <img src='secure.jpg' alt='Captcha image'/><br/>
+                    <label for='secure'>Ange svaret till bilden:</label><br/>
+                    <input type='text' name='secure' value='' /><br/>
+                    <input type='submit' name='submitComment' value='Skriv'/>
+                    </form>
+                    ");
         return $form;
     }
 
     /**
-     * CommentView::showAllCommentsForSnippet()
-     * html that shows all comments taht was added for a snippet
-     * @return String
-     * @parram array of the Comment object
-     */
+* CommentView::showAllCommentsForSnippet()
+* html that shows all comments taht was added for a snippet
+* @return String
+* @parram array of the Comment object
+*/
     public function showAllCommentsForSnippet( $aComments ) {
         $message = "";
         if (!empty($aComments)) {
@@ -65,28 +65,26 @@ class CommentView
     }
 
     /**
-     * CommentView::editComment()
-     * html taht allows to edit a comment text
-     * @param Comment object
-     * @return String
-     */
+* CommentView::editComment()
+* html taht allows to edit a comment text
+* @param Comment object
+* @return String
+*/
     public function editComment( $aComment ) {
         if ($aComment)
             $form = ("
-					<form action='' method='POST'>
-                        <label for='commentText'>Kommentar: </label><br/> 
-                        
+                        <form action='' method='POST'>
+                        <label for='commentText'>Kommentar: </label><br/>
                         <textarea name='commentText' rows ='5' cols ='40' maxlength='1500'>" .
-                $aComment->GetCommentText() . "</textarea>
+                                        $aComment->GetCommentText() . "</textarea>
                         <br/>
-                        <label for='author'>Namn:(man kan ej redigera vem som skrev, det är redan skrivet av någon)</label><br/> 
-                        
+                        <label for='author'>Namn:(man kan ej redigera vem som skrev, det är redan skrivet av någon)</label><br/>
                         <input type='text' name='commentAuthor' readonly='readonly' value = '" .
-                $aComment->GetUser()->GetUserName() . "'/>
+                                        $aComment->GetUser()->GetUserName() . "'/>
                         <br/>
-    					<input type='submit' name='updateComment' value='Skriv'/>
-					</form>
-			    ");
+                        <input type='submit' name='updateComment' value='Skriv'/>
+                        </form>
+                        ");
         else
             $form = "Kommentaren du försöker redigera finns inte!";
         return $form;
@@ -94,14 +92,14 @@ class CommentView
 
 
     /**
-     * -----------------------------------EVENTS
-     */
+* -----------------------------------EVENTS
+*/
 
     /**
-     * CommentView::triedToSubmitComment()
-     * 
-     * @return true if user is trying to add a new comment
-     */
+* CommentView::triedToSubmitComment()
+*
+* @return true if user is trying to add a new comment
+*/
     public function triedToSubmitComment() {
         if (isset($_POST['submitComment'])) {
             return true;
@@ -110,10 +108,10 @@ class CommentView
     }
 
     /**
-     * CommentView::getCommentText()
-     * 
-     * @return String that is the text of the comment
-     */
+* CommentView::getCommentText()
+*
+* @return String that is the text of the comment
+*/
     public function getCommentText() {
         if (isset($_POST['commentText'])) {
             return trim($_POST['commentText']);
@@ -122,10 +120,10 @@ class CommentView
     }
 
     /**
-     * CommentView::getAuthorId()
-     * 
-     * @return int, id of the User
-     */
+* CommentView::getAuthorId()
+*
+* @return int, id of the User
+*/
     public function getAuthorId() {
         if (isset($_POST['commentAuthor'])) {
             return trim($_POST['commentAuthor']);
@@ -134,10 +132,10 @@ class CommentView
     }
 
     /**
-     * CommentView::getCaptchaAnswer()
-     * 
-     * @return 
-     */
+* CommentView::getCaptchaAnswer()
+*
+* @return
+*/
     public function getCaptchaAnswer() {
         if (isset($_POST['secure'])) {
             return trim($_POST['secure']);
@@ -146,10 +144,10 @@ class CommentView
     }
 
     /**
-     * CommentView::triesToRemoveComment()
-     * 
-     * @return true if user is trying to delete a comment
-     */
+* CommentView::triesToRemoveComment()
+*
+* @return true if user is trying to delete a comment
+*/
     public function triesToRemoveComment() {
         if (isset($_GET["deleteComment"])) {
             return true;
@@ -157,10 +155,10 @@ class CommentView
         return false;
     }
     /**
-     * CommentView::whichCommentToDelete()
-     * 
-     * @return int, id of the comment that is going to be deleted
-     */
+* CommentView::whichCommentToDelete()
+*
+* @return int, id of the comment that is going to be deleted
+*/
     public function whichCommentToDelete() {
         if (isset($_GET["deleteComment"])) {
             return urldecode($_GET["deleteComment"]);
@@ -169,10 +167,10 @@ class CommentView
     }
 
     /**
-     * CommentView::triesToEditComment()
-     * 
-     * @return true if the user is trying to edit a comment
-     */
+* CommentView::triesToEditComment()
+*
+* @return true if the user is trying to edit a comment
+*/
     public function triesToEditComment() {
         if (isset($_GET["editComment"])) {
             return true;
@@ -181,10 +179,10 @@ class CommentView
     }
 
     /**
-     * CommentView::whichCommentToEdit()
-     * 
-     * @return int, id of the comment that user wants to edit
-     */
+* CommentView::whichCommentToEdit()
+*
+* @return int, id of the comment that user wants to edit
+*/
     public function whichCommentToEdit() {
         if (isset($_GET["editComment"])) {
             return urldecode($_GET["editComment"]);
@@ -193,10 +191,10 @@ class CommentView
     }
 
     /**
-     * CommentView::triesToUpdateComment()
-     * 
-     * @return true if user wants to update comment
-     */
+* CommentView::triesToUpdateComment()
+*
+* @return true if user wants to update comment
+*/
     public function triesToUpdateComment() {
         if (isset($_POST["updateComment"])) {
             return true;
@@ -205,10 +203,10 @@ class CommentView
     }
 
     /**
-     * CommentView::whichSnippetToComment()
-     * 
-     * @return int, id of the snippet for which user wants to add a new comment
-     */
+* CommentView::whichSnippetToComment()
+*
+* @return int, id of the snippet for which user wants to add a new comment
+*/
     public function whichSnippetToComment() {
         if (isset($_GET["snippet"])) {
             return urldecode($_GET["snippet"]);
@@ -216,3 +214,4 @@ class CommentView
         return false;
     }
 }
+

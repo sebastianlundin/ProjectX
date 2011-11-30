@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 	class SnippetObject {
@@ -22,4 +23,5 @@
 		public function getSnippetCode() {
 			return $this->mSnippetCode;
 		}
+
 	}
