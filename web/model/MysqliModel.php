@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 	class MysqliModel
@@ -30,4 +31,4 @@
 		{
 			return $this->mConnection->select_db($aDbName);
 		}
-	}
+    }
