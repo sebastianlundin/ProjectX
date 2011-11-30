@@ -18,24 +18,24 @@ class CommentHandler
      * @return an array with all comments for one snippet
      * together with data of the User object 
      */
-    public function getAllCommentsForSnippet( $snippetId ) {
+    public function getAllCommentsForSnippet( $aSnippetId ) {
         
         $commentsArray = array();
         $sqlQuery = "   SELECT comment.snippetId, comment.commentId, comment.commentText, comment.userId, user.userName
                         FROM comment
                         INNER JOIN user ON user.userId = comment.userId
-                        WHERE snippetId = $snippetId
+                        WHERE snippetId = $aSnippetId
                         ORDER by comment.commentId DESC
         ";
         $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery );
         $stmt->execute();
-        $stmt->bind_result( $snippetId, $commentId, $commentText, $userId, $userName );
+        $stmt->bind_result( $aSnippetId, $aCommentId, $aCommentText, $aUserId, $aUserName );
 
         $objects = array();
 
         while ( $stmt->fetch() ) {
-            $user = new User( $userId, $userName );
-            $comment = new Comment( $snippetId, $commentId, $userId, $commentText );
+            $user = new User( $aUserId, $aUserName );
+            $comment = new Comment( $aSnippetId, $aCommentId, $aUserId, $aCommentText );
             $comment->SetUser( $user );
             $objects[] = $comment;
         }
@@ -51,11 +51,11 @@ class CommentHandler
      * use it if you want to add a new commet för a snippet
      * @param snippetId, commentText and userId
      */
-    public function addComment( $snippetId, $commentText, $userId ) {
+    public function addComment( $aSnippetId, $aCommentText, $aUserId ) {
         
         $sqlQuery = "INSERT INTO comment (snippetId, commentText, userId) VALUES(?,?,?)";
         if ( $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery ) ) {
-            $stmt->bind_param( "isi", $snippetId, $commentText, $userId );
+            $stmt->bind_param( "isi", $aSnippetId, $aCommentText, $aUserId );
             $stmt->execute();
             $stmt->close();
             return true;
@@ -71,12 +71,12 @@ class CommentHandler
      * use it if you want to update a comment that exists in the database
      * @param commentId, commentText
      */
-    public function updateComment( $commentId, $commentText ) {
+    public function updateComment( $aCommentId, $aCommentText ) {
         
         $sqlQuery = "UPDATE comment SET commentText=? WHERE commentId=?";
 
         if ( $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery ) ) {
-            $stmt->bind_param( "si", $commentText, $commentId );
+            $stmt->bind_param( "si", $aCommentText, $aCommentId );
 
             if ( $stmt->execute() ) {
                 $stmt->close();
@@ -93,12 +93,12 @@ class CommentHandler
      * use it if you want to delete a comment
      * @param an id of the comment to delete
      */
-    public function deleteComment( $commentId ) {
+    public function deleteComment( $aCommentId ) {
         
         $sqlQuery = "DELETE FROM comment WHERE commentId=?";
 
         if ( $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery ) ) {
-            $stmt->bind_param( "i", $commentId );
+            $stmt->bind_param( "i", $aCommentId );
 
             if ( $stmt->execute() ) {
                 $stmt->close();
@@ -133,7 +133,7 @@ class CommentHandler
      * @param id of the comment you want to edit
      * 
      */
-    public function getCommentToEditByCommentId( $commentId ) {
+    public function getCommentToEditByCommentId( $aCommentId ) {
         
         $sqlQuery = "   SELECT comment.snippetId, comment.commentId, comment.commentText, comment.userId, user.userName
                         FROM comment
@@ -141,15 +141,15 @@ class CommentHandler
                         WHERE commentId = ?
                     ";
         $stmt = $this->mDbHandler->PrepareStatement( $sqlQuery );
-        $stmt->bind_param( 'i', $commentId );
+        $stmt->bind_param( 'i', $aCommentId );
         $stmt->execute();
-        $stmt->bind_result( $snippetId, $commentId, $commentText, $userId, $userName );
+        $stmt->bind_result( $aSnippetId, $aCommentId, $aCommentText, $aUserId, $aUserName );
 
         $comment = null;
 
         if ( $stmt->fetch() ) {
-            $user = new User( $userId, $userName );
-            $comment = new Comment( $snippetId, $commentId, $userId, $commentText );
+            $user = new User( $aUserId, $aUserName );
+            $comment = new Comment( $aSnippetId, $aCommentId, $aUserId, $aCommentText );
             $comment->SetUser( $user );
         }
         $stmt->close();

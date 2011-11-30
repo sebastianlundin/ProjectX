@@ -4,8 +4,8 @@ class CommentController
 {
     private $m_database = null;
 
-    public function __construct( DatabaseConnection $database ) {
-        $this->m_database = $database;
+    public function __construct( DatabaseConnection $aDatabase ) {
+        $this->m_database = $aDatabase;
     }
 
     public function DoControll() {
@@ -15,8 +15,7 @@ class CommentController
         $commentView = new CommentView();
 
         if ( $commentView->triesToEditComment() ) {
-            $xhtml .= $commentView->editComment( $commentHandler->
-                getCommentToEditByCommentId( $commentView->whichCommentToEdit() ) );
+            $xhtml .= $commentView->editComment( $commentHandler->getCommentToEditByCommentId( $commentView->whichCommentToEdit() ) );
         } else {
             $xhtml .= $commentView->doCommentForm();
         }

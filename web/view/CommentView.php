@@ -33,25 +33,25 @@ class CommentView
      * @return String
      * @parram array of the Comment object
      */
-    public function showAllCommentsForSnippet( $comments ) {
+    public function showAllCommentsForSnippet( $aComments ) {
         $message = "";
-        if (!empty($comments)) {
-            for ($i = 0; $i < count($comments); $i++) {
+        if (!empty($aComments)) {
+            for ($i = 0; $i < count($aComments); $i++) {
                 $message .= "<div>";
-                $message .= "<p>kommentar till snippetId: " . $comments[$i]->getSnippetId() .
+                $message .= "<p>kommentar till snippetId: " . $aComments[$i]->getSnippetId() .
                     "</p>";
-                $message .= "<p>komentarens text: " . $comments[$i]->getCommentText() . "</p>";
-                $message .= "<p> Kommentaren skrivet av: " . $comments[$i]->getUser()->getUserName() . "</p>";
+                $message .= "<p>komentarens text: " . $aComments[$i]->getCommentText() . "</p>";
+                $message .= "<p> Kommentaren skrivet av: " . $aComments[$i]->getUser()->getUserName() . "</p>";
                 $message .= "</div>";
 
                 $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" .
-                            $comments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $comments[$i]->
-                            getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->
+                            $aComments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $aComments[$i]->
+                            getSnippetId() . "&controller=commentcontroller&deleteComment=" . $aComments[$i]->
                             getCommentId() . "'>Radera</a>";
                     
                 $message .= "</br><a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" .
-                            $comments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $comments[$i]->
-                            getSnippetId() . "&controller=commentcontroller&editComment=" . $comments[$i]->
+                            $aComments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $aComments[$i]->
+                            getSnippetId() . "&controller=commentcontroller&editComment=" . $aComments[$i]->
                             getCommentId() . "'>Redigera</a>";
                     
                 $message .= "</br>";
@@ -70,19 +70,19 @@ class CommentView
      * @param Comment object
      * @return String
      */
-    public function editComment( $comment ) {
-        if ($comment)
+    public function editComment( $aComment ) {
+        if ($aComment)
             $form = ("
 					<form action='' method='POST'>
                         <label for='commentText'>Kommentar: </label><br/> 
                         
                         <textarea name='commentText' rows ='5' cols ='40' maxlength='1500'>" .
-                $comment->GetCommentText() . "</textarea>
+                $aComment->GetCommentText() . "</textarea>
                         <br/>
                         <label for='author'>Namn:(man kan ej redigera vem som skrev, det är redan skrivet av någon)</label><br/> 
                         
                         <input type='text' name='commentAuthor' readonly='readonly' value = '" .
-                $comment->GetUser()->GetUserName() . "'/>
+                $aComment->GetUser()->GetUserName() . "'/>
                         <br/>
     					<input type='submit' name='updateComment' value='Skriv'/>
 					</form>
