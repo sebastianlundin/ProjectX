@@ -38,6 +38,7 @@ class SyntaxHighlight {
      */
     public function geshiHighlight($lang, $code) {
         $geshi = new GeSHi($code, $lang);
+        $geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
         return $geshi->parse_code();
     }
 }
