@@ -1,5 +1,9 @@
 <?php
 
+ /**
+ *    OBS! JAG HAR FLYTTAT ALLA CRUD METODER TILL SnippetHandler.php
+ */
+
 	require_once dirname(__FILE__) . '/../object/SnippetObject.php';
 
 	class CRUDSnippetModel
