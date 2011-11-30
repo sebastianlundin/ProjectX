@@ -280,4 +280,3 @@ class FormValidation {
     $x = closetags($snippet);
     print htmlspecialchars($x);
 }
-?>
