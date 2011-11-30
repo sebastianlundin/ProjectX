@@ -1,133 +1,83 @@
 <?php
 require_once 'DbHandler.php';
 require_once 'Comment.php';
+require_once 'User.php';
 
 class CommentHandler
 {
-	//modelen praatr med db
-//    private $m_database = NULL;
-//    
-//	public function __construct(DatabaseConnection $database) 
-//    {
-//		$this->m_database = $database;
-//	}
+
 	private $mDbHandler;
-	
 	public function __construct() {
 		$this->mDbHandler = new DbHandler();
 	}
     
-    public function getAllComments()
-    {
+    /**
+     * CommentHandler::getAllCommentsForSnippet()
+     * 
+     * @return an array with all comments for one snippet
+     * together with data of the User object 
+     */
+    public function getAllCommentsForSnippet($snippetId){
         $commentsArray = array();
-        $this->mDbHandler->__wakeup();
-        
-        if($stmt = $this->mDbHandler->PrepareStatement("SELECT snippetId, commentId, commentText, userId FROM comment"))
-        {
-            $stmt->execute();
-            $stmt->bind_result($snippetId,$commentId,$commentText,$userId);
-            
-            $i = 0;
-            
-            while($stmt->fetch())
-            {
-                $commentsArray[$i]['names'] = array();
-                $commentsArray[$i]['snippetId'] = $snippetId;
-                $commentsArray[$i]['commentId'] = $commentId;
-                $commentsArray[$i]['commentText'] = $commentText;
-                $commentsArray[$i]['userId'] = $userId;
-                $i++;
-            }
-            $stmt->close();
-            
-            $commentCount = count($commentsArray);
-            
-            for($i = 0; $i < $commentCount; $i++)
-            {
-                $userId = $commentsArray[$i]['userId'];
-                $statement = $this->mDbHandler->PrepareStatement("SELECT userName FROM user WHERE userId = ?");
-                $statement->bind_param('i', $userId);
-                $statement->execute();
-                $statement->bind_result($userName);
-                
-                while($statement->fetch())
-                {
-                    $commentsArray[$i]['names'][] = $userName;
-                }
-                $statement->close();
-            }
-        }
-        $this->mDbHandler->Close();
-        return $commentsArray;
-    }
-    
-    public function getAllCommentsForSnippet($snippetId)
-    {
-        $commentsArray = array();
-        $stmt = $this->mDbHandler->PrepareStatement("SELECT snippetId, commentId, commentText, userId FROM comment WHERE snippetId = $snippetId");
+        $sqlQuery = "   SELECT comment.snippetId, comment.commentId, comment.commentText, comment.userId, user.userName
+                        FROM comment
+                        INNER JOIN user ON user.userId = comment.userId
+                        WHERE snippetId = $snippetId
+                        ORDER by comment.commentId DESC
+        ";
+        $stmt = $this->mDbHandler->PrepareStatement($sqlQuery);
         $stmt->execute();
-        $stmt->bind_result($snippetId,$commentId,$commentText,$userId);
+        $stmt->bind_result($snippetId, $commentId, $commentText, $userId, $userName);
         
-        $i = 0;
+        $objects = array();
         
-        while($stmt->fetch())
-        {
-            $commentsArray[$i]['names'] = array();
-            $commentsArray[$i]['snippetId'] = $snippetId;
-            $commentsArray[$i]['commentId'] = $commentId;
-            $commentsArray[$i]['commentText'] = $commentText;
-            $commentsArray[$i]['userId'] = $userId;
-
-            $i++;
+        while($stmt->fetch()){
+            $user = new User($userId, $userName);
+            $comment = new Comment($snippetId, $commentId, $userId, $commentText);
+            $comment->SetUser($user);
+            $objects[] = $comment;
         }
         $stmt->close();
-        $commentCount = count($commentsArray);
         
-        for($i = 0; $i < $commentCount; $i++)
-        {
-            $userId = $commentsArray[$i]['userId'];
-            $statement = $this->mDbHandler->PrepareStatement("SELECT userName FROM user WHERE userId = ?");
-            $statement->bind_param('i', $userId);
-            $statement->execute();
-            $statement->bind_result($userName);
-            
-            while($statement->fetch())
-            {
-                $commentsArray[$i]['names'][] = $userName;
-            }
-            $statement->close();
-        }
-        return $commentsArray;
+        return $objects;
     }
     
+    /**
+     * CommentHandler::addComment()
+     * 
+     * @return true if successful
+     * use it if you want to add a new commet för a snippet
+     * @param snippetId, commentText and userId
+     */
     public function addComment($snippetId, $commentText, $userId)
     {
-        if($stmt = $this->mDbHandler->PrepareStatement("INSERT INTO comment (snippetId, commentText, userId) VALUES(?,?,?)"))
-		{
+        $sqlQuery = "INSERT INTO comment (snippetId, commentText, userId) VALUES(?,?,?)";
+        if($stmt = $this->mDbHandler->PrepareStatement($sqlQuery)){
             $stmt->bind_param("isi", $snippetId,$commentText, $userId);
   			$stmt->execute();
   			$stmt->close();
             return true;
 		}
-        else
-        {
+        else{
             return false;
         }
     }
     
+    /**
+     * CommentHandler::updateComment()
+     * 
+     * @return true if successful
+     * use it if you want to update a comment that exists in the database
+     * @param commentId, commentText
+     */
     public function updateComment($commentId, $commentText)
-    {
-        //använder RealEscapeString för att säkerhetsställa data
-        $commentText = $this->mDbHandler->RealEscapeString($commentText);
-        
-        $SqlStatement = "UPDATE comment SET commentText=? WHERE commentId=?";
+    {   
+        $sqlQuery = "UPDATE comment SET commentText=? WHERE commentId=?";
        
-        if ($stmt = $this->m_database->PrepareStatement($SqlStatement))
-        {              
+        if($stmt = $this->mDbHandler->PrepareStatement($sqlQuery)){              
             $stmt->bind_param("si", $commentText, $commentId);
            
-            if ($stmt->execute())
-            {
+            if ($stmt->execute()){
                     $stmt->close();
                     return true;
             }
@@ -135,72 +85,74 @@ class CommentHandler
         return false;
     }
     
+    /**
+     * CommentHandler::deleteComment()
+     * 
+     * @return true if successful
+     * use it if you want to delete a comment
+     * @param an id of the comment to delete
+     */
     public function deleteComment($commentId)
     {
-        $sqlStatement = "DELETE FROM comment WHERE commentId=?";
+        $sqlQuery = "DELETE FROM comment WHERE commentId=?";
 
-        if ($stmt = $this->mDbHandler->PrepareStatement($sqlStatement))
-        {      
+        if($stmt = $this->mDbHandler->PrepareStatement($sqlQuery)){      
             $stmt->bind_param("i", $commentId);
 
-            if ($stmt->execute())
-            {
-                return true;    
+            if ($stmt->execute()){  
                 $stmt->close();
+                return true;  
             }
         }
         return false;
     }
     
+    /**
+     * CommentHandler::removeAllComments()
+     * 
+     * @return true if successful
+     * taking away all comments from the db
+     */
     public function removeAllComments()
     {
-        $sqlStatement = "DELETE FROM comment";
+        $sqlQuery = "DELETE FROM comment";
 
-        if ($stmt = $this->mDbHandler->PrepareStatement($sqlStatement))
-        {
+        if($stmt = $this->mDbHandler->PrepareStatement($sqlQuery)){
             $stmt->execute();
             $stmt->close();
+            return true;
         }
+        return false;
     }
 
-    public function GetCommentToEditByCommentId($commentId)
+    /**
+     * CommentHandler::getCommentToEditByCommentId()
+     * 
+     * @return Comment object to edit
+     * @param id of the comment you want to edit
+     * 
+     */
+    public function getCommentToEditByCommentId($commentId)
     {
-        $commentsArray = array();
-        $stmt = $this->m_database->PrepareStatement("SELECT snippetId, commentId, commentText, userId FROM comment WHERE commentId = $commentId");
+        $sqlQuery = "   SELECT comment.snippetId, comment.commentId, comment.commentText, comment.userId, user.userName
+                        FROM comment
+                        INNER JOIN user ON user.userId = comment.userId
+                        WHERE commentId = ?
+        ";
+        $stmt = $this->mDbHandler->PrepareStatement($sqlQuery);
+        $stmt->bind_param('i', $commentId);
         $stmt->execute();
-        $stmt->bind_result($snippetId,$commentId,$commentText,$userId);
+        $stmt->bind_result($snippetId, $commentId, $commentText, $userId, $userName);
         
-        $i = 0;
-        
-        while($stmt->fetch())
-        {
-            $commentsArray[$i]['names'] = array();
-            
-            $commentsArray[$i]['snippetId'] = $snippetId;
-            $commentsArray[$i]['commentId'] = $commentId;
-            $commentsArray[$i]['commentText'] = $commentText;
-            $commentsArray[$i]['userId'] = $userId;
+        $comment = null;
 
-            $i++;
+        if($stmt->fetch()){
+            $user = new User($userId, $userName);
+            $comment = new Comment($snippetId, $commentId, $userId, $commentText);
+            $comment->SetUser($user);
         }
         $stmt->close();
         
-        $commentCount = count($commentsArray);
-        
-        for($i = 0; $i < $commentCount; $i++)
-        {
-            $userId = $commentsArray[$i]['userId'];
-            $statement = $this->m_database->PrepareStatement("SELECT userName FROM user WHERE userId = ?");
-            $statement->bind_param('i', $userId);
-            $statement->execute();
-            $statement->bind_result($userName);
-            
-            while($statement->fetch())
-            {
-                $commentsArray[$i]['names'][] = $userName;
-            }
-            $statement->close();
-        }
-        return $commentsArray;
+        return $comment;
     }
 }

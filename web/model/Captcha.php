@@ -114,4 +114,3 @@
 			imagejpeg($img, 'secure.jpg');
 		}
 	}
-?>

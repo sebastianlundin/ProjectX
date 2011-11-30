@@ -26,6 +26,7 @@ class MasterController {
     
     public function doControll() {
         session_start();
+        
         //user tries to add a comment for a single snippet
         if($this->mCommentView->triedToSubmitComment()) {
 			if($this->mCommentView->getCaptchaAnswer() == $_SESSION['security_number']) {
@@ -38,21 +39,31 @@ class MasterController {
             $this->mCommentHandler->deleteComment($this->mCommentView->whichCommentToDelete());
         }
             
-/**
- *         den delen får jag inte att fungera på rätt sätt
- */
-//        if($this->mCommentView->triesToUpdateComment())
-//        {
-//            $this->mCommentHandler->updateComment($this->mCommentView->whichCommentToEdit(), $this->mCommentView->getCommentText());
-//        }
+        if($this->mCommentView->triesToUpdateComment()){
+            $this->mCommentHandler->updateComment($this->mCommentView->whichCommentToEdit(), $this->mCommentView->getCommentText());
+        }
         
-        if(isset($_GET['snippet'])) {
+        if(isset($_GET['snippet'])) 
+        {
             $this->mHtml .= $this->mSnippetView->singleView($this->mSnippetHandler->getSnippetByID($_GET['snippet']));
-            $this->mHtml .= $this->mCommentView->doCommentForm();
-            $this->mHtml .= $this->mCommentView->showAllComments($this->mCommentHandler->getAllCommentsForSnippet($this->mCommentView->whichSnippetToComment()));
-        } else if(isset($_GET['page']) && $_GET['page'] == 'addsnippet') {
+
+            if($this->mCommentView->TriesToEditComment())
+            {
+                $this->mHtml .= $this->mCommentView->EditComment($this->mCommentHandler->getCommentToEditByCommentId($this->mCommentView->whichCommentToEdit()));
+            }
+            else
+            {
+                $this->mHtml .= $this->mCommentView->doCommentForm();
+            }
+
+            $this->mHtml .= $this->mCommentView->showAllCommentsForSnippet($this->mCommentHandler->getAllCommentsForSnippet($this->mCommentView->whichSnippetToComment()));
+        } 
+        else if(isset($_GET['page']) && $_GET['page'] == 'addsnippet') 
+        {
             $this->mHtml .=$this->mListSnippetController->listSnippets();
-        } else {
+        } 
+        else 
+        {
             $this->mHtml = $this->mSnippetView->listView($this->mSnippetHandler->getAllSnippets());
         }
 

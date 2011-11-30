@@ -5,18 +5,33 @@ class User
     private $mUserId = NULL;
     private $mUserName = NULL;
 	
+	/**
+	 * User::__construct()
+	 * 
+	 * @return new User object
+	 */
 	public function __construct($aUserId, $aUserName) 
     {
         $this->mUserId = $aUserId;
         $this->mUserName = $aUserName;
 	}
 
-    public function GetUserId() 
+    /**
+     * User::getUserId()
+     * 
+     * @return int, id of the user
+     */
+    public function getUserId() 
     {
         return $this->mUserId;
     }
 	
-	public function GetUserName() 
+	/**
+	 * User::getUserName()
+	 * 
+	 * @return string, name of the user
+	 */
+	public function getUserName() 
     {
 		return $this->mUserName;
 	}

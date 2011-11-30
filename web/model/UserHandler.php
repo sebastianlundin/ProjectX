@@ -2,24 +2,25 @@
 
 class UserHandler
 {
-	//modelen praatr med db
-    private $m_database = NULL;
-    
-	public function __construct(DatabaseConnection $database) 
-    {
-		$this->m_database = $database;
+	private $mDbHandler;
+	public function __construct() {
+		$this->mDbHandler = new DbHandler();
 	}
 
-    public function GetAllUsers()
+    /**
+     * UserHandler::getAllUsers()
+     * 
+     * @return an array with User objects
+     */
+    public function getAllUsers()
     {
         $userArray = array();
         $result = array();
-        if($stmt = $this->m_database->PrepareStatement("SELECT userId, userName FROM user"))
-        {
+        
+        if($stmt = $this->$mDbHandler->PrepareStatement("SELECT userId, userName FROM user")){
             $stmt->execute();
 			$stmt->bind_result($result[0],$result[1]);
-			while($stmt->fetch())
-			{
+			while($stmt->fetch()){
 			    $resultObject = new TestComment($result[0],$result[1]);
                 $userArray[] = $resultObject;
 			}

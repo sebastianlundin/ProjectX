@@ -2,7 +2,12 @@
 require_once dirname(__FILE__).'/../model/Captcha.php';
 
 class CommentView
-{
+{    
+    /**
+     * CommentView::doCommentForm()
+     * html form for adding a new comment
+     * @return String
+     */
     public function doCommentForm()
     {
 		$captcha = new Captcha();
@@ -23,7 +28,13 @@ class CommentView
 		return $form;
     }
     
-    public function showAllComments($comments)
+    /**
+     * CommentView::showAllCommentsForSnippet()
+     * html that shows all comments taht was added for a snippet
+     * @return String
+     * @parram array of the Comment object
+     */
+    public function showAllCommentsForSnippet($comments)
     {
         $message ="";
         if(!empty($comments))
@@ -31,16 +42,14 @@ class CommentView
             for($i = 0; $i < count($comments); $i++)
             {   
                 $message .= "<div>";
-                $message .= "<p>kommentar till snippetId: ".$comments[$i]['snippetId']."</p>";  
-				$message .= "<p>komentarens text: ".$comments[$i]['commentText']."</p>";
-				//$message .= "<p> userId: ".$comments[$i]['userId']."</p>";
-                $message .= "<p> Kommentaren skrivet av: ".$comments[$i]['names'][0]."</p>";
+                $message .=     "<p>kommentar till snippetId: ".$comments[$i]->getSnippetId()."</p>";  
+				$message .=     "<p>komentarens text: ".$comments[$i]->getCommentText()."</p>";
+                $message .=     "<p> Kommentaren skrivet av: ".$comments[$i]->getUser()->getUserName() ."</p>";
                 $message .= "</div>";
                 
-                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [".$comments[$i]['commentId']."]')\" href='index.php?snippet=".$comments[$i]['snippetId']."&controller=commentcontroller&deleteComment=".$comments[$i]['commentId']."'>Radera</a>";
+                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [".$comments[$i]->getCommentId()."]')\" href='index.php?snippet=".$comments[$i]->getSnippetId()."&controller=commentcontroller&deleteComment=".$comments[$i]->getCommentId()."'>Radera</a>";
+                $message .= "</br><a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [".$comments[$i]->getCommentId()."]')\" href='index.php?snippet=".$comments[$i]->getSnippetId()."&controller=commentcontroller&editComment=".$comments[$i]->getCommentId()."'>Redigera</a>";
                 $message .= "</br>";
-                //nästa rad kommer användas vid editering
-                //$message .= "<a href='index.php?controller=commentcontroller&editComment=".$comments[$i]['commentId']."'>Redigera</a>";
 				$message .= "<hr>";
             }  
         }
@@ -51,33 +60,44 @@ class CommentView
         
         return $message;
     }
-/**
- * jag får inte den att fungera rätt
- */
-//    public function EditComment($comment)
-//    {
-//        $form = ("
-//					<form action='' method='POST'>
-//                        <label for='commentText'>Kommentar: </label><br/> 
-//                        
-//                        <textarea name='commentText' rows ='5' cols ='40' maxlength='1500' value='".$comment[0]['commentText']."'></textarea>
-//                        <br/>
-//                        <label for='author'>Namn:(man kan ej redigera vem som skrev, det är redan skrivet av någon)</label><br/> 
-//                        
-//                        <input type='text' name='commentAuthor' readonly='readonly' value = '".$comment."'/>                        
-//                        <br/>
-//    					<input type='submit' name='updateComment' value='Skriv'/>
-//					</form>
-//			    ");
-//		return $form;
-//    }
+
+    /**
+     * CommentView::editComment()
+     * html taht allows to edit a comment text
+     * @param Comment object
+     * @return String
+     */
     public function editComment($comment)
     {
-        $mess = "<textarea name='commentText' rows ='5' cols ='40' maxlength='1500' value='".$comment['commentText'][0]."'></textarea>";
-        $mess = "DUPA";
-        return $mess;
+        if($comment)
+            $form = ("
+					<form action='' method='POST'>
+                        <label for='commentText'>Kommentar: </label><br/> 
+                        
+                        <textarea name='commentText' rows ='5' cols ='40' maxlength='1500'>" . $comment->GetCommentText() . "</textarea>
+                        <br/>
+                        <label for='author'>Namn:(man kan ej redigera vem som skrev, det är redan skrivet av någon)</label><br/> 
+                        
+                        <input type='text' name='commentAuthor' readonly='readonly' value = '" . $comment->GetUser()->GetUserName() . "'/>
+                        <br/>
+    					<input type='submit' name='updateComment' value='Skriv'/>
+					</form>
+			    ");
+        else
+            $form = "Kommentaren du försöker redigera finns inte!";
+		return $form;
     }
 
+
+/**
+ * -----------------------------------EVENTS
+ */
+
+    /**
+     * CommentView::triedToSubmitComment()
+     * 
+     * @return true if user is trying to add a new comment
+     */
     public function triedToSubmitComment()
     {
         if(isset($_POST['submitComment']))
@@ -87,6 +107,11 @@ class CommentView
         else return false;
     }
 
+    /**
+     * CommentView::getCommentText()
+     * 
+     * @return String that is the text of the comment
+     */
     public function getCommentText()
     {
         if(isset($_POST['commentText']))
@@ -96,6 +121,11 @@ class CommentView
         else return false;
     }
     
+    /**
+     * CommentView::getAuthorId()
+     * 
+     * @return int, id of the User
+     */
     public function getAuthorId()
     {
         if(isset($_POST['commentAuthor']))
@@ -105,6 +135,11 @@ class CommentView
         else return false;
     }
 	
+	/**
+	 * CommentView::getCaptchaAnswer()
+	 * 
+	 * @return 
+	 */
 	public function getCaptchaAnswer()
     {
         if(isset($_POST['secure']))
@@ -114,6 +149,11 @@ class CommentView
         else return false;
     }
     
+    /**
+     * CommentView::triesToRemoveComment()
+     * 
+     * @return true if user is trying to delete a comment
+     */
     public function triesToRemoveComment() 
 	{
 		if (isset($_GET["deleteComment"])) 
@@ -122,6 +162,11 @@ class CommentView
 		}
 		return false;
 	}
+    /**
+     * CommentView::whichCommentToDelete()
+     * 
+     * @return int, id of the comment that is going to be deleted
+     */
     public function whichCommentToDelete()
 	{
 		if (isset($_GET["deleteComment"]))
@@ -131,6 +176,11 @@ class CommentView
 		return false;
 	}
     
+    /**
+     * CommentView::triesToEditComment()
+     * 
+     * @return true if the user is trying to edit a comment
+     */
     public function triesToEditComment() 
 	{
 		if (isset($_GET["editComment"])) 
@@ -140,6 +190,11 @@ class CommentView
 		return false;
 	}
 
+	/**
+	 * CommentView::whichCommentToEdit()
+	 * 
+	 * @return int, id of the comment that user wants to edit
+	 */
 	public function whichCommentToEdit()
 	 {
 		if (isset($_GET["editComment"]))
@@ -149,6 +204,11 @@ class CommentView
 		return false;
 	}
 	
+	/**
+	 * CommentView::triesToUpdateComment()
+	 * 
+	 * @return true if user wants to update comment
+	 */
 	public function triesToUpdateComment()
 	{
 		if (isset($_POST["updateComment"]))
@@ -158,6 +218,11 @@ class CommentView
 		return false;
 	}
     
+    /**
+     * CommentView::whichSnippetToComment()
+     * 
+     * @return int, id of the snippet for which user wants to add a new comment
+     */
     public function whichSnippetToComment()
     {
         if (isset($_GET["snippet"]))
