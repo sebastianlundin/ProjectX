@@ -28,16 +28,16 @@ class Functions {
     /**
      * <p>View website for supported languages.</p>
      * <p>http://qbnz.com/highlighter/</p>
-	 * <p>Usage:</p>
-	 * <code>
-	 * $sh = new Syntax_highlight();
-	 * $highlightedCode = $sh->geshiHighlight("php", $code));
-	 * </code>
+     * <p>Usage:</p>
+     * <code>
+     * $sh = new Syntax_highlight();
+     * $highlightedCode = $sh->geshiHighlight("php", $code));
+     * </code>
      *
      * @param  string $lang 
      * @param  string $code 
      * @return string $highlightedCode 
-	 * @access public
+     * @access public
      */
     public function geshiHighlight($lang, $code) {
 
@@ -50,7 +50,7 @@ class Functions {
      *
      * @param  string $snippet 
      * @return string $snippet formatted code 
-	 * @access public
+     * @access public
      */
     public function stripSnippetString($snippet) {
 
@@ -70,7 +70,7 @@ class Functions {
      *
      * @param  string $str String you want to check
      * @return int    $maxlenght 
-	 * @access public
+     * @access public
      */
     public function valMaxLenght($str, $maxlenght) {
 
@@ -86,7 +86,7 @@ class Functions {
      *
      * @param  string $value 
      * @return bool   $validhost 
-	 * @access public
+     * @access public
      */
     public function valUrl($value) {
 
