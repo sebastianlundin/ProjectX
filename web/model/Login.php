@@ -61,4 +61,3 @@ class Auth {
         setcookie("auth_password", "", time() - 3600, "/", $this->domain);
     }
 }
-?>

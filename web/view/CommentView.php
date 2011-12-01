@@ -1,169 +1,301 @@
 <?php
-require_once dirname(__FILE__).'/../model/Captcha.php';
+require_once dirname(__FILE__).'/../model/SyntaxHighlight.php';
 
-class CommentView
-{
-    public function doCommentForm()
-    {
-		$captcha = new Captcha();
-        $form = ("
-					<form action='' method='POST'>
-                        <label for='commentText'>Kommentar: </label><br/> 
-                        <textarea name='commentText' rows = '5' cols ='40' maxlength='1500'></textarea>
-                        <br/>
-                        <label for='author'>Namn:(ange siffran 6 så länge)</label><br/> 
-                        <input type='text' name='commentAuthor' value = ''/>                        
-                        <br/>
-						<img src='secure.jpg' alt='Captcha image'/><br/>
-						<label for='secure'>Ange svaret till bilden:</label><br/>
-						<input type='text' name='secure' value='' /><br/>
-    					<input type='submit' name='submitComment' value='Skriv'/>
-					</form>
-			    ");
-		return $form;
+class SnippetView {
+    
+    /**
+     * return html code for a single snippet
+     * @param Snippet a snippet Object
+     * @return String
+     */
+     //Todo: This function should also take an argument ($asnippet_language) ex php, javascript or css
+     //This variable is used by syntax highlighter.
+    public function singleView($aSnippet) {
+        $sh = new SyntaxHighlight();
+        
+        $html =  "<h2>".$aSnippet->getTitle()."</h2>
+        <div class='snippet-desc'>
+            <p>".$aSnippet->getDesc()."</p> 
+        </div>
+        <div class='snippet-code'>
+            <code>".$sh->geshiHighlight('css', $aSnippet->getCode())."</code>
+        </div>
+        <div class='snippet-author'>
+            <span>".$aSnippet->getAuthor()."</span>
+        </div>";
+        
+        return $html;       
     }
     
-    public function showAllComments($comments)
-    {
-        $message ="";
-        if(!empty($comments))
-        {
-            for($i = 0; $i < count($comments); $i++)
-            {   
-                $message .= "<div>";
-                $message .= "<p>kommentar till snippetId: ".$comments[$i]['snippetId']."</p>";  
-				$message .= "<p>komentarens text: ".$comments[$i]['commentText']."</p>";
-				//$message .= "<p> userId: ".$comments[$i]['userId']."</p>";
-                $message .= "<p> Kommentaren skrivet av: ".$comments[$i]['names'][0]."</p>";
-                $message .= "</div>";
-                
-                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [".$comments[$i]['commentId']."]')\" href='index.php?snippet=".$comments[$i]['snippetId']."&controller=commentcontroller&deleteComment=".$comments[$i]['commentId']."'>Radera</a>";
-                $message .= "</br>";
-                //nästa rad kommer användas vid editering
-                //$message .= "<a href='index.php?controller=commentcontroller&editComment=".$comments[$i]['commentId']."'>Redigera</a>";
-				$message .= "<hr>";
-            }  
-        }
-        else
-        {
-            $message .= "<br/>Det finns inga kommentarer för denna snippet.";
+    /**
+     * Transform an array of snippets to html-code
+     * @param array $aSnippets is an array of snippets
+     * @return string
+     */
+    public function listView($aSnippets) {
+        $html = '';
+            
+        foreach ($aSnippets as $snippet) {
+            $html .= '
+                <div class="snippet-list-item">
+                    <div class="snippet-title">
+                        <h3><a href="?snippet='.$snippet->getID().'">' . $snippet->getTitle() . '</a></h3>
+                    </div>
+                    <div class="snippet-description">
+                        <p>' . $snippet->getDesc() . '</p>
+                    </div>
+                    <div class="snippet-author">
+                        <p>Posted by: <i>' . $snippet->getAuthor() . '</i></p>
+                    </div>
+                </div>
+            ';
         }
         
-        return $message;
+        return $html;
     }
-/**
- * jag får inte den att fungera rätt
- */
-//    public function EditComment($comment)
-//    {
-//        $form = ("
-//					<form action='' method='POST'>
-//                        <label for='commentText'>Kommentar: </label><br/> 
-//                        
-//                        <textarea name='commentText' rows ='5' cols ='40' maxlength='1500' value='".$comment[0]['commentText']."'></textarea>
-//                        <br/>
-//                        <label for='author'>Namn:(man kan ej redigera vem som skrev, det är redan skrivet av någon)</label><br/> 
-//                        
-//                        <input type='text' name='commentAuthor' readonly='readonly' value = '".$comment."'/>                        
-//                        <br/>
-//    					<input type='submit' name='updateComment' value='Skriv'/>
-//					</form>
-//			    ");
-//		return $form;
-//    }
-    public function editComment($comment)
-    {
-        $mess = "<textarea name='commentText' rows ='5' cols ='40' maxlength='1500' value='".$comment['commentText'][0]."'></textarea>";
-        $mess = "DUPA";
-        return $mess;
+    public function createSnippet() {
+        $view =
+        '
+            <div id="createSnippetContainer">
+                <form action="" method="post">
+                    <div id="createSnippetNameDiv">
+                        <p>Title:</p>
+                        <input type="text" name="snippetTitle" id="createSnippetNameInput" />
+                        <p>Description:</p>
+                        <input type="text" name="snippetDescription" id="createSnippetNameInput" />
+                        <p>Language:</p>
+                        <input type="text" name="snippetLanguage" id="createSnippetNameInput" />
+                    </div>
+
+                    <div id="createSnippetCodeDiv">
+                        <p>Snippet:</p>
+                        <textarea cols="50" rows="20" name="createSnippetCodeInput" id="createSnippetCodeInput"></textarea>
+                    </div>
+
+                    <div id="createSnippetButton">
+                        <input type="submit" name="createSnippetSaveButton" id="createSnippetSaveButton" value="Create snippet" />
+                    </div>
+                </form>
+            </div>
+        ';
+        return $view;
     }
 
-    public function triedToSubmitComment()
-    {
-        if(isset($_POST['submitComment']))
-        {
+    public function listSnippets($aSnippets) {
+        $view = 
+        '
+            <div id="listSnippetsButtons">
+                <form action="" method="post">
+                    <input type="submit" name="gotoCreateSnippetViewButton" id="gotoCreateSnippetViewButton" value="Create snippet" />
+                </form>
+            </div>
+            
+            <div id="listSnippetsTableDiv">
+                <table id="listSnippetsTable">
+                    <thead>
+                        <th>Name:</th>
+                        <th>&nbsp;</th>
+                    </thead>
+                    <tbody>
+        ';
+        foreach ($aSnippets as &$snippets) {
+            $view .= 
+            '           
+                        <form action="" method="post">
+                            <tr>
+                                <td><a href="?chsnippet='.$snippets->getSnippetID().'">'.$snippets->getSnippetName().'</a></td>
+                                <td><input type="hidden" name="snippetID" value="'.$snippets->getSnippetID().'" /><input type="submit" name="deleteSnippetButton" id="deleteSnippetButton" value="Delete snippet" /></td>
+                            <tr>
+                        </form>
+            ';
+        }
+        $view .=
+        '
+                    </tbody>
+                </table>
+            </div>
+        ';
+        return $view;
+    }
+
+    public function updateSnippet($aSnippet) {
+        $view =
+        '
+            <div id="updateSnippetContainer">
+                <form action="" method="post">
+                    <div id="updateSnippetNameDiv">
+                        <p>Name:</p>
+                        <input type="text" name="updateSnippetNameInput" id="updateSnippetNameInput" value="'.$aSnippet[0]->getSnippetName().'" /> 
+                    </div>
+
+                    <div id="updateSnippetCodeDiv">
+                        <p>Snippet:</p>
+                        <textarea cols="50" rows="50" name="updateSnippetCodeInput" id="updateSnippetCodeInput">'.$aSnippet[0]->getSnippetCode().'</textarea>
+                    </div>
+
+                    <div id="updateSnippetButton">
+                        <input type="hidden" name="updateSnippetID" value="'.$aSnippet[0]->getSnippetID().'" />
+                        <input type="submit" name="updateSnippetUpdateButton" id="updateSnippetUpdateButton" value="Update snippet" />
+                    </div>
+                </form>
+            </div>
+        ';
+        return $view;
+    }
+    public function triedToCreateSnippet() {
+        if (isset($_POST['createSnippetSaveButton'])) {
             return true;
         }
-        else return false;
+        else{
+            return false;
+        }
     }
 
-    public function getCommentText()
-    {
-        if(isset($_POST['commentText']))
-        {
-            return trim($_POST['commentText']);
+    public function getCreateSnippetName() {
+        $snippetName = $_POST["createSnippetNameInput"];
+        if ($snippetName == null) {
+            return null;
         }
-        else return false;
-    }
-    
-    public function getAuthorId()
-    {
-        if(isset($_POST['commentAuthor']))
-        {
-            return trim($_POST['commentAuthor']);
+        else {
+            return $snippetName;
         }
-        else return false;
+        return false;
     }
-	
-	public function getCaptchaAnswer()
-    {
-        if(isset($_POST['secure']))
-        {
-            return trim($_POST['secure']);
-        }
-        else return false;
-    }
-    
-    public function triesToRemoveComment() 
-	{
-		if (isset($_GET["deleteComment"])) 
-		{
-			return true;
-		}
-		return false;
-	}
-    public function whichCommentToDelete()
-	{
-		if (isset($_GET["deleteComment"]))
-	 	{
-			return urldecode($_GET["deleteComment"]);
-		}
-		return false;
-	}
-    
-    public function triesToEditComment() 
-	{
-		if (isset($_GET["editComment"])) 
-		{
-			return true;
-		}
-		return false;
-	}
 
-	public function whichCommentToEdit()
-	 {
-		if (isset($_GET["editComment"]))
-	 	{
-			return urldecode($_GET["editComment"]);
-		}
-		return false;
-	}
-	
-	public function triesToUpdateComment()
-	{
-		if (isset($_POST["updateComment"]))
-		{
-			return true;
-		}
-		return false;
-	}
     
-    public function whichSnippetToComment()
-    {
-        if (isset($_GET["snippet"]))
-	 	{
-			return urldecode($_GET["snippet"]);
-		}
-		return false;
+    public function getSnippetTitle() {
+        $snippetName = $_POST["snippetTitle"];
+        if ($snippetName == null) {
+            return null;
+        }
+        else {
+            return $snippetName;
+        }
+        return false;
     }
+    
+    public function getSnippetDescription() {
+        $snippetName = $_POST["snippetDescription"];
+        if ($snippetName == null) {
+            return null;
+        }
+        else {
+            return $snippetName;
+        }
+        return false;
+    }
+    
+    public function getSnippetLanguage() {
+        $snippetName = $_POST["snippetLanguage"];
+        if ($snippetName == null) {
+            return null;
+        }
+        else {
+            return $snippetName;
+        }
+        return false;
+    }
+    
+    public function getCreateSnippetCode() {
+        $snippetCode = $_POST["createSnippetCodeInput"];
+        if ($snippetCode == null) {
+            return null;
+        }
+        else {
+            return $snippetCode;
+        }
+        return false;
+    }
+    
+    public function triedToChangeSnippet() {
+        if (isset($_GET["chsnippet"])) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function getSnippetIDLink() {
+        $snippetID = $_GET["chsnippet"];
+        if ($snippetID == null) {
+            return null;
+        }
+        else {
+            return $snippetID;
+        }
+        return false;
+    }           
+
+    public function triedToSaveSnippet() {
+        if (isset($_POST['updateSnippetUpdateButton'])) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }   
+
+    public function getUpdateSnippetName() {
+        $snippetName = $_POST["updateSnippetNameInput"];
+        if ($snippetName == null) {
+            return null;
+        }
+        else {
+            return $snippetName;
+        }
+        return false;
+    }   
+
+    public function getUpdateSnippetCode() {
+        $snippetCode = $_POST["updateSnippetCodeInput"];
+        if ($snippetCode == null) {
+            return null;
+        }
+        else {
+            return $snippetCode;
+        }
+        return false;
+    }
+
+    public function getUpdateSnippetID() {
+        $snippetID = $_POST["updateSnippetID"];
+        if ($snippetID == null) {
+            return null;
+        }
+        else {
+            return $snippetID;
+        }
+        return false;
+    }   
+
+    public function triedToDeleteSnippet() {
+        if (isset($_POST['deleteSnippetButton'])) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function getSnippetID() {
+        $snippetID = $_POST["snippetID"];
+        if ($snippetID == null) {
+            return null;
+        }
+        else {
+            return $snippetID;
+        }
+        return false;
+    }       
+
+    public function triedToGotoCreateView() {
+        if (isset($_POST['gotoCreateSnippetViewButton'])) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
 }

@@ -1,31 +1,36 @@
 <?php
-/**
- * 
- */
-class CommentController  
+
+class CommentController
 {
-    private $m_database = NULL;
-    
-    public function __construct(DatabaseConnection $database)
-    {
-      $this->m_database = $database;
+    private $m_database = null;
+
+    public function __construct( DatabaseConnection $aDatabase ) {
+        $this->m_database = $aDatabase;
     }
-	
-	
-	public function DoControll()
-    {
+
+    public function DoControll() {
         $xhtml = "";
-        
-        $commentHandler = new CommentHandler($this->m_database);
+
+        $commentHandler = new CommentHandler( $this->m_database );
         $commentView = new CommentView();
-        
-        if($commentView->TriesToEditComment())
-        {
-            $xhtml .= $commentView->EditComment($commentHandler->GetCommentToEditByCommentId($commentView->WhichCommentToEdit()));
+
+        if ( $commentView->triesToEditComment() ) {
+            $xhtml .= $commentView->editComment( $commentHandler->getCommentToEditByCommentId( $commentView->whichCommentToEdit() ) );
+        } else {
+            $xhtml .= $commentView->doCommentForm();
         }
-        else
-        {
-            $xhtml .= $commentView->DoCommentForm();
+
+        if ( $commentView->triedToSubmitComment() == true ) {
+            //Denna if-sats är tillagd för att kontrollera Captcha-svaret
+            if ( $commentView->GetCaptchaAnswer() == $_SESSION['security_number'] ) {
+                //adderar inlägget till databasen, filtruje ev. html taggar+RealEscapeString innan jag sparar i db
+                $text = $commentView->getCommentText();
+                $text = $this->m_database->RealEscapeString( $text );
+                $author = $commentView->getAuthorId();
+                $author = $this->m_database->RealEscapeString( $author );
+                $snippetId = $commentView->whichSnippetToComment();
+                $commentHandler->addComment( $snippetId, $text, $author );
+            }
         }
         
         if($commentView->TriedToSubmitComment() == true)
@@ -42,26 +47,22 @@ class CommentController
 				*/
 				$commentHandler->AddComment(1, $text, $author);
 		   }        
+        /**
+         *          sedan får man kolla med rättigheter så att man kan ta bort en kommentar, antingen är man:
+         *           -admin
+         *           -author
+         *           -kommentaren har fått många(hur måånga?) röster ner
+         */
+        if ( $commentView->triesToRemoveComment() ) {
+            $commentHandler->deleteComment( $commentView->whichCommentToDelete() );
         }
-/**
-*          sedan får man kolla med rättigheter så att man kan ta bort en kommentar, antingen är man:
-*           -admin
-*           -author
-*           -kommentaren har fått många(hur måånga?) röster ner
-*/      
-        if($commentView->TriesToRemoveComment())
-        {
-            $commentHandler->DeleteComment($commentView->WhichCommentToDelete());
+
+        if ( $commentView->triesToUpdateComment() ) {
+            $commentHandler->updateComment( $commentView->whichCommentToEdit(), $commentView->getCommentText() );
         }
-        
-        if($commentView->TriesToUpdateComment())
-        {
-            $commentHandler->UpdateComment($commentView->WhichCommentToEdit(),$commentView->GetCommentText());
-        }
-        
-        $xhtml .= $commentView->ShowAllComments($commentHandler->GetAllCommentsForSnippet($commentView->WhichSnippetToComment()));
-        //$xhtml .= $commentView->ShowAllComments($commentHandler->GetAllComments());
+
+        $xhtml .= $commentView->showAllComments( $commentHandler->getAllCommentsForSnippet( $commentView->whichSnippetToComment() ) );
         return $xhtml;
     }
-	
+
 }
