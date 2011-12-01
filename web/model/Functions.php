@@ -40,7 +40,7 @@ class Functions
      * @return string $highlightedCode
      * @access public
      */
-    public function geshiHighlight($lang, $code)
+    public function geshiHighlight($code, $lang)
     {
 
         $geshi = new GeSHi($code, $lang);

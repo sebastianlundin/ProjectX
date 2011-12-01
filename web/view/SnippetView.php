@@ -19,7 +19,7 @@ class SnippetView
 			<p>" . $snippet->getDesc() . "</p>	
 		</div>
 		<div class='snippet-code'>
-			<code>" . $sh->geshiHighlight($snippet->getLanguage(), $snippet->getCode()) . "</code>
+			<code>" . $sh->geshiHighlight($snippet->getCode(), $snippet->getLanguage()) . "</code>
 		</div>
 		<div class='snippet-author'>
 			<span>" . $snippet->getAuthor() . "</span>
