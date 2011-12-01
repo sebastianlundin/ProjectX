@@ -1,5 +1,5 @@
 <?php
-//require_once dirname(__FILE__).'/../model/Functions.php';
+require_once dirname(__FILE__).'/../model/Functions.php';
 
 class SnippetView {
 	
@@ -11,15 +11,15 @@ class SnippetView {
 	 //Todo: This function should also take an argument ($asnippet_language) ex php, javascript or css
 	 //This variable is used by syntax highlighter.
 	public function singleView($aSnippet) {
-		//$sh = new SyntaxHighlight();
-        //<code>".$sh->geshiHighlight('css', $aSnippet->getCode())."</code>
+		
+        $sh = new Functions();
 		
 		$html =  "<h2>".$aSnippet->getTitle()."</h2>
 		<div class='snippet-desc'>
 			<p>".$aSnippet->getDesc()."</p>	
 		</div>
 		<div class='snippet-code'>
-			<code>". $aSnippet->getCode()."</code>
+			<code>".$sh->geshiHighlight('css', $aSnippet->getCode())."</code>
 		</div>
 		<div class='snippet-author'>
 			<span>".$aSnippet->getAuthor()."</span>
