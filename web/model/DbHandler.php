@@ -2,45 +2,49 @@
 
 require_once 'settings.php';
 
-class DbHandler {
+class DbHandler
+{
 
     private $mMySqliObject = null;
     private $mSettings = null;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->connect();
     }
 
-    public function connect() {
+    public function connect()
+    {
         $this->mSettings = new Settings();
-        $this->mMySqliObject = new mysqli($this->mSettings->GetHost(),
-            $this->mSettings->GetUsername(),
-            $this->mSettings->GetPassword(),
-            $this->mSettings->GetDbName());
-            
+        $this->mMySqliObject = new mysqli($this->mSettings->GetHost(), $this->mSettings->GetUsername(), $this->mSettings->GetPassword(), $this->mSettings->GetDbName());
+
         $this->mMySqliObject->set_charset("utf8");
 
         if (mysqli_connect_errno()) {
             exit();
-            return false;           
+            return false;
         }
         return true;
     }
-    
-    public function __wakeup() {
+
+    public function __wakeup()
+    {
         $this->connect();
     }
 
-    public function close() {
+    public function close()
+    {
         $this->mMySqliObject->Close();
     }
-    
-    public function prepareStatement($aSqlStatement) {
+
+    public function prepareStatement($aSqlStatement)
+    {
         return $this->mMySqliObject->prepare($aSqlStatement);
     }
-    
-    public function error() {
+
+    public function error()
+    {
         return $this->mMySqliObject->error;
     }
-    
+
 }
