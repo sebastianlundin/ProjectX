@@ -1,45 +1,47 @@
 <?php
-require_once dirname(__FILE__).'/../model/SyntaxHighlight.php';
+require_once dirname(__FILE__) . '/../model/Functions.php';
 
-class SnippetView {
-	
-	/**
-	 * return html code for a single snippet
-	 * @param Snippet a snippet Object
-	 * @return String
-	 */
-	 //Todo: This function should also take an argument ($asnippet_language) ex php, javascript or css
-	 //This variable is used by syntax highlighter.
-	public function singleView($aSnippet) {
-		$sh = new SyntaxHighlight();
-		
-		$html =  "<h2>".$aSnippet->getTitle()."</h2>
+class SnippetView
+{
+
+    /**
+     * return html code for a single snippet
+     * @param Snippet a snippet Object
+     * @return String
+     */
+    public function singleView($snippet)
+    {
+
+        $sh = new Functions();
+
+        $html = "<h2>" . $snippet->getTitle() . "</h2>
 		<div class='snippet-desc'>
-			<p>".$aSnippet->getDesc()."</p>	
+			<p>" . $snippet->getDesc() . "</p>	
 		</div>
 		<div class='snippet-code'>
-			<code>".$sh->geshiHighlight('css', $aSnippet->getCode())."</code>
+			<code>" . $sh->geshiHighlight($snippet->getCode(), $snippet->getLanguage()) . "</code>
 		</div>
 		<div class='snippet-author'>
-			<span>".$aSnippet->getAuthor()."</span>
+			<span>" . $snippet->getAuthor() . "</span>
 		</div>";
-		
-		return $html;		
-	}
-    
+
+        return $html;
+    }
+
     /**
      * Transform an array of snippets to html-code
      * @param array $aSnippets is an array of snippets
      * @return string
      */
-    public function listView($aSnippets) {
+    public function listView($snippets)
+    {
         $html = '';
-            
-        foreach ($aSnippets as $snippet) {
+
+        foreach ($snippets as $snippet) {
             $html .= '
                 <div class="snippet-list-item">
                     <div class="snippet-title">
-                        <h3><a href="?snippet='.$snippet->getID().'">' . $snippet->getTitle() . '</a></h3>
+                        <h3><a href="?snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
                     </div>
                     <div class="snippet-description">
                         <p>' . $snippet->getDesc() . '</p>
@@ -50,12 +52,13 @@ class SnippetView {
                 </div>
             ';
         }
-        
+
         return $html;
     }
-	public function createSnippet() {
-		$view =
-		'
+
+    public function createSnippet()
+    {
+        $view = '
 			<div id="createSnippetContainer">
 				<form action="" method="post">
 					<div id="createSnippetNameDiv">
@@ -78,12 +81,12 @@ class SnippetView {
 				</form>
 			</div>
 		';
-		return $view;
-	}
+        return $view;
+    }
 
-	public function listSnippets($aSnippets) {
-		$view = 
-		'
+    public function listSnippets($snippets)
+    {
+        $view = '
 			<div id="listSnippetsButtons">
 				<form action="" method="post">
 					<input type="submit" name="gotoCreateSnippetViewButton" id="gotoCreateSnippetViewButton" value="Create snippet" />
@@ -98,204 +101,202 @@ class SnippetView {
 					</thead>
 					<tbody>
 		';
-		foreach ($aSnippets as &$snippets) {
-			$view .= 
-			'			
+        foreach ($snippets as &$snippets) {
+            $view .= '			
 						<form action="" method="post">
 							<tr>
-								<td><a href="?chsnippet='.$snippets->getSnippetID().'">'.$snippets->getSnippetName().'</a></td>
-								<td><input type="hidden" name="snippetID" value="'.$snippets->getSnippetID().'" /><input type="submit" name="deleteSnippetButton" id="deleteSnippetButton" value="Delete snippet" /></td>
+								<td><a href="?chsnippet=' . $snippets->getSnippetID() . '">' . $snippets->getSnippetName() . '</a></td>
+								<td><input type="hidden" name="snippetID" value="' . $snippets->getSnippetID() . '" /><input type="submit" name="deleteSnippetButton" id="deleteSnippetButton" value="Delete snippet" /></td>
 							<tr>
 						</form>
 			';
-		}
-		$view .=
-		'
+        }
+        $view .= '
 					</tbody>
 				</table>
 			</div>
 		';
-		return $view;
-	}
+        return $view;
+    }
 
-	public function updateSnippet($aSnippet) {
-		$view =
-		'
+    public function updateSnippet($snippet)
+    {
+        $view = '
 			<div id="updateSnippetContainer">
 				<form action="" method="post">
 					<div id="updateSnippetNameDiv">
 						<p>Name:</p>
-						<input type="text" name="updateSnippetNameInput" id="updateSnippetNameInput" value="'.$aSnippet[0]->getSnippetName().'" /> 
+						<input type="text" name="updateSnippetNameInput" id="updateSnippetNameInput" value="' . $snippet[0]->getSnippetName() . '" /> 
 					</div>
 
 					<div id="updateSnippetCodeDiv">
 						<p>Snippet:</p>
-						<textarea cols="50" rows="50" name="updateSnippetCodeInput" id="updateSnippetCodeInput">'.$aSnippet[0]->getSnippetCode().'</textarea>
+						<textarea cols="50" rows="50" name="updateSnippetCodeInput" id="updateSnippetCodeInput">' . $snippet[0]->getSnippetCode() . '</textarea>
 					</div>
 
 					<div id="updateSnippetButton">
-						<input type="hidden" name="updateSnippetID" value="'.$aSnippet[0]->getSnippetID().'" />
+						<input type="hidden" name="updateSnippetID" value="' . $snippet[0]->getSnippetID() . '" />
 						<input type="submit" name="updateSnippetUpdateButton" id="updateSnippetUpdateButton" value="Update snippet" />
 					</div>
 				</form>
 			</div>
 		';
-		return $view;
-	}
-    public function triedToCreateSnippet() {
-		if (isset($_POST['createSnippetSaveButton'])) {
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
+        return $view;
+    }
 
-	public function getCreateSnippetName() {
-		$snippetName = $_POST["createSnippetNameInput"];
-		if ($snippetName == null) {
-			return null;
-		}
-		else {
-			return $snippetName;
-		}
-		return false;
-	}
+    public function triedToCreateSnippet()
+    {
+        if (isset($_POST['createSnippetSaveButton'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	
-    public function getSnippetTitle() {
+    public function getCreateSnippetName()
+    {
+        $snippetName = $_POST["createSnippetNameInput"];
+        if ($snippetName == null) {
+            return null;
+        } else {
+            return $snippetName;
+        }
+        return false;
+    }
+
+    public function getSnippetTitle()
+    {
         $snippetName = $_POST["snippetTitle"];
         if ($snippetName == null) {
             return null;
-        }
-        else {
+        } else {
             return $snippetName;
         }
         return false;
     }
-    
-    public function getSnippetDescription() {
+
+    public function getSnippetDescription()
+    {
         $snippetName = $_POST["snippetDescription"];
         if ($snippetName == null) {
             return null;
-        }
-        else {
+        } else {
             return $snippetName;
         }
         return false;
     }
-    
-    public function getSnippetLanguage() {
+
+    public function getSnippetLanguage()
+    {
         $snippetName = $_POST["snippetLanguage"];
         if ($snippetName == null) {
             return null;
-        }
-        else {
+        } else {
             return $snippetName;
         }
         return false;
     }
-    
-	public function getCreateSnippetCode() {
-		$snippetCode = $_POST["createSnippetCodeInput"];
-		if ($snippetCode == null) {
-			return null;
-		}
-		else {
-			return $snippetCode;
-		}
-		return false;
-	}
-	
-	public function triedToChangeSnippet() {
-		if (isset($_GET["chsnippet"])) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 
-	public function getSnippetIDLink() {
-		$snippetID = $_GET["chsnippet"];
-		if ($snippetID == null) {
-			return null;
-		}
-		else {
-			return $snippetID;
-		}
-		return false;
-	}			
+    public function getCreateSnippetCode()
+    {
+        $snippetCode = $_POST["createSnippetCodeInput"];
+        if ($snippetCode == null) {
+            return null;
+        } else {
+            return $snippetCode;
+        }
+        return false;
+    }
 
-	public function triedToSaveSnippet() {
-		if (isset($_POST['updateSnippetUpdateButton'])) {
-			return true;
-		}
-		else{
-			return false;
-		}
-	}	
+    public function triedToChangeSnippet()
+    {
+        if (isset($_GET["chsnippet"])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function getUpdateSnippetName() {
-		$snippetName = $_POST["updateSnippetNameInput"];
-		if ($snippetName == null) {
-			return null;
-		}
-		else {
-			return $snippetName;
-		}
-		return false;
-	}	
+    public function getSnippetIDLink()
+    {
+        $snippetID = $_GET["chsnippet"];
+        if ($snippetID == null) {
+            return null;
+        } else {
+            return $snippetID;
+        }
+        return false;
+    }
 
-	public function getUpdateSnippetCode() {
-		$snippetCode = $_POST["updateSnippetCodeInput"];
-		if ($snippetCode == null) {
-			return null;
-		}
-		else {
-			return $snippetCode;
-		}
-		return false;
-	}
+    public function triedToSaveSnippet()
+    {
+        if (isset($_POST['updateSnippetUpdateButton'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function getUpdateSnippetID() {
-		$snippetID = $_POST["updateSnippetID"];
-		if ($snippetID == null) {
-			return null;
-		}
-		else {
-			return $snippetID;
-		}
-		return false;
-	}	
+    public function getUpdateSnippetName()
+    {
+        $snippetName = $_POST["updateSnippetNameInput"];
+        if ($snippetName == null) {
+            return null;
+        } else {
+            return $snippetName;
+        }
+        return false;
+    }
 
-	public function triedToDeleteSnippet() {
-		if (isset($_POST['deleteSnippetButton'])) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    public function getUpdateSnippetCode()
+    {
+        $snippetCode = $_POST["updateSnippetCodeInput"];
+        if ($snippetCode == null) {
+            return null;
+        } else {
+            return $snippetCode;
+        }
+        return false;
+    }
 
-	public function getSnippetID() {
-		$snippetID = $_POST["snippetID"];
-		if ($snippetID == null) {
-			return null;
-		}
-		else {
-			return $snippetID;
-		}
-		return false;
-	}		
+    public function getUpdateSnippetID()
+    {
+        $snippetID = $_POST["updateSnippetID"];
+        if ($snippetID == null) {
+            return null;
+        } else {
+            return $snippetID;
+        }
+        return false;
+    }
 
-	public function triedToGotoCreateView() {
-		if (isset($_POST['gotoCreateSnippetViewButton'])) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-    
+    public function triedToDeleteSnippet()
+    {
+        if (isset($_POST['deleteSnippetButton'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getSnippetID()
+    {
+        $snippetID = $_POST["snippetID"];
+        if ($snippetID == null) {
+            return null;
+        } else {
+            return $snippetID;
+        }
+        return false;
+    }
+
+    public function triedToGotoCreateView()
+    {
+        if (isset($_POST['gotoCreateSnippetViewButton'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
