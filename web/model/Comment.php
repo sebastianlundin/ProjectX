@@ -2,64 +2,116 @@
 
 class Comment
 {
-    private $mSnippetId = NULL;
-    //private $mCommentDate = NULL;
-    private $mCommentId = NULL;
-    private $mUserId = NULL;
-    private $mCommentText = NULL;
-    //private $mCommentUp = NULL;
-    //private $mCommentDown = NULL;
-	
-//	public function __construct($aSnippetId, $aCommentDate, $aCommentId, $aUserId, $aCommentText, $aCommentUp, $aCommentDown) 
-//    {
-//        $this->mSnippetId = $aSnippetId;
-//		$this->mCommentDate = $aCommentDate;
-//		$this->mCommentId = $aCommentId;
-//        $this->mUserId = $aUserId;
-//        $this->mCommentText = $aCommentText;
-//        $this->mCommentUp = $aCommentUp;
-//        $this->mCommentDown = $aCommentUp;
-//        
-//	}
-    public function __construct($aSnippetId, $aCommentId, $aUserId, $aCommentText) 
+    private $mSnippetId = null;
+    private $mCommentId = null;
+    private $mUserId = null;
+    private $mCommentText = null;
+    private $mUser = null;
+
+    /**
+     * Comment::__construct()
+     *
+     * @param int $aSnippetId
+     * @param int $aCommentId
+     * @param int $aUserId
+     * @param int $aCommentText
+     */
+    public function __construct($aSnippetId, $aCommentId, $aUserId, $aCommentText)
     {
         $this->mSnippetId = $aSnippetId;
-		$this->mCommentId = $aCommentId;
+        $this->mCommentId = $aCommentId;
         $this->mUserId = $aUserId;
         $this->mCommentText = $aCommentText;
-        
-	}
+    }
 
+    /**
+     * Comment::setUser()
+     * settr User object
+     * @param User
+     */
+    public function setUser($aUser)
+    {
+        $this->mUser = $aUser;
+    }
 
-    public function GetSnippetId() 
+    /**
+     * Comment::getUser()
+     *
+     * @return User object
+     */
+    public function getUser()
+    {
+        return $this->mUser;
+    }
+
+    /**
+     * Comment::getSnippetId()
+     *
+     * @return int ID of the snippet
+     */
+    public function getSnippetId()
     {
         return $this->mSnippetId;
     }
-	
-	public function GetCommentDate() 
-    {
-		return $this->mCommentDate;
-	}
 
-	public function GetCommentId() 
+    /**
+     * Comment::getCommentDate()
+     *
+     * @return date when the comment where written
+     */
+    public function getCommentDate()
     {
-		return $this->mCommentId;
-	}
-    
-    public function GetUserId()
-    {
-        return $this->mUserId;         
+        return $this->mCommentDate;
     }
-    public function GetCommentText()
+
+    /**
+     * Comment::getCommentId()
+     *
+     * @return int ID of the comment
+     */
+    public function getCommentId()
+    {
+        return $this->mCommentId;
+    }
+
+    /**
+     * Comment::getUserId()
+     *
+     * @return int ID of the user
+     */
+    public function getUserId()
+    {
+        return $this->mUserId;
+    }
+
+    /**
+     * Comment::getCommentText()
+     *
+     * @return string; text of the comment
+     */
+    public function getCommentText()
     {
         return $this->mCommentText;
     }
-    public function GetCommentUp()
+
+    /**
+     * Comment::getCommentUp()
+     *
+     * @return int, how many finds the comment usefull
+     */
+    public function getCommentUp()
     {
         return $this->mCommentUp;
     }
-    public function GetCommentDown()
+
+    /**
+     * Comment::getCommentDown()
+     *
+     * @return inte, how many dosn't' find the comment usefull
+     */
+    public function getCommentDown()
     {
         return $this->mCommentDown;
     }
+
 }

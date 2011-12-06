@@ -1,28 +1,41 @@
 <?php
-class Auth {
+class Auth
+{
     var $user_id;
     var $username;
     var $password;
     var $ok;
     var $salt = "34asdf34";
     var $domain = ".domain.com";
-    function Auth() {
+    function Auth()
+    {
         global $db;
         $this->user_id = 0;
         $this->username = "Guest";
         $this->ok = false;
-        if (!$this->check_session()) $this->check_cookie();
+        if (!$this->check_session())
+            $this->check_cookie();
         return $this->ok;
     }
-    function check_session() {
-        if (!empty($_SESSION['auth_username']) && !empty($_SESSION['auth_password'])) return $this->check($_SESSION['auth_username'], $_SESSION['auth_password']);
-        else return false;
+
+    function check_session()
+    {
+        if (!empty($_SESSION['auth_username']) && !empty($_SESSION['auth_password']))
+            return $this->check($_SESSION['auth_username'], $_SESSION['auth_password']);
+        else
+            return false;
     }
-    function check_cookie() {
-        if (!empty($_COOKIE['auth_username']) && !empty($_COOKIE['auth_password'])) return $this->check($_COOKIE['auth_username'], $_COOKIE['auth_password']);
-        else return false;
+
+    function check_cookie()
+    {
+        if (!empty($_COOKIE['auth_username']) && !empty($_COOKIE['auth_password']))
+            return $this->check($_COOKIE['auth_username'], $_COOKIE['auth_password']);
+        else
+            return false;
     }
-    function login($username, $password) {
+
+    function login($username, $password)
+    {
         global $db;
         $db->query("SELECT user_id FROM users WHERE username = '$username' AND password = '$password'");
         if (mysql_num_rows($db->result) == 1) {
@@ -37,7 +50,9 @@ class Auth {
         }
         return false;
     }
-    function check($username, $password) {
+
+    function check($username, $password)
+    {
         global $db;
         $db->query("SELECT user_id, password FROM users WHERE username = '$username'");
         if (mysql_num_rows($db->result) == 1) {
@@ -51,7 +66,9 @@ class Auth {
         }
         return false;
     }
-    function logout() {
+
+    function logout()
+    {
         $this->user_id = 0;
         $this->username = "Guest";
         $this->ok = false;
@@ -60,5 +77,5 @@ class Auth {
         setcookie("auth_username", "", time() - 3600, "/", $this->domain);
         setcookie("auth_password", "", time() - 3600, "/", $this->domain);
     }
+
 }
-?>
