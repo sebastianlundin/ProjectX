@@ -2,11 +2,11 @@
 
 class Comment
 {
-    private $mSnippetId = null;
-    private $mCommentId = null;
-    private $mUserId = null;
-    private $mCommentText = null;
-    private $mUser = null;
+    private $_snippetId = null;
+    private $_commentId = null;
+    private $_userId = null;
+    private $_commentText = null;
+    private $_user = null;
 
     /**
      * Comment::__construct()
@@ -16,12 +16,12 @@ class Comment
      * @param int $aUserId
      * @param int $aCommentText
      */
-    public function __construct($aSnippetId, $aCommentId, $aUserId, $aCommentText)
+    public function __construct($snippetId, $commentId, $userId, $commentText)
     {
-        $this->mSnippetId = $aSnippetId;
-        $this->mCommentId = $aCommentId;
-        $this->mUserId = $aUserId;
-        $this->mCommentText = $aCommentText;
+        $this->_snippetId = $snippetId;
+        $this->_commentId = $commentId;
+        $this->_userId = $userId;
+        $this->_commentText = $commentText;
     }
 
     /**
@@ -29,9 +29,9 @@ class Comment
      * settr User object
      * @param User
      */
-    public function setUser($aUser)
+    public function setUser($user)
     {
-        $this->mUser = $aUser;
+        $this->_user = $user;
     }
 
     /**
@@ -41,7 +41,7 @@ class Comment
      */
     public function getUser()
     {
-        return $this->mUser;
+        return $this->_user;
     }
 
     /**
@@ -51,7 +51,7 @@ class Comment
      */
     public function getSnippetId()
     {
-        return $this->mSnippetId;
+        return $this->_snippetId;
     }
 
     /**
@@ -71,7 +71,7 @@ class Comment
      */
     public function getCommentId()
     {
-        return $this->mCommentId;
+        return $this->_commentId;
     }
 
     /**
@@ -81,7 +81,7 @@ class Comment
      */
     public function getUserId()
     {
-        return $this->mUserId;
+        return $this->_userId;
     }
 
     /**
@@ -91,7 +91,7 @@ class Comment
      */
     public function getCommentText()
     {
-        return $this->mCommentText;
+        return $this->_commentText;
     }
 
     /**
