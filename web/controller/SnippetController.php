@@ -22,7 +22,7 @@ class SnippetController
     public function listSnippets()
     {
         if ($this->mSnippetView->triedToGotoCreateView() == true) {
-            return $this->mSnippetView->createSnippet();
+            return $this->mSnippetView->createSnippet($this->mSnippetHandler->getLanguages());
         } else if ($this->mSnippetView->triedTocreateSnippet() == true) {
             $snippet = new Snippet('kimsan', $this->mSnippetView->getCreateSnippetCode(), $this->mSnippetView->getSnippetTitle(), $this->mSnippetView->getSnippetDescription(), $this->mSnippetView->getSnippetLanguage());
 
@@ -37,7 +37,7 @@ class SnippetController
             echo 'Snippet has been updated!';
         }
 
-        return $this->mSnippetView->createSnippet();
+        return $this->mSnippetView->createSnippet($this->mSnippetHandler->getLanguages());
     }
 
 }
