@@ -67,11 +67,11 @@ class SnippetHandler
     public function createSnippet(Snippet $aSnippet)
     {
         $this->mDbHandler->__wakeup();
-        $author = $aSnippet->getAuthor();
-        $code = $aSnippet->getCode();
-        $title = $aSnippet->getTitle();
-        $desc = $aSnippet->getDesc();
-        $language = $aSnippet->getLanguage();
+        $author = $aSnippet->getSnippetAuthor();
+        $code = $aSnippet->getSnippetCode();
+        $title = $aSnippet->getSnippetTitle();
+        $desc = $aSnippet->getSnippetDesc();
+        $language = $aSnippet->getSnippetLanguage();
 
         if ($databaseQuery = $this->mDbHandler->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
             $databaseQuery->bind_param('sssss', $author, $code, $title, $desc, $language);

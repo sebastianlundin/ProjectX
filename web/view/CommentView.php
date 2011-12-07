@@ -13,16 +13,16 @@ class CommentView
         $captcha = new Captcha();
         $form = ("
                     <form action='' method='POST'>
-                    <label for='commentText'>Kommentar: </label><br/>
-                    <textarea name='commentText' rows = '5' cols ='40' maxlength='1500'></textarea>
-                    <br/>
-                    <label for='author'>Namn:(ange siffran 6 så länge)</label><br/>
-                    <input type='text' name='commentAuthor' value = ''/>
-                    <br/>
-                    <img src='secure.jpg' alt='Captcha image'/><br/>
-                    <label for='secure'>Ange svaret till bilden:</label><br/>
-                    <input type='text' name='secure' value='' /><br/>
-                    <input type='submit' name='submitComment' value='Skriv'/>
+                        <label for='commentText'>Kommentar: </label><br/>
+                        <textarea name='commentText' rows = '5' cols ='40' maxlength='1500'></textarea>
+                        <br/>
+                        <label for='author'>Namn:(ange siffran 6 så länge)</label><br/>
+                        <input type='text' name='commentAuthor' value = ''/>
+                        <br/>
+                        <img src='secure.jpg' alt='Captcha image'/><br/>
+                        <label for='secure'>Ange svaret till bilden:</label><br/>
+                        <input type='text' name='secure' value='' /><br/>
+                        <input type='submit' name='submitComment' value='Skriv'/>
                     </form>
                     ");
         return $form;

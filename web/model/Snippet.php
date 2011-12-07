@@ -25,7 +25,7 @@ class Snippet
     /**
      * @return int ID of the snippet
      */
-    public function getID()
+    public function getSnippetId()
     {
         return $this->mID;
     }
@@ -33,7 +33,7 @@ class Snippet
     /**
      * @return String The author of the snippet
      */
-    public function getAuthor()
+    public function getSnippetAuthor()
     {
         return $this->mAuthor;
     }
@@ -41,7 +41,7 @@ class Snippet
     /**
      * @return String The code snippet
      */
-    public function getCode()
+    public function getSnippetCode()
     {
         return $this->mCode;
     }
@@ -49,7 +49,7 @@ class Snippet
     /**
      * @return String title of the snippet
      */
-    public function getTitle()
+    public function getSnippetTitle()
     {
         return $this->mTitle;
     }
@@ -57,7 +57,7 @@ class Snippet
     /*
      * @return String description of the snippet
      */
-    public function getDesc()
+    public function getSnippetDesc()
     {
         return $this->mDesc;
     }
@@ -65,7 +65,7 @@ class Snippet
     /*
      * @return String language of the snippet
      */
-    public function getLanguage()
+    public function getSnippetLanguage()
     {
         return $this->mLanguage;
     }

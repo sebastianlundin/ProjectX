@@ -3,7 +3,6 @@ require_once dirname(__FILE__) . '/../model/Functions.php';
 
 class SnippetView
 {
-
     /**
      * return html code for a single snippet
      * @param Snippet a snippet Object
@@ -14,15 +13,15 @@ class SnippetView
 
         $sh = new Functions();
 
-        $html = "<h2>" . $snippet->getTitle() . "</h2>
+        $html = "<h2>" . $snippet->getSnippetTitle() . "</h2>
 		<div class='snippet-desc'>
-			<p>" . $snippet->getDesc() . "</p>	
+			<p>" . $snippet->getSnippetDesc() . "</p>	
 		</div>
 		<div class='snippet-code'>
-			<code>" . $sh->geshiHighlight($snippet->getCode(), $snippet->getLanguage()) . "</code>
+			<code>" . $sh->geshiHighlight($snippet->getSnippetCode(), $snippet->getSnippetLanguage()) . "</code>
 		</div>
 		<div class='snippet-author'>
-			<span>" . $snippet->getAuthor() . "</span>
+			<span>" . $snippet->getSnippetAuthor() . "</span>
 		</div>";
 
         return $html;
@@ -41,13 +40,13 @@ class SnippetView
             $html .= '
                 <div class="snippet-list-item">
                     <div class="snippet-title">
-                        <h3><a href="?snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
+                        <h3><a href="?snippet=' . $snippet->getSnippetID() . '">' . $snippet->getSnippetTitle() . '</a></h3>
                     </div>
                     <div class="snippet-description">
-                        <p>' . $snippet->getDesc() . '</p>
+                        <p>' . $snippet->getSnippetDesc() . '</p>
                     </div>
                     <div class="snippet-author">
-                        <p>Posted by: <i>' . $snippet->getAuthor() . '</i></p>
+                        <p>Posted by: <i>' . $snippet->getSnippetAuthor() . '</i></p>
                     </div>
                 </div>
             ';
@@ -105,8 +104,8 @@ class SnippetView
             $view .= '			
 						<form action="" method="post">
 							<tr>
-								<td><a href="?chsnippet=' . $snippets->getSnippetID() . '">' . $snippets->getSnippetName() . '</a></td>
-								<td><input type="hidden" name="snippetID" value="' . $snippets->getSnippetID() . '" /><input type="submit" name="deleteSnippetButton" id="deleteSnippetButton" value="Delete snippet" /></td>
+								<td><a href="?chsnippet=' . $snippets->getSnippetId() . '">' . $snippets->getSnippetTitle() . '</a></td>
+								<td><input type="hidden" name="snippetID" value="' . $snippets->getSnippetId() . '" /><input type="submit" name="deleteSnippetButton" id="deleteSnippetButton" value="Delete snippet" /></td>
 							<tr>
 						</form>
 			';
@@ -135,7 +134,7 @@ class SnippetView
 					</div>
 
 					<div id="updateSnippetButton">
-						<input type="hidden" name="updateSnippetID" value="' . $snippet[0]->getSnippetID() . '" />
+						<input type="hidden" name="updateSnippetID" value="' . $snippet[0]->getSnippetId() . '" />
 						<input type="submit" name="updateSnippetUpdateButton" id="updateSnippetUpdateButton" value="Update snippet" />
 					</div>
 				</form>
