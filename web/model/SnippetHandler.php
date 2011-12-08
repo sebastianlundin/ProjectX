@@ -199,7 +199,6 @@ class SnippetHandler
         }
         $this->_dbHandler->Close();
         return $languages;
-
     }
 
 }
