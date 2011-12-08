@@ -67,7 +67,6 @@ class SnippetHandler
 
     public function createSnippet(Snippet $aSnippet)
     {
-        echo "jkashkasd";
         $this->_dbHandler->__wakeup();
         $author = $aSnippet->getAuthor();
         $code = $aSnippet->getCode();
