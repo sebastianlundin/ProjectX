@@ -2,6 +2,7 @@
 
 class Comment
 {
+
     private $_snippetId = null;
     private $_commentId = null;
     private $_userId = null;

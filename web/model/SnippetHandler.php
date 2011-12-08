@@ -59,7 +59,6 @@ class SnippetHandler
 
             $stmt->close();
         }
-
         $this->_dbHandler->close();
 
         return $snippets;
