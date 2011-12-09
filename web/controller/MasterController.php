@@ -7,17 +7,19 @@ class MasterController
 {
     private $mSnippetController;
     private $mHtml;
-    
+
     public function __construct()
     {
         $this->mSnippetController = new SnippetController();
         $this->mHtml = '';
     }
-    
-    public function doControll(){
-      session_start();
-      
-      $this->mHtml .= $this->mSnippetController->doControll();
-      return $this->mHtml;
+
+    public function doControll()
+    {
+        session_start();
+        $this->mHtml .= $this->mSnippetController->doControll();
+                
+        return $this->mHtml;
     }
+
 }
