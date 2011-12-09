@@ -34,20 +34,20 @@ class CommentView
      * @return String
      * @parram array of the Comment object
      */
-    public function showAllCommentsForSnippet($aComments)
+    public function showAllCommentsForSnippet($comments)
     {
         $message = "";
-        if (!empty($aComments)) {
-            for ($i = 0; $i < count($aComments); $i++) {
+        if (!empty($comments)) {
+            for ($i = 0; $i < count($comments); $i++) {
                 $message .= "<div>";
-                $message .= "<p>kommentar till snippetId: " . $aComments[$i]->getSnippetId() . "</p>";
-                $message .= "<p>komentarens text: " . $aComments[$i]->getCommentText() . "</p>";
-                $message .= "<p> Kommentaren skrivet av: " . $aComments[$i]->getUser()->getUserName() . "</p>";
+                $message .= "<p>kommentar till snippetId: " . $comments[$i]->getSnippetId() . "</p>";
+                $message .= "<p>komentarens text: " . $comments[$i]->getCommentText() . "</p>";
+                $message .= "<p> Kommentaren skrivet av: " . $comments[$i]->getUser()->getUserName() . "</p>";
                 $message .= "</div>";
 
-                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $aComments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $aComments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $aComments[$i]->getCommentId() . "'>Radera</a>";
+                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a>";
 
-                $message .= "</br><a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $aComments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $aComments[$i]->getSnippetId() . "&controller=commentcontroller&editComment=" . $aComments[$i]->getCommentId() . "'>Redigera</a>";
+                $message .= "</br><a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&editComment=" . $comments[$i]->getCommentId() . "'>Redigera</a>";
 
                 $message .= "</br>";
                 $message .= "<hr>";
@@ -65,28 +65,25 @@ class CommentView
      * @param Comment object
      * @return String
      */
-    public function editComment($aComment)
+    public function editComment($comment)
     {
-        if ($aComment)
-            $form = ("
+        if ($comment) {
+            $form = "
                         <form action='' method='POST'>
                         <label for='commentText'>Kommentar: </label><br/>
-                        <textarea name='commentText' rows ='5' cols ='40' maxlength='1500'>" . $aComment->GetCommentText() . "</textarea>
+                        <textarea name='commentText' rows ='5' cols ='40' maxlength='1500'>" . $comment->getCommentText() . "</textarea>
                         <br/>
                         <label for='author'>Namn:(man kan ej redigera vem som skrev, det är redan skrivet av någon)</label><br/>
-                        <input type='text' name='commentAuthor' readonly='readonly' value = '" . $aComment->GetUser()->GetUserName() . "'/>
+                        <input type='text' name='commentAuthor' readonly='readonly' value = '" . $comment->getUser()->getUserName() . "'/>
                         <br/>
                         <input type='submit' name='updateComment' value='Skriv'/>
                         </form>
-                        ");
-        else
+                        ";
+        } else {
             $form = "Kommentaren du försöker redigera finns inte!";
+        }
         return $form;
     }
-
-    /**
-     * -----------------------------------EVENTS
-     */
 
     /**
      * CommentView::triedToSubmitComment()
@@ -97,8 +94,8 @@ class CommentView
     {
         if (isset($_POST['submitComment'])) {
             return true;
-        } else
-            return false;
+        }
+        return false;
     }
 
     /**
@@ -110,8 +107,8 @@ class CommentView
     {
         if (isset($_POST['commentText'])) {
             return trim($_POST['commentText']);
-        } else
-            return false;
+        }
+        return false;
     }
 
     /**
@@ -123,8 +120,8 @@ class CommentView
     {
         if (isset($_POST['commentAuthor'])) {
             return trim($_POST['commentAuthor']);
-        } else
-            return false;
+        }
+        return false;
     }
 
     /**
@@ -136,8 +133,9 @@ class CommentView
     {
         if (isset($_POST['secure'])) {
             return trim($_POST['secure']);
-        } else
-            return false;
+        } 
+        
+        return false;
     }
 
     /**

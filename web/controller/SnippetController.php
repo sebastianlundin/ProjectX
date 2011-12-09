@@ -9,20 +9,20 @@ require_once dirname(__FILE__) . '/../view/CommentView.php';
 
 class SnippetController
 {
-    private $mDbHandler;
-    private $mSnippetHandler;
-    private $mSnippetView;
-    private $mHtml;
-    private $mCommentController;
+    private $_dbHandler;
+    private $_snippetHandler;
+    private $_snippetView;
+    private $_html;
+    private $_commentController;
 
     public function __construct()
     {
 
-        $this->mDbHandler = new DbHandler();
-        $this->mSnippetHandler = new SnippetHandler($this->mDbHandler);
-        $this->mSnippetView = new SnippetView();
-        $this->mCommentController = new CommentController($this->mDbHandler);
-        $this->mHtml = '';
+        $this->_dbHandler = new DbHandler();
+        $this->_snippetHandler = new SnippetHandler($this->_dbHandler);
+        $this->_snippetView = new SnippetView();
+        $this->_commentController = new CommentController($this->_dbHandler);
+        $this->_html = '';
     }
 
     public function doControll()
@@ -30,29 +30,29 @@ class SnippetController
 
         if (isset($_GET['snippet'])) {
 
-            $this->mHtml .= $this->mSnippetView->singleView($this->mSnippetHandler->getSnippetByID($_GET['snippet']));
-            $this->mHtml .= "<br /><a href='index.php'>Till startsidan</a>";
-            $this->mHtml .= $this->mCommentController->doControll();
+            $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
+            $this->_html .= "<br /><a href='index.php'>Till startsidan</a>";
+            $this->_html .= $this->_commentController->doControll();
         } else {
 
-            $this->mHtml .= $this->mSnippetView->listView($this->mSnippetHandler->getAllSnippets());
-            $this->mHtml .= "<br /><a href='?page=addsnippet'>Add snippet</a>";
+            $this->_html .= $this->_snippetView->listView($this->_snippetHandler->getAllSnippets());
+            $this->_html .= "<br /><a href='?page=addsnippet'>Add snippet</a>";
         }
 
         if (isset($_GET['page']) && $_GET['page'] == 'addsnippet') {
 
-            $this->mHtml = null;
-            $this->mHtml .= $this->mSnippetView->createSnippet($this->mSnippetHandler->getLanguages());
-            $this->mHtml .= "<br /><a href='index.php'>Till startsidan</a>";
+            $this->_html = null;
+            $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
+            $this->_html .= "<br /><a href='index.php'>Till startsidan</a>";
 
-            if ($this->mSnippetView->triedToCreateSnippet()) {
+            if ($this->_snippetView->triedToCreateSnippet()) {
 
-                $snippet = new Snippet('kimsan', $this->mSnippetView->getCreateSnippetCode(), $this->mSnippetView->getSnippetTitle(), $this->mSnippetView->getSnippetDescription(), $this->mSnippetView->getSnippetLanguage());
-                $this->mSnippetHandler->createSnippet($snippet);
+                $snippet = new Snippet('kimsan', $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage());
+                $this->_snippetHandler->createSnippet($snippet);
             }
         }
 
-        return $this->mHtml;
+        return $this->_html;
     }
 
 }

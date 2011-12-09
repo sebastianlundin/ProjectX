@@ -3,11 +3,14 @@
 class Comment
 {
 
-    private $_snippetId = null;
-    private $_commentId = null;
-    private $_userId = null;
-    private $_commentText = null;
-    private $_user = null;
+    private $_snippetId;
+    private $_commentId;
+    private $_userId;
+    private $_commentText;
+    private $_user;
+    private $_getCommentUp;
+    private $_getCommentDown;
+    private $__commentDate;
 
     /**
      * Comment::__construct()
@@ -62,7 +65,7 @@ class Comment
      */
     public function getCommentDate()
     {
-        return $this->mCommentDate;
+        return $this->_commentDate;
     }
 
     /**
@@ -102,7 +105,7 @@ class Comment
      */
     public function getCommentUp()
     {
-        return $this->mCommentUp;
+        return $this->_getCommentUp;
     }
 
     /**
@@ -112,7 +115,7 @@ class Comment
      */
     public function getCommentDown()
     {
-        return $this->mCommentDown;
+        return $this->_getCommentDownt;
     }
 
 }

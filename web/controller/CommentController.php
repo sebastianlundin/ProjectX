@@ -14,27 +14,22 @@ class CommentController
         $commentHandler = new CommentHandler($this->_dbHandler);
         $commentView = new CommentView();
 
-        if ($commentView->triesToEditComment()) 
-        {
-            $html .= $commentView->editComment($commentHandler->GetCommentToEditByCommentId($commentView->WhichCommentToEdit()));
-        } 
-        else 
-        {
+        if ($commentView->triesToEditComment()) {
+            $html .= $commentView->editComment($commentHandler->getCommentByID($commentView->WhichCommentToEdit()));
+        } else {
             $html .= $commentView->doCommentForm();
         }
-        
-        if ($commentView->triedToSubmitComment()) 
-        {
+
+        if ($commentView->triedToSubmitComment()) {
             $text = $commentView->getCommentText();
             $author = $commentView->getAuthorId();
             $id = $commentView->whichSnippetToComment();
             $commentHandler->addComment($id, $text, $author);
-            if ($commentView->getCaptchaAnswer() == $_SESSION['security_number']) 
-            {
+            if ($commentView->getCaptchaAnswer() == $_SESSION['security_number']) {
                 $commentHandler->addComment($id, $text, $author);
             }
         }
-        
+
         if ($commentView->triesToRemoveComment()) {
             $commentHandler->deleteComment($commentView->whichCommentToDelete());
         }

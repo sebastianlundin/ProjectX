@@ -5,21 +5,21 @@ require_once dirname(__FILE__) . '/SnippetController.php';
 
 class MasterController
 {
-    private $mSnippetController;
-    private $mHtml;
+    private $_snippetController;
+    private $_html;
 
     public function __construct()
     {
-        $this->mSnippetController = new SnippetController();
-        $this->mHtml = '';
+        $this->_snippetController = new SnippetController();
+        $this->_html = '';
     }
 
     public function doControll()
     {
         session_start();
-        $this->mHtml .= $this->mSnippetController->doControll();
-        $this->mHtml .= "<br /><a href='index.php'>Till startsidan</a> <br /><a href='?page=addsnippet'>Add snippet</a>";
-        return $this->mHtml;
+        $this->_html .= $this->_snippetController->doControll();
+        $this->_html .= "<br /><a href='index.php'>Till startsidan</a> <br /><a href='?page=addsnippet'>Add snippet</a>";
+        return $this->_html;
     }
 
 }
