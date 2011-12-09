@@ -18,7 +18,7 @@ class MasterController
     {
         session_start();
         $this->mHtml .= $this->mSnippetController->doControll();
-                
+        $this->mHtml .= "<br /><a href='index.php'>Till startsidan</a> <br /><a href='?page=addsnippet'>Add snippet</a>";
         return $this->mHtml;
     }
 
