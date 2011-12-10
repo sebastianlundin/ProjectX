@@ -3,41 +3,56 @@
 require_once dirname(__FILE__) . '/../model/SnippetHandler.php';
 require_once dirname(__FILE__) . '/../view/SnippetView.php';
 require_once dirname(__FILE__) . '/../model/DbHandler.php';
+require_once dirname(__FILE__) . '/../controller/CommentController.php';
+require_once dirname(__FILE__) . '/../model/CommentHandler.php';
+require_once dirname(__FILE__) . '/../view/CommentView.php';
 
 class SnippetController
 {
-    private $mDbHandler = null;
-    private $mSnippetView = null;
+    private $_dbHandler;
+    private $_snippetHandler;
+    private $_snippetView;
+    private $_html;
+    private $_commentController;
 
     public function __construct()
     {
-        $this->mDbHandler = new DbHandler();
-        $this->mSnippetHandler = new SnippetHandler($this->mDbHandler);
-        $this->mSnippetView = new SnippetView();
+
+        $this->_dbHandler = new DbHandler();
+        $this->_snippetHandler = new SnippetHandler($this->_dbHandler);
+        $this->_snippetView = new SnippetView();
+        $this->_commentController = new CommentController($this->_dbHandler);
+        $this->_html = '';
     }
 
-    /**
-     *Controller for Snippets
-     */
-    public function listSnippets()
+    public function doControll()
     {
-        if ($this->mSnippetView->triedToGotoCreateView() == true) {
-            return $this->mSnippetView->createSnippet();
-        } else if ($this->mSnippetView->triedTocreateSnippet() == true) {
-            $snippet = new Snippet('kimsan', $this->mSnippetView->getCreateSnippetCode(), $this->mSnippetView->getSnippetTitle(), $this->mSnippetView->getSnippetDescription(), $this->mSnippetView->getSnippetLanguage());
 
-            $this->mSnippetHandler->createSnippet($snippet);
+        if (isset($_GET['snippet'])) {
 
-        } else if ($this->mSnippetView->triedToDeleteSnippet() == true) {
-            $this->mSnippetHandler->deleteSnippet($this->mSnippetView->getSnippetID());
-        } else if ($this->mSnippetView->triedToChangeSnippet() == true) {
-            return $this->mSnippetView->updateSnippet($this->mSnippetHandler->getSingleSnippetData($this->mSnippetView->getSnippetIDLink()));
-        } else if ($this->mSnippetView->triedToSaveSnippet() == true) {
-            $this->mSnippetHandler($this->mSnippetView->getUpdateSnippetID, $this->mSnippetView->getUpdateSnippetName, $this->mSnippetView->getUpdateSnippetCode);
-            echo 'Snippet has been updated!';
+            $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
+            $this->_html .= "<br /><a href='index.php'>Till startsidan</a>";
+            $this->_html .= $this->_commentController->doControll();
+        } else {
+
+            $this->_html .= $this->_snippetView->listView($this->_snippetHandler->getAllSnippets());
+            $this->_html .= "<br /><a href='?page=addsnippet'>Add snippet</a>";
         }
 
-        return $this->mSnippetView->createSnippet();
+        if (isset($_GET['page']) && $_GET['page'] == 'addsnippet') {
+
+            $this->_html = null;
+            $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
+            $this->_html .= "<br /><a href='index.php'>Till startsidan</a>";
+
+            if ($this->_snippetView->triedToCreateSnippet()) {
+
+                $snippet = new Snippet('kimsan', $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage());
+                $this->_snippetHandler->createSnippet($snippet);
+            }
+        }
+
+        return $this->_html;
     }
 
 }
