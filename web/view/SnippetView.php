@@ -3,7 +3,6 @@ require_once dirname(__FILE__) . '/../model/Functions.php';
 
 class SnippetView
 {
-
     /**
      * return html code for a single snippet
      * @param Snippet a snippet Object
@@ -56,68 +55,38 @@ class SnippetView
         return $html;
     }
 
-    public function createSnippet()
+    public function createSnippet($languages)
     {
         $view = '
-			<div id="createSnippetContainer">
-				<form action="" method="post">
-					<div id="createSnippetNameDiv">
-						<p>Title:</p>
-						<input type="text" name="snippetTitle" id="createSnippetNameInput" />
+            <div id="createSnippetContainer">
+                <form action="" method="post">
+                    <div id="createSnippetNameDiv">
+                        <p>Title:</p>
+                        <input type="text" name="snippetTitle" id="createSnippetNameInput" />
                         <p>Description:</p>
                         <input type="text" name="snippetDescription" id="createSnippetNameInput" />
                         <p>Language:</p>
-                        <input type="text" name="snippetLanguage" id="createSnippetNameInput" />
-					</div>
-
-					<div id="createSnippetCodeDiv">
-						<p>Snippet:</p>
-						<textarea cols="50" rows="20" name="createSnippetCodeInput" id="createSnippetCodeInput"></textarea>
-					</div>
-
-					<div id="createSnippetButton">
-						<input type="submit" name="createSnippetSaveButton" id="createSnippetSaveButton" value="Create snippet" />
-					</div>
-				</form>
-			</div>
-		';
-        return $view;
-    }
-
-    public function listSnippets($snippets)
-    {
-        $view = '
-			<div id="listSnippetsButtons">
-				<form action="" method="post">
-					<input type="submit" name="gotoCreateSnippetViewButton" id="gotoCreateSnippetViewButton" value="Create snippet" />
-				</form>
-			</div>
-			
-			<div id="listSnippetsTableDiv">
-				<table id="listSnippetsTable">
-					<thead>
-						<th>Name:</th>
-						<th>&nbsp;</th>
-					</thead>
-					<tbody>
-		';
-        foreach ($snippets as &$snippets) {
-            $view .= '			
-						<form action="" method="post">
-							<tr>
-								<td><a href="?chsnippet=' . $snippets->getSnippetID() . '">' . $snippets->getSnippetName() . '</a></td>
-								<td><input type="hidden" name="snippetID" value="' . $snippets->getSnippetID() . '" /><input type="submit" name="deleteSnippetButton" id="deleteSnippetButton" value="Delete snippet" /></td>
-							<tr>
-						</form>
-			';
+                        <select name="snippetLanguage">';
+        foreach ($languages as &$languages) {
+            $view .= '<option value="' . $languages['id'] . '">' . $languages['name'] . '</option>';
         }
-        $view .= '
-					</tbody>
-				</table>
-			</div>
-		';
+        $view .= '</select>    
+                    </div>
+
+                    <div id="createSnippetCodeDiv">
+                        <p>Snippet:</p>
+                        <textarea cols="50" rows="20" name="createSnippetCodeInput" id="createSnippetCodeInput"></textarea>
+                    </div>
+
+                    <div id="createSnippetButton">
+                        <input type="submit" name="createSnippetSaveButton" id="createSnippetSaveButton" value="Create snippet" />
+                    </div>
+                </form>
+            </div>
+        ';
         return $view;
     }
+
 
     public function updateSnippet($snippet)
     {
@@ -126,16 +95,16 @@ class SnippetView
 				<form action="" method="post">
 					<div id="updateSnippetNameDiv">
 						<p>Name:</p>
-						<input type="text" name="updateSnippetNameInput" id="updateSnippetNameInput" value="' . $snippet[0]->getSnippetName() . '" /> 
+						<input type="text" name="updateSnippetNameInput" id="updateSnippetNameInput" value="' . $snippet[0]->getTitle() . '" /> 
 					</div>
 
 					<div id="updateSnippetCodeDiv">
 						<p>Snippet:</p>
-						<textarea cols="50" rows="50" name="updateSnippetCodeInput" id="updateSnippetCodeInput">' . $snippet[0]->getSnippetCode() . '</textarea>
+						<textarea cols="50" rows="50" name="updateSnippetCodeInput" id="updateSnippetCodeInput">' . $snippet[0]->getCode() . '</textarea>
 					</div>
 
 					<div id="updateSnippetButton">
-						<input type="hidden" name="updateSnippetID" value="' . $snippet[0]->getSnippetID() . '" />
+						<input type="hidden" name="updateSnippetID" value="' . $snippet[0]->getID() . '" />
 						<input type="submit" name="updateSnippetUpdateButton" id="updateSnippetUpdateButton" value="Update snippet" />
 					</div>
 				</form>
@@ -155,7 +124,7 @@ class SnippetView
 
     public function getCreateSnippetName()
     {
-        $snippetName = $_POST["createSnippetNameInput"];
+        $snippetName = $_POST['createSnippetNameInput'];
         if ($snippetName == null) {
             return null;
         } else {
@@ -166,7 +135,7 @@ class SnippetView
 
     public function getSnippetTitle()
     {
-        $snippetName = $_POST["snippetTitle"];
+        $snippetName = $_POST['snippetTitle'];
         if ($snippetName == null) {
             return null;
         } else {
@@ -177,7 +146,7 @@ class SnippetView
 
     public function getSnippetDescription()
     {
-        $snippetName = $_POST["snippetDescription"];
+        $snippetName = $_POST['snippetDescription'];
         if ($snippetName == null) {
             return null;
         } else {
@@ -188,7 +157,7 @@ class SnippetView
 
     public function getSnippetLanguage()
     {
-        $snippetName = $_POST["snippetLanguage"];
+        $snippetName = $_POST['snippetLanguage'];
         if ($snippetName == null) {
             return null;
         } else {
@@ -199,7 +168,7 @@ class SnippetView
 
     public function getCreateSnippetCode()
     {
-        $snippetCode = $_POST["createSnippetCodeInput"];
+        $snippetCode = $_POST['createSnippetCodeInput'];
         if ($snippetCode == null) {
             return null;
         } else {
@@ -210,7 +179,7 @@ class SnippetView
 
     public function triedToChangeSnippet()
     {
-        if (isset($_GET["chsnippet"])) {
+        if (isset($_GET['chsnippet'])) {
             return true;
         } else {
             return false;
@@ -219,7 +188,7 @@ class SnippetView
 
     public function getSnippetIDLink()
     {
-        $snippetID = $_GET["chsnippet"];
+        $snippetID = $_GET['chsnippet'];
         if ($snippetID == null) {
             return null;
         } else {
@@ -239,18 +208,17 @@ class SnippetView
 
     public function getUpdateSnippetName()
     {
-        $snippetName = $_POST["updateSnippetNameInput"];
+        $snippetName = $_POST['updateSnippetNameInput'];
         if ($snippetName == null) {
             return null;
         } else {
             return $snippetName;
         }
-        return false;
     }
 
     public function getUpdateSnippetCode()
     {
-        $snippetCode = $_POST["updateSnippetCodeInput"];
+        $snippetCode = $_POST['updateSnippetCodeInput'];
         if ($snippetCode == null) {
             return null;
         } else {
@@ -261,14 +229,14 @@ class SnippetView
 
     public function getUpdateSnippetID()
     {
-        $snippetID = $_POST["updateSnippetID"];
+        $snippetID = $_POST['updateSnippetID'];
         if ($snippetID == null) {
             return null;
         } else {
             return $snippetID;
         }
-        return false;
     }
+
 
     public function triedToDeleteSnippet()
     {
@@ -281,7 +249,7 @@ class SnippetView
 
     public function getSnippetID()
     {
-        $snippetID = $_POST["snippetID"];
+        $snippetID = $_POST['snippetID'];
         if ($snippetID == null) {
             return null;
         } else {

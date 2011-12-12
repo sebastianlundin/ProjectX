@@ -1,25 +1,31 @@
 <?php
+require_once 'SnippetHandler.php';
 
 class Snippet
 {
 
-    private $mID;
-    private $mAuthor;
-    private $mCode;
-    private $mTitle;
-    private $mDesc;
-    private $mLanguage;
+    private $_id;
+    private $_author;
+    private $_code;
+    private $_title;
+    private $_desc;
+    private $_language;
+    private $_languageID;
 
-    public function __construct($aAuthor, $aCode, $aTitle, $aDesc, $aLanguage, $aID = null)
+    public function __construct($author, $code, $title, $desc, $languageID, $id = null)
     {
-        if ($aID != null) {
-            $this->mID = $aID;
+        if ($id != null) {
+            $this->_id = $id;
         }
-        $this->mAuthor = $aAuthor;
-        $this->mCode = $aCode;
-        $this->mTitle = $aTitle;
-        $this->mDesc = $aDesc;
-        $this->mLanguage = $aLanguage;
+        $this->_author = $author;
+        $this->_code = $code;
+        $this->_title = $title;
+        $this->_desc = $desc;
+        $this->_languageID = $languageID;
+        
+        $sh = new SnippetHandler();
+        $lang = $sh->getLanguageByID($this->_languageID);
+        $this->_language = $lang['name'];
     }
 
     /**
@@ -27,7 +33,7 @@ class Snippet
      */
     public function getID()
     {
-        return $this->mID;
+        return $this->_id;
     }
 
     /**
@@ -35,7 +41,7 @@ class Snippet
      */
     public function getAuthor()
     {
-        return $this->mAuthor;
+        return $this->_author;
     }
 
     /**
@@ -43,7 +49,7 @@ class Snippet
      */
     public function getCode()
     {
-        return $this->mCode;
+        return $this->_code;
     }
 
     /**
@@ -51,23 +57,32 @@ class Snippet
      */
     public function getTitle()
     {
-        return $this->mTitle;
+        return $this->_title;
     }
 
-    /*
+    /**
      * @return String description of the snippet
      */
     public function getDesc()
     {
-        return $this->mDesc;
+        return $this->_desc;
     }
 
-    /*
+    /**
      * @return String language of the snippet
      */
     public function getLanguage()
     {
-        return $this->mLanguage;
+        return $this->_language;
+    }
+
+    /**
+     * @return int id of language
+     */
+    public function getLanguageID()
+    {
+        return $this->_languageID;
+
     }
 
 }

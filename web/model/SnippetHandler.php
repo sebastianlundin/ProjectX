@@ -6,11 +6,11 @@ require_once 'Snippet.php';
 class SnippetHandler
 {
 
-    private $mDbHandler;
+    private $_dbHandler;
 
     public function __construct()
     {
-        $this->mDbHandler = new DbHandler();
+        $this->_dbHandler = new DbHandler();
     }
 
     /**
@@ -18,23 +18,24 @@ class SnippetHandler
      * @param int $aID id of a snippet
      * @return Snippet
      */
-    public function getSnippetByID($aID)
+    public function getSnippetByID($id)
     {
         $snippet = null;
-        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet WHERE id = ?")) {
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet WHERE id = ?")) {
 
-            $stmt->bind_param("i", $aID);
+            $stmt->bind_param("i", $id);
             $stmt->execute();
 
-            $stmt->bind_result($id, $author, $code, $title, $desc, $language);
+            $stmt->bind_result($snippetID, $author, $code, $title, $desc, $language);
             while ($stmt->fetch()) {
-                $snippet = new Snippet($author, $code, $title, $desc, $language, $id);
+                $snippet = new Snippet($author, $code, $title, $desc, $language, $snippetID);
             }
 
             $stmt->close();
 
         }
-        $this->mDbHandler->Close();
+        $this->_dbHandler->Close();
         return $snippet;
     }
 
@@ -46,8 +47,8 @@ class SnippetHandler
     {
         $snippets = array();
 
-        $this->mDbHandler->__wakeup();
-        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet")) {
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet")) {
             $stmt->execute();
 
             $stmt->bind_result($id, $code, $author, $title, $description, $language);
@@ -58,22 +59,21 @@ class SnippetHandler
 
             $stmt->close();
         }
-
-        $this->mDbHandler->close();
+        $this->_dbHandler->close();
 
         return $snippets;
     }
 
-    public function createSnippet(Snippet $aSnippet)
+    public function createSnippet(Snippet $snippet)
     {
-        $this->mDbHandler->__wakeup();
-        $author = $aSnippet->getAuthor();
-        $code = $aSnippet->getCode();
-        $title = $aSnippet->getTitle();
-        $desc = $aSnippet->getDesc();
-        $language = $aSnippet->getLanguage();
+        $this->_dbHandler->__wakeup();
+        $author = $snippet->getAuthor();
+        $code = $snippet->getCode();
+        $title = $snippet->getTitle();
+        $desc = $snippet->getDesc();
+        $language = $snippet->getLanguageID();
 
-        if ($databaseQuery = $this->mDbHandler->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
+        if ($databaseQuery = $this->_dbHandler->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
             $databaseQuery->bind_param('sssss', $author, $code, $title, $desc, $language);
             $databaseQuery->execute();
             if ($databaseQuery->affected_rows == null) {
@@ -85,14 +85,14 @@ class SnippetHandler
             return false;
         }
 
-        $this->mDbHandler->close();
+        $this->_dbHandler->close();
         return true;
     }
 
-    public function updateSnippet($aSnippetName, $aSnippetCode, $aSnippetID)
+    public function updateSnippet($snippetName, $snippetCode, $snippetID)
     {
-        $databaseQuery = $this->mDbHandler->PrepareStatement("UPDATE SnippetsTable SET snippetName = ?, snippetCode = ? WHERE snippetID = ?");
-        $databaseQuery->bind_param('ssi', $$aSnippetName, $aSnippetCode, $aSnippetID);
+        $databaseQuery = $this->_dbHandler->PrepareStatement("UPDATE SnippetsTable SET snippetName = ?, snippetCode = ? WHERE snippetID = ?");
+        $databaseQuery->bind_param('ssi', $snippetName, $snippetCode, $snippetID);
         $databaseQuery->execute();
         if ($databaseQuery->affected_rows == null) {
             return false;
@@ -101,15 +101,103 @@ class SnippetHandler
         return true;
     }
 
-    public function deleteSnippet($aSnippetID)
+    public function deleteSnippet($snippetID)
     {
-        $databaseQuery = $this->mDbHandler->PrepareStatement("DELETE FROM SnippetsTable WHERE snippetID = ?");
-        $databaseQuery->bind_param('i', $aSnippetID);
+        $databaseQuery = $this->_dbHandler->PrepareStatement("DELETE FROM SnippetsTable WHERE snippetID = ?");
+        $databaseQuery->bind_param('i', $snippetID);
         $databaseQuery->execute();
         if ($databaseQuery->affected_rows == null) {
             return false;
         }
         $databaseQuery->close();
+    }
+
+    /**
+     * returns a defined number of snippets
+     * @param int number of snippets to return
+     * @return array with snippets
+     */
+    public function getNrOfSnippets($nr)
+    {
+        if($nr == 0) {
+            $nr = 1;
+        }    
+        $snippets = array();
+  
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet LIMIT ?")) {
+            $stmt->bind_param("i", $nr);
+            $stmt->execute();
+
+            $stmt->bind_result($id, $code, $author, $title, $description, $language);
+            while ($stmt->fetch()) {
+                $snippet = new Snippet($code, $author, $title, $description, $language, $id);
+                array_push($snippets, $snippet);
+            }
+
+            $stmt->close();
+        } else {
+            return null;
+        }
+
+        $this->_dbHandler->close();
+
+        return $snippets;
+    }
+
+    /**
+     * returns array with namne and id of language
+     * @param int id of language
+     * @return Array
+     */
+    public function getLanguageByID($id)
+    {
+        $language = array();
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet_language WHERE id = ?")) {
+
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+
+            $stmt->bind_result($id, $name);
+            while ($stmt->fetch()) {
+                $language = array('id' => $id, 'name' => $name);
+            }
+
+            $stmt->close();
+
+        } else {
+            return null;
+        }
+        $this->_dbHandler->Close();
+        return $language;
+
+    }
+
+    /**
+     * returns array with namne and id of all languages
+     *@return Array
+     */
+    public function getLanguages()
+    {
+        $languages = array();
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet_language")) {
+            $stmt->execute();
+
+            $stmt->bind_result($id, $name);
+            while ($stmt->fetch()) {
+                $language = array('id' => $id, 'name' => $name);
+                array_push($languages, $language);
+            }
+
+            $stmt->close();
+
+        } else {
+            return null;
+        }
+        $this->_dbHandler->Close();
+        return $languages;
     }
 
 }
