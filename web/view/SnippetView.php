@@ -40,7 +40,7 @@ class SnippetView
             $html .= '
                 <div class="snippet-list-item">
                     <div class="snippet-title">
-                        <h3><a href="?snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
+                        <h3><a href="?page=listsnippets&snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
                     </div>
                     <div class="snippet-description">
                         <p>' . $snippet->getDesc() . '</p>

@@ -1,0 +1,106 @@
+/*
+ * BODY
+ * ---------------------------- */
+body {
+    font-family: Arial;
+    background: #19556f;
+}
+
+/*
+ * TOPBAR
+ * ---------------------------- */
+.topbar {
+    height: 30px;
+    background: #041721;
+    color: #fff;
+}
+
+.topbar a {
+    color: #fff;
+    font-family: Arial;
+    font-size: 14px;
+    font-style: italic;
+    text-decoration: none;
+}
+
+.topbar ul {
+    list-style-type: none;
+}
+
+.topbar li {
+    display: inline;
+}
+
+.topbar .right {
+    float: right;
+}
+
+.topbar-inner {
+    width: 940px;
+    line-height: 30px;
+    margin: 0 auto;
+}
+
+/*
+ * CONTAINER
+ * ---------------------------- */
+.container {
+    width:  940px;
+    background: #fff;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+a {
+    color: #000;
+}
+
+/*
+ * SEARCH
+ * ---------------------------- */
+
+.content .search {
+    text-align: center;
+    margin: 100px 0;
+}
+
+.content .search img {
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+.content .search input[type="text"] {
+    width: 250px;
+    margin-bottom: 10px;
+}
+
+.content .search input[type="submit"] {
+    border: 0;
+    background: #0d3b51;
+    color: #fff;
+    padding: 3px 10px;
+}
+
+.content .search a {
+    font-style: italic;
+}
+
+/*.search .center {
+    position:relative;
+    width: 940px;
+    height: 150px;
+    top: 50%;
+    margin-top: -75px;
+}*/
+
+/*
+ * CODE
+ * ---------------------------- */
+code {
+    margin: 50px;
+}
+
+code ol {
+    list-style-type: decimal;
+    margin-left: 50px;
+}

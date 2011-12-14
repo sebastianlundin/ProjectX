@@ -45,9 +45,9 @@ class CommentView
                 $message .= "<p> Kommentaren skrivet av: " . $comments[$i]->getUser()->getUserName() . "</p>";
                 $message .= "</div>";
 
-                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a>";
+                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a>";
 
-                $message .= "</br><a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&editComment=" . $comments[$i]->getCommentId() . "'>Redigera</a>";
+                $message .= "</br><a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&editComment=" . $comments[$i]->getCommentId() . "'>Redigera</a>";
 
                 $message .= "</br>";
                 $message .= "<hr>";
