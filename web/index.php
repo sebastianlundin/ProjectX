@@ -21,7 +21,7 @@ $_html = $_mc->doControll();
                 <div class="topbar-inner">
                     <ul class="nav">
                         <li>
-                            <a href="?page=home">Home</a> /
+                            <a href="index.php">Home</a> /
                         </li>
                         <li>
                             <a href="?page=listsnippets">Snippets</a> /

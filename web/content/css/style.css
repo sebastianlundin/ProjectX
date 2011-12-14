@@ -96,8 +96,8 @@ a {
 /*
  * CODE
  * ---------------------------- */
-code {
-    margin: 50px;
+.snippet-code {
+    margin: 10px 0;
 }
 
 code ol {

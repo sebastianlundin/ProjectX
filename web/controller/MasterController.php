@@ -17,17 +17,7 @@ class MasterController
     {
         session_start();
         if (isset($_GET['page'])) {
-            if ($_GET['page'] == 'home') {
-                //TODO TEMPORARY FOR VIEW ON INDEX PAGE
-                $this->_html = '<div class="search">
-                    <img src="content/image/logo.png" />
-                    <input type="text" />
-                    <input type="submit" value="Search" class="searchbutton" /><br />
-                    
-                    <a href="#">Advanced search</a> &bull; <a href="#">Browse</a>
-                </div>';
-            }
-            else if ($_GET['page'] == 'listsnippets') {
+            if ($_GET['page'] == 'listsnippets') {
                 $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('list');
             }
@@ -35,6 +25,14 @@ class MasterController
                 $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('add');
             }
+        } else {
+            $this->_html = '<div class="search">
+                <img src="content/image/logo.png" />
+                <input type="text" />
+                <input type="submit" value="Search" class="searchbutton" /><br />
+                
+                <a href="#">Advanced search</a> &bull; <a href="#">Browse</a>
+            </div>';
         }
         
         return $this->_html;
