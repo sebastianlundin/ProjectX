@@ -1,22 +1,43 @@
 <?php
 
-require_once ('application/helpers/DbHandler.php');
-require_once ('application/snippetObject.php');
+/**
+ * file Functions.php
+ *
+ * @author   Pontus <bopontuskarlsson@hotmail.com>
+ * @version  1.0
+ * @category projectX
+ * @package  ProjectX
+ */
 
-class Snippets {
-	
-	private $mDbHandler;
+/**
+ * @see DbHandler.php
+ */
+require_once ('application/helpers/DbHandler.php');
+
+/**
+ * Snippets class
+ * 
+ * All functions in the api that handles snippets plural
+ *
+ * @author   Pontus
+ * @version  1.0
+ * @category projectX
+ * @package  ProjectX
+ */
+class Snippets
+{
+
+    private $mDbHandler;
 
     public function index()
     {
         $this->mDbHandler = new DbHandler();
-		
-		if(!isset($_GET)) return $this->getAllSnippets();
 
-		if($_GET['lang']) return $this->getLang($_GET['lang']);
-		
-		return "soo wrong";
-		
+        if (isset($_GET['lang']))
+            return $this->getLang($_GET['lang']);
+
+        return $this->getAllSnippets();
+
     }
 
     /**
@@ -27,13 +48,15 @@ class Snippets {
     public function getSnippetByID($aID)
     {
         $snippet = null;
-        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet WHERE id = ?")) {
+        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet WHERE id = ?"))
+        {
 
             $stmt->bind_param("i", $aID);
             $stmt->execute();
 
             $stmt->bind_result($id, $author, $code, $title, $desc, $language);
-            while ($stmt->fetch()) {
+            while ($stmt->fetch())
+            {
                 $snippet = new Snippet($author, $code, $title, $desc, $language, $id);
             }
 
@@ -43,26 +66,24 @@ class Snippets {
         $this->mDbHandler->Close();
         return $snippet;
     }
-	
-	//-------------------------------------------------
-	public function getLang($lang)
+
+    //----------------Temp function---------------------------------
+    public function getLang($lang)
     {
         $snippets = array();
 
         $this->mDbHandler->__wakeup();
-        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet WHERE language = ?")) {
+        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet WHERE language = ?"))
+        {
             $stmt->bind_param("s", $lang);
-			$stmt->execute();
+            $stmt->execute();
 
             $stmt->bind_result($id, $code, $author, $title, $description, $language);
-            while ($stmt->fetch()) {
+            while ($stmt->fetch())
+            {
                 //$snippet = new SnippetObject($code, $author, $title, $description, $language, $id);
-				$snippet = array('code' => $code,
-								'author' => $author,
-								'title' => $title,
-								'description' => $description,
-								'language' => $language,
-								'id' => $id);
+                $snippet = array('code' => $code, 'author' => $author, 'title' => $title,
+                    'description' => $description, 'language' => $language, 'id' => $id);
                 array_push($snippets, $snippet);
             }
 
@@ -73,8 +94,8 @@ class Snippets {
 
         return $snippets;
     }
-	//-----------------------------------------------------
-	
+    //-----------------------------------------------------
+
     /**
      * Get all the snippets
      * @return array
@@ -84,18 +105,16 @@ class Snippets {
         $snippets = array();
 
         $this->mDbHandler->__wakeup();
-        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet")) {
+        if ($stmt = $this->mDbHandler->PrepareStatement("SELECT * FROM snippet"))
+        {
             $stmt->execute();
 
             $stmt->bind_result($id, $code, $author, $title, $description, $language);
-            while ($stmt->fetch()) {
+            while ($stmt->fetch())
+            {
                 //$snippet = new SnippetObject($code, $author, $title, $description, $language, $id);
-				$snippet = array('code' => $code,
-								'author' => $author,
-								'title' => $title,
-								'description' => $description,
-								'language' => $language,
-								'id' => $id);
+                $snippet = array('code' => $code, 'author' => $author, 'title' => $title,
+                    'description' => $description, 'language' => $language, 'id' => $id);
                 array_push($snippets, $snippet);
             }
 
@@ -116,15 +135,18 @@ class Snippets {
         $desc = $aSnippet->getDesc();
         $language = $aSnippet->getLanguage();
 
-        if ($databaseQuery = $this->mDbHandler->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
+        if ($databaseQuery = $this->mDbHandler->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)"))
+        {
             $databaseQuery->bind_param('sssss', $author, $code, $title, $desc, $language);
             $databaseQuery->execute();
-            if ($databaseQuery->affected_rows == null) {
+            if ($databaseQuery->affected_rows == null)
+            {
                 $databaseQuery->close();
                 return false;
             }
             $databaseQuery->close();
-        } else {
+        } else
+        {
             return false;
         }
 
@@ -137,7 +159,8 @@ class Snippets {
         $databaseQuery = $this->mDbHandler->PrepareStatement("UPDATE SnippetsTable SET snippetName = ?, snippetCode = ? WHERE snippetID = ?");
         $databaseQuery->bind_param('ssi', $$aSnippetName, $aSnippetCode, $aSnippetID);
         $databaseQuery->execute();
-        if ($databaseQuery->affected_rows == null) {
+        if ($databaseQuery->affected_rows == null)
+        {
             return false;
         }
         $databaseQuery->close();
@@ -149,7 +172,8 @@ class Snippets {
         $databaseQuery = $this->mDbHandler->PrepareStatement("DELETE FROM SnippetsTable WHERE snippetID = ?");
         $databaseQuery->bind_param('i', $aSnippetID);
         $databaseQuery->execute();
-        if ($databaseQuery->affected_rows == null) {
+        if ($databaseQuery->affected_rows == null)
+        {
             return false;
         }
         $databaseQuery->close();

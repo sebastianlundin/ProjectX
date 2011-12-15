@@ -12,7 +12,7 @@ class Settings
         $this->m_dbname = "projectx";
         $this->m_host = "localhost";
         $this->m_username = "root";
-		$this->m_password = "";
+        $this->m_password = "";
     }
 
     /**

@@ -16,11 +16,13 @@ class DbHandler
     public function connect()
     {
         $this->mSettings = new Settings();
-        $this->mMySqliObject = new mysqli($this->mSettings->GetHost(), $this->mSettings->GetUsername(), $this->mSettings->GetPassword(), $this->mSettings->GetDbName());
+        $this->mMySqliObject = new mysqli($this->mSettings->GetHost(), $this->mSettings->
+            GetUsername(), $this->mSettings->GetPassword(), $this->mSettings->GetDbName());
 
         $this->mMySqliObject->set_charset("utf8");
 
-        if (mysqli_connect_errno()) {
+        if (mysqli_connect_errno())
+        {
             exit();
             return false;
         }
