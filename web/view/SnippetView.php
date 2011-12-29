@@ -14,7 +14,7 @@ class SnippetView
         $sh = new Functions();
 
         $html = "<h2>" . $snippet->getTitle() . "</h2>
-		<div class='snippet-desc'>
+		<div class='snippet-description'>
 			<p>" . $snippet->getDesc() . "</p>	
 		</div>
 		<div class='snippet-code'>
@@ -34,7 +34,7 @@ class SnippetView
      */
     public function listView($snippets)
     {
-        $html = '';
+        $html = '<h1>Latest snippets</h1>';
 
         foreach ($snippets as $snippet) {
             $html .= '
@@ -42,11 +42,8 @@ class SnippetView
                     <div class="snippet-title">
                         <h3><a href="?page=listsnippets&snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
                     </div>
-                    <div class="snippet-description">
-                        <p>' . $snippet->getDesc() . '</p>
-                    </div>
                     <div class="snippet-author">
-                        <p>Posted by: <i>' . $snippet->getAuthor() . '</i></p>
+                        <p>Posted by ' . $snippet->getAuthor() . '</p>
                     </div>
                 </div>
             ';
@@ -57,7 +54,7 @@ class SnippetView
 
     public function createSnippet($languages)
     {
-        $view = '
+        $view = '<h1>Create a snippet</h1>
             <div id="createSnippetContainer">
                 <form action="" method="post">
                     <div id="createSnippetNameDiv">

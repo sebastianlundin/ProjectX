@@ -10,7 +10,7 @@ $_html = $_mc->doControll();
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Snippet Thingy</title>
+        <title>Snippt</title>
         <link rel="stylesheet" href="content/css/reset.css">
         <link rel="stylesheet" href="content/css/style.css">
         <script src="script.js"></script>

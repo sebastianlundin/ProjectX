@@ -11,10 +11,10 @@ class CommentView
     public function doCommentForm()
     {
         $captcha = new Captcha();
-        $form = ("
+        $form = "<div id='comment'>
                     <form action='' method='POST'>
                         <label for='commentText'>Kommentar: </label><br/>
-                        <textarea name='commentText' rows = '5' cols ='40' maxlength='1500'></textarea>
+                        <textarea name='commentText' maxlength='1500'></textarea>
                         <br/>
                         <label for='author'>Namn:(ange siffran 6 så länge)</label><br/>
                         <input type='text' name='commentAuthor' value = ''/>
@@ -24,7 +24,7 @@ class CommentView
                         <input type='text' name='secure' value='' /><br/>
                         <input type='submit' name='submitComment' value='Skriv'/>
                     </form>
-                    ");
+                </div>  ";
         return $form;
     }
 
@@ -39,18 +39,12 @@ class CommentView
         $message = "";
         if (!empty($comments)) {
             for ($i = 0; $i < count($comments); $i++) {
-                $message .= "<div>";
-                $message .= "<p>kommentar till snippetId: " . $comments[$i]->getSnippetId() . "</p>";
-                $message .= "<p>komentarens text: " . $comments[$i]->getCommentText() . "</p>";
-                $message .= "<p> Kommentaren skrivet av: " . $comments[$i]->getUser()->getUserName() . "</p>";
+                $message .= "<div class='comments'>";
+                $message .= "<p class='snippet-author'>" . $comments[$i]->getUser()->getUserName() . "</p>";
+                $message .= "<p>" . $comments[$i]->getCommentText() . "</p>";
+                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a> ";
+                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&editComment=" . $comments[$i]->getCommentId() . "'>Redigera</a>";
                 $message .= "</div>";
-
-                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a>";
-
-                $message .= "</br><a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&editComment=" . $comments[$i]->getCommentId() . "'>Redigera</a>";
-
-                $message .= "</br>";
-                $message .= "<hr>";
             }
         } else {
             $message .= "<br/>Det finns inga kommentarer för denna snippet.";

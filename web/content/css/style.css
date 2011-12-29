@@ -6,6 +6,15 @@ body {
     background: #19556f;
 }
 
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 22px;
+    text-transform: uppercase;
+}
+
 /*
  * TOPBAR
  * ---------------------------- */
@@ -94,13 +103,58 @@ a {
 }*/
 
 /*
+ * SNIPPET LIST
+ * ---------------------------- */
+.snippet-list-item {
+    margin: 5px 0;
+}
+
+.snippet-title {
+    font-size: 18px;
+    text-transform: uppercase;
+    margin: 5px 0;
+}
+
+.snippet-title a {
+    text-decoration: none;
+}
+
+.snippet-description {
+    font-size: 15px;
+    margin: 5px 0;
+}
+
+.snippet-author {
+    font-size: 12px;
+}
+
+.snippet-description:first-letter, .snippet-author:first-letter {
+    text-transform: capitalize;
+}
+
+/*
  * CODE
  * ---------------------------- */
 .snippet-code {
+    font-size: 14px;
     margin: 10px 0;
 }
 
 code ol {
     list-style-type: decimal;
     margin-left: 50px;
+}
+
+/*
+ * CODE
+ * ---------------------------- */
+textarea {
+    width: 500px;
+    height: 200px;
+}
+
+.comments {
+    width: 600px;
+    padding: 5px;
+    margin: 5px 0;
 }
