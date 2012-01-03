@@ -6,6 +6,7 @@ require_once dirname(__FILE__) . '/../model/DbHandler.php';
 require_once dirname(__FILE__) . '/../controller/CommentController.php';
 require_once dirname(__FILE__) . '/../model/CommentHandler.php';
 require_once dirname(__FILE__) . '/../view/CommentView.php';
+require_once dirname(__FILE__) . '/../model/PagingHandler.php';
 
 class SnippetController
 {
@@ -14,14 +15,16 @@ class SnippetController
     private $_snippetView;
     private $_html;
     private $_commentController;
+    private $_pagingHandler;
 
     public function __construct()
     {
-
+        
         $this->_dbHandler = new DbHandler();
         $this->_snippetHandler = new SnippetHandler($this->_dbHandler);
         $this->_snippetView = new SnippetView();
         $this->_commentController = new CommentController($this->_dbHandler);
+        $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
         $this->_html = '';
     }
 
@@ -34,8 +37,17 @@ class SnippetController
             $this->_html .= "<br /><a href='index.php'>Till startsidan</a>";
             $this->_html .= $this->_commentController->doControll();
         } else {
-
-            $this->_html .= $this->_snippetView->listView($this->_snippetHandler->getAllSnippets());
+            
+            if (isset($_GET['page']) == false) {
+                
+                $_GET['page'] = 1;    
+            }else {
+                
+                $this->_pagingHandler->setPage($_GET['page']);    
+            }
+            
+            $this->_pagingHandler->setOffset($_GET['page']);
+            $this->_html .= $this->_snippetView->listView($this->_pagingHandler->fetchSnippets(), $this->_pagingHandler->getPrevious(), $this->_pagingHandler->getNext());
             $this->_html .= "<br /><a href='?page=addsnippet'>Add snippet</a>";
         }
 
