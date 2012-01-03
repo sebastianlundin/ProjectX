@@ -35,7 +35,6 @@ class SnippetController
             } else {
     
                 $this->_html .= $this->_snippetView->listView($this->_snippetHandler->getAllSnippets());
-                $this->_html .= "<br /><a href='?page=addsnippet'>Add snippet</a>";
             }
         } else if ($page == 'add') {
 

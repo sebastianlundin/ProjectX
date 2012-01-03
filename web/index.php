@@ -27,6 +27,9 @@ $_html = $_mc->doControll();
                             <a href="?page=listsnippets">Snippets</a> /
                         </li>
                         <li>
+                        <a href='?page=addsnippet'>Add snippet</a> /
+                        </li>
+                        <li>
                             <a href="#">News</a> /
                         </li>
                         <li>

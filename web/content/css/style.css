@@ -3,7 +3,12 @@
  * ---------------------------- */
 body {
     font-family: Arial;
+    font-size: 13px;
     background: #19556f;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 10px 0;
 }
 
 h1 {
@@ -13,6 +18,15 @@ h1 {
 h2 {
     font-size: 22px;
     text-transform: uppercase;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+input, textarea, select  {
+    display: block;
+    margin-bottom: 5px;
 }
 
 /*
@@ -81,6 +95,7 @@ a {
 .content .search input[type="text"] {
     width: 250px;
     margin-bottom: 10px;
+    display: inline;
 }
 
 .content .search input[type="submit"] {
@@ -88,24 +103,18 @@ a {
     background: #0d3b51;
     color: #fff;
     padding: 3px 10px;
+    display: inline;
 }
 
 .content .search a {
     font-style: italic;
 }
 
-/*.search .center {
-    position:relative;
-    width: 940px;
-    height: 150px;
-    top: 50%;
-    margin-top: -75px;
-}*/
-
 /*
  * SNIPPET LIST
  * ---------------------------- */
 .snippet-list-item {
+    border-top: dashed 1px #ddd;
     margin: 5px 0;
 }
 
@@ -124,7 +133,7 @@ a {
     margin: 5px 0;
 }
 
-.snippet-author {
+.snippet-list-item .snippet-author, .snippet-tags {
     font-size: 12px;
 }
 
@@ -132,11 +141,15 @@ a {
     text-transform: capitalize;
 }
 
+.snippet-tags {
+    margin: 5px 0 10px;
+}
+
 /*
  * CODE
  * ---------------------------- */
 .snippet-code {
-    font-size: 14px;
+    font-size: 13px;
     margin: 10px 0;
 }
 
@@ -146,7 +159,7 @@ code ol {
 }
 
 /*
- * CODE
+ * COMMENTS
  * ---------------------------- */
 textarea {
     width: 500px;
@@ -154,7 +167,21 @@ textarea {
 }
 
 .comments {
-    width: 600px;
+    border-top: solid 3px #ddd;
     padding: 5px;
     margin: 5px 0;
+}
+
+.snippet-author, .comments .date {
+    font-weight: bold;
+    display: inline;
+}
+
+.comments .date {
+    float: right;   
+}
+
+.comments .text {
+    word-wrap: break-word;
+    margin-top: 10px;
 }
