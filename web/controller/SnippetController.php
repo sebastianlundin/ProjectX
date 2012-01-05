@@ -28,34 +28,21 @@ class SnippetController
         $this->_html = '';
     }
 
-    public function doControll()
+    public function doControll($page)
     {
-
-        if (isset($_GET['snippet'])) {
-
-            $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
-            $this->_html .= "<br /><a href='index.php'>Till startsidan</a>";
-            $this->_html .= $this->_commentController->doControll();
-        } else {
-            
-            if (isset($_GET['page']) == false) {
-                
-                $_GET['page'] = 1;    
-            }else {
-                
-                $this->_pagingHandler->setPage($_GET['page']);    
+        if ($page == 'list') {
+            if (isset($_GET['snippet'])) {
+    
+                $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
+                $this->_html .= $this->_commentController->doControll();
+            } else {
+    
+                $this->_html .= $this->_snippetView->listView($this->_snippetHandler->getAllSnippets());
             }
-            
-            $this->_pagingHandler->setOffset($_GET['page']);
-            $this->_html .= $this->_snippetView->listView($this->_pagingHandler->fetchSnippets(), $this->_pagingHandler->getPrevious(), $this->_pagingHandler->getNext());
-            $this->_html .= "<br /><a href='?page=addsnippet'>Add snippet</a>";
-        }
-
-        if (isset($_GET['page']) && $_GET['page'] == 'addsnippet') {
+        } else if ($page == 'add') {
 
             $this->_html = null;
             $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
-            $this->_html .= "<br /><a href='index.php'>Till startsidan</a>";
 
             if ($this->_snippetView->triedToCreateSnippet()) {
 
