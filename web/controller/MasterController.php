@@ -2,14 +2,18 @@
 require_once dirname(__FILE__) . '/../model/SnippetHandler.php';
 require_once dirname(__FILE__) . '/../view/SnippetView.php';
 require_once dirname(__FILE__) . '/SnippetController.php';
+require_once dirname(__FILE__) . '/SearchController.php';
 
 class MasterController
 {
     private $_snippetController;
+    private $_searchController;
     private $_html;
 
     public function __construct()
     {
+        $this->_snippetController = new SnippetController();
+        $this->_searchController = new SearchController();
         $this->_html = '';
     }
 
@@ -18,21 +22,17 @@ class MasterController
         session_start();
         if (isset($_GET['page'])) {
             if ($_GET['page'] == 'listsnippets') {
-                $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('list');
             }
             else if ($_GET['page'] == 'addsnippet') {
-                $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('add');
             }
-        } else {
-            $this->_html = '<div class="search">
-                <img src="content/image/logo.png" />
-                <input type="text" />
-                <input type="submit" value="Search" class="searchbutton" /><br />
-                
-                <a href="#">Advanced search</a> &bull; <a href="#">Browse</a>
-            </div>';
+            else if($_GET['page'] == 'search') {
+                            
+                $this->_html .= $this->_searchController->doControll();
+            }
+        }else {
+            $this->_html .= $this->_searchController->doControll();
         }
         
         return $this->_html;
