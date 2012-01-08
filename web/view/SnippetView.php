@@ -32,7 +32,7 @@ class SnippetView
      * @param array $aSnippets is an array of snippets
      * @return string
      */
-    public function listView($snippets, $previousLink, $nextLink)
+    public function listView($snippets, $previousLink,$links, $nextLink)
     {
         $html = '<h1>Snippets</h1>';
 
@@ -53,14 +53,14 @@ class SnippetView
                 </div>
             ';
         }
-       
-        $html .= '<a href="?page='.$previousLink.'">Previous</a> ';
+         
+        $html .= '<a href="?page=listsnippets&pagenumber='.$previousLink.'">Previous</a> ';
         
-        // for ($i = 0; $i < $links.length; $i++) {
-            // $html .= '<a href="?page=' .$i. '">' .$i. '</a>';
-        // }
+        foreach ($links as $i) {
+            $html .= '<a href="?page=listsnippets&pagenumber=' .$i. '">' .$i. '</a> ';
+        }
         
-        $html .= ' <a href="?page=' .$nextLink. '">Next</a><br>';
+        $html .= ' <a href="?page=listsnippets&pagenumber=' .$nextLink. '">Next</a><br>';
 
         return $html;
     }

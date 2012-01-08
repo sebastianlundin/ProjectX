@@ -24,7 +24,7 @@ class PagingHandler {
     */
     public function setOffset($offset) {
            
-        $this->_offset = $offset * $this->_limit;
+        $this->_offset = ($offset - 1) * $this->_limit;
     }
     
     /**
@@ -37,23 +37,26 @@ class PagingHandler {
     }
     
     /**
+    * Returns the total amount of pages
+    * @return int
+    */
+    public function getTotal() {
+            
+        return $this->_totalPages; 
+    }
+    
+    /**
     * Returns an array of links
     * @return Array
     */
     public function getLinks() {
            
-        if ($this->_totalPages  <= 1) {
+        for ($i = 1; $i <= $this->_totalPages; $i++) {
             
-            return null;
-        }else {
-            
-            for ($i = 0; $i < $this->_totalPages; $i++) {
-                
-                $links[$i]['num'] = $i + 1;
-            }
-            
-            return $links;    
+            $links[$i] = $i;
         }
+        
+        return $links;    
     }
 
     /**
@@ -65,6 +68,7 @@ class PagingHandler {
         if ($this->_page < 1) {
             
             $this->_page = 1;
+            return $this->_page;
         }
         
         return $this->_page - 1;  
@@ -78,7 +82,7 @@ class PagingHandler {
         
         if ($this->_page > $this->_totalPages) {
             
-            $this->_page = $this->_totalPages;
+            return false;
         }
         
         return $this->_page + 1;        
@@ -90,13 +94,18 @@ class PagingHandler {
     */
     public function fetchSnippets() {
         
-        $this->_offset = $this->_page * $this->_limit;
+        $this->_limit += $this->_offset;
+        
+        if ($this->_limit > $this->_totalSnippets) {
+            
+            $this->_limit = $this->_totalSnippets;    
+        }
         
         $snippetsToShow = array();
         
-        for ($i = $this->_offset; $i < $this->_limit + $this->_offset; $i++) {
-            
-            array_push($snippetsToShow, $this->_snippets[$i+$this->_offset]);     
+        for ($i = $this->_offset; $i < $this->_limit; $i++) {
+        
+            array_push($snippetsToShow, $this->_snippets[$i]);     
         }
         
         return $snippetsToShow;
