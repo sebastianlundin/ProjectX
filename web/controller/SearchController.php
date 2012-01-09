@@ -36,7 +36,7 @@ class SearchController
              * just nu kan man skriva ord från title, code eller desc samt välja språk (PHP som första val)
              */
             //$this->_html .= $this->_searchView->searchAnswerView($this->_snippetHandler->searchByTitle($searchQuery));
-            $this->_html .= $this->_snippetView->listView($this->_snippetHandler->searchByTitle($searchQuery),1,$arrToPreventError,1);
+            $this->_html .= $this->_snippetView->listView($this->_snippetHandler->searchByTitle($searchQuery),1,$arrToPreventError,1,false,false);
             //$this->_html .= $this->_searchView->searchAnswerView($this->_snippetHandler->searchByDescription($searchQuery));
             //$this->_html .= $this->_searchView->searchAnswerView($this->_snippetHandler->searchByCode($searchQuery));
             //$this->_html .= $this->_searchView->searchAnswerView($this->_snippetHandler->fullSearch($searchQuery));
