@@ -14,14 +14,14 @@ class SnippetView
         $sh = new Functions();
 
         $html = "<h2>" . $snippet->getTitle() . "</h2>
-		<div class='snippet-desc'>
+		<div class='snippet-description'>
 			<p>" . $snippet->getDesc() . "</p>	
 		</div>
 		<div class='snippet-code'>
 			<code>" . $sh->geshiHighlight($snippet->getCode(), $snippet->getLanguage()) . "</code>
 		</div>
 		<div class='snippet-author'>
-			<span>" . $snippet->getAuthor() . "</span>
+			<span>Posted by " . $snippet->getAuthor() . "</span>
 		</div>";
 
         return $html;
@@ -32,24 +32,47 @@ class SnippetView
      * @param array $aSnippets is an array of snippets
      * @return string
      */
-    public function listView($snippets)
+    public function listView($snippets, $previousLink, $links, $nextLink, $showPrevious, $showNext)
     {
-        $html = '';
+        $html = '<h1>Snippets</h1>';
 
         foreach ($snippets as $snippet) {
             $html .= '
                 <div class="snippet-list-item">
                     <div class="snippet-title">
-                        <h3><a href="?snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
-                    </div>
-                    <div class="snippet-description">
-                        <p>' . $snippet->getDesc() . '</p>
+                        <p><a href="?page=listsnippets&snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></p>
                     </div>
                     <div class="snippet-author">
-                        <p>Posted by: <i>' . $snippet->getAuthor() . '</i></p>
+                        <p>' . $snippet->getDesc() . '</p>
+                    </div>
+                    <div class="snippet-tags">
+                        <a href="#">PHP</a>, 
+                        <a href="#">Snippet</a>, 
+                        <a href="#">lipsum</a>
                     </div>
                 </div>
             ';
+        }
+
+        if ($showPrevious == true) {
+
+            $html .= '<a href="?page=listsnippets&pagenumber=' . $previousLink . '">Previous</a> ';
+        }
+        if (isset($_GET['pagenumber'])) {
+            foreach ($links as $i) {
+
+                if ($i == $_GET['pagenumber']) {
+
+                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '"><span id="activePage">' . $i . '</span></a> ';
+                } else {
+
+                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '">' . $i . '</a> ';
+                }
+            }
+        }
+        if ($showNext == true) {
+
+            $html .= ' <a href="?page=listsnippets&pagenumber=' . $nextLink . '">Next</a><br>';
         }
 
         return $html;
@@ -57,36 +80,24 @@ class SnippetView
 
     public function createSnippet($languages)
     {
-        $view = '
+        $html = '<h1>Add a new snippet</h1>
             <div id="createSnippetContainer">
                 <form action="" method="post">
-                    <div id="createSnippetNameDiv">
-                        <p>Title:</p>
-                        <input type="text" name="snippetTitle" id="createSnippetNameInput" />
-                        <p>Description:</p>
-                        <input type="text" name="snippetDescription" id="createSnippetNameInput" />
-                        <p>Language:</p>
-                        <select name="snippetLanguage">';
+                    <input type="text" name="snippetTitle" placeholder="Title" />
+                    <input type="text" name="snippetDescription" placeholder="Description" />
+                    <select name="snippetLanguage">
+                        <option>Choose language</option>';
         foreach ($languages as &$languages) {
-            $view .= '<option value="' . $languages['id'] . '">' . $languages['name'] . '</option>';
+            $html .= '<option value="' . $languages['id'] . '">' . $languages['name'] . '</option>';
         }
-        $view .= '</select>    
-                    </div>
-
-                    <div id="createSnippetCodeDiv">
-                        <p>Snippet:</p>
-                        <textarea cols="50" rows="20" name="createSnippetCodeInput" id="createSnippetCodeInput"></textarea>
-                    </div>
-
-                    <div id="createSnippetButton">
-                        <input type="submit" name="createSnippetSaveButton" id="createSnippetSaveButton" value="Create snippet" />
-                    </div>
+        $html .= '</select>
+                    <textarea name="createSnippetCodeInput" maxlength="1500" placeholder="Your snippet"></textarea>
+                    <input type="submit" name="createSnippetSaveButton" id="createSnippetSaveButton" value="Create snippet" />
                 </form>
             </div>
         ';
-        return $view;
+        return $html;
     }
-
 
     public function updateSnippet($snippet)
     {
@@ -236,7 +247,6 @@ class SnippetView
             return $snippetID;
         }
     }
-
 
     public function triedToDeleteSnippet()
     {
