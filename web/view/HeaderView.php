@@ -3,7 +3,7 @@
 class HeaderView
 {
 
-    public function inloggedHeader($name)
+    public function inloggedHeader($name, $userPic)
     {
         $html = "<div class='topbar-wrapper'>
             <div class='topbar'>
@@ -30,14 +30,11 @@ class HeaderView
                         <li>
                             <a href='#'>Register</a>
                         </li>
-                        <li>
-                            <a href='?logout=true'>Logga ut</a>
-                        </li>
                         <li class ='right'>
                             <a href='?logout=true'>Logga ut</a>
                         </li>
                         <li class='right'>
-                            <img src='' alt='as' />
+                            <img id='topAvatar' src='$userPic' alt='as' />
                         </li>
                         <li class='right'>
                             Hello, $name

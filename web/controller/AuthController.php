@@ -33,9 +33,14 @@ class AuthController
 
             if ($result['stat'] == 'ok') {
                 $name = $result['profile']['name']['formatted'];
-                $email = $result['profile']['email'];
                 $identifier = $result['profile']['identifier'];
                 $provider = $result['profile']['providerName'];
+                
+                if(!empty($result['profile']['email'])) {
+                    $email = $result['profile']['email'];
+                } else {
+                    $email = null;
+                }
 
                 if ($result['profile']['providerName'] == 'Twitter') {
                     if (!$this->_userHandler->twitterExists($identifier)) {

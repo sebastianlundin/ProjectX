@@ -28,4 +28,9 @@ class User
         return $this->_name;
     }
 
+    public function getEmail()
+    {
+        return $this->_email;
+    }
+
 }

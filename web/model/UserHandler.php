@@ -111,7 +111,7 @@ class UserHandler
             $stmt->close();
         }
         $this->_dbHandler->close();
-        
+
         return $user;
     }
 
@@ -142,14 +142,14 @@ class UserHandler
     public function twitterExists($identifier)
     {
         $this->_dbHandler->__wakeup();
-        $userExist = false;
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM user_auth WHERE identifier = ?")) {
 
-            $stmt->bind_param("i", $identifier);
+            $stmt->bind_param("s", $identifier);
             $stmt->execute();
-
+            $stmt->store_result();
+            
             if ($stmt->num_rows > 0) {
-                $userExist = true;
+                return true;
             }
 
             $stmt->close();
@@ -158,7 +158,7 @@ class UserHandler
             return null;
         }
         $this->_dbHandler->Close();
-        return $userExist;
+        return false;
     }
 
     public function mergeUser()
