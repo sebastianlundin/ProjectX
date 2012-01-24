@@ -18,7 +18,7 @@ class UserHandler
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM user_auth WHERE email = ?")) {
 
-            $stmt->bind_param("i", $email);
+            $stmt->bind_param("s", $email);
             $stmt->execute();
             $stmt->store_result();
             if ($stmt->num_rows > 0) {

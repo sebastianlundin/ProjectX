@@ -41,7 +41,7 @@ class AuthController
                 } else {
                     $email = null;
                 }
-
+                
                 if ($result['profile']['providerName'] == 'Twitter') {
                     if (!$this->_userHandler->twitterExists($identifier)) {
                         $this->_userHandler->addUser($identifier, $provider, $name);
@@ -52,6 +52,7 @@ class AuthController
                         $this->_userHandler->addUser($identifier, $provider, $name, $email);
                     }
                     $user = $this->_userHandler->getUserByEmail($email);
+                    
                 }
                 AuthHandler::getInstance()->login($user);
 
@@ -62,6 +63,7 @@ class AuthController
         } else {
             echo "token !isset";
         }
+        
         header('location: index.php');
     }
 
