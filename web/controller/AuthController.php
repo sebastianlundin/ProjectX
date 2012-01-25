@@ -24,24 +24,33 @@ class AuthController
     function checkAuthToken()
     {
         $user = null;
+        //Check if a valid token isset
         if (!empty($_POST['token'])) {
             $token = $_POST['token'];
+            
+            //Get user information from janrain-engage api
             $result = $this->_auth->engage_auth_info($this->_conf->getApiKey(), $token);
             if ($result != false) {
                 $result = $this->_lib->engage_parse_result($result);
             }
 
+            //if user exists and the result status == ok
             if ($result['stat'] == 'ok') {
+                //get data from result json object
                 $name = $result['profile']['name']['formatted'];
                 $identifier = $result['profile']['identifier'];
                 $provider = $result['profile']['providerName'];
                 
+                //Twitter accounts doesn't return a email adress
+                //Set email to null if provider is Twitter
                 if(!empty($result['profile']['email'])) {
                     $email = $result['profile']['email'];
                 } else {
                     $email = null;
                 }
                 
+                //If provider is Twitter, check user database against
+                //account identifier instead of email
                 if ($result['profile']['providerName'] == 'Twitter') {
                     if (!$this->_userHandler->twitterExists($identifier)) {
                         $this->_userHandler->addUser($identifier, $provider, $name);
@@ -54,7 +63,7 @@ class AuthController
                     $user = $this->_userHandler->getUserByEmail($email);
                     
                 }
-                AuthHandler::getInstance()->login($user);
+                AuthHandler::login($user);
 
             } else {
                 echo "fel uppstod under inlogg";

@@ -2,13 +2,13 @@
 
 class GravatarHandler
 {
-	private $_topDefault = "";
+	private $_topDefault = "s";
 	private $_topSize = 25;
 
-	private $_postDefault = "";
+	private $_postDefault = "s";
 	private $_postSize = 40;
 
-	private $_profileDefault = "";
+	private $_profileDefault = "s";
 	private $_profileSize = 150;
 
 	/**

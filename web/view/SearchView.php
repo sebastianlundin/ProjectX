@@ -4,8 +4,8 @@ class SearchView {
     
     public function doSearchForm($langs) {
             $searchForm =       '<div class="search">
-                                    <form name="searchForm" action"" method="POST">
-                                    <img src="content/image/logo.png" />
+                                    <form name="searchForm" action="#" method="POST">
+                                    <img src="content/image/logo.png" alt="logo"/>
                                     <input type="text" name="q" />';
                 $searchForm .=      '<select class="langDropdown" id="lang" name="lang">';
                             		foreach($langs as $lang)

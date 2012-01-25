@@ -13,6 +13,11 @@ class UserHandler
         $this->_dbHandler = new DbHandler();
     }
 
+    /**
+     *Check if a user exist in database
+     * @param $email string Email adress to check user against
+     * @return boolean true if user exist
+     */
     public function doesUserExist($email)
     {
         $this->_dbHandler->__wakeup();
@@ -34,6 +39,14 @@ class UserHandler
         return false;
     }
 
+    /**
+     * Adds a user
+     * @param $identifier string
+     * @param $provider string
+     * @param $name string
+     * @param $email string
+     * @return boolean true if succsess
+     */
     public function addUser($identifier, $provider, $name, $email = 'null')
     {
         $this->_dbHandler->__wakeup();
@@ -75,6 +88,11 @@ class UserHandler
         return true;
     }
 
+    /**
+     *Delete a user from database
+     * @param int id of a user
+     * @return boolean true if succsess
+     */
     public function deleteUser($id)
     {
         $stmt = $this->_dbHandler->PrepareStatement("DELETE FROM User WHERE userID = ?");
@@ -91,6 +109,11 @@ class UserHandler
         return true;
     }
 
+    /**
+     * Get user from database by email
+     * @param $email string
+     * @return User
+     */
     public function getUserByEmail($email)
     {
         $user = null;
@@ -115,6 +138,11 @@ class UserHandler
         return $user;
     }
 
+    /**
+     * Get user from database by identifier
+     * @param $identifier string
+     * @return User
+     */
     public function getUserByIdentifier($identifier)
     {
         $user = null;
@@ -139,6 +167,11 @@ class UserHandler
         return $user;
     }
 
+    /**
+     *Check if a user exist in database
+     * @param $identifier string Identifier to check user against
+     * @return boolean true if user exist
+     */
     public function twitterExists($identifier)
     {
         $this->_dbHandler->__wakeup();
@@ -147,7 +180,7 @@ class UserHandler
             $stmt->bind_param("s", $identifier);
             $stmt->execute();
             $stmt->store_result();
-            
+
             if ($stmt->num_rows > 0) {
                 return true;
             }
@@ -159,11 +192,6 @@ class UserHandler
         }
         $this->_dbHandler->Close();
         return false;
-    }
-
-    public function mergeUser()
-    {
-
     }
 
 }

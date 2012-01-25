@@ -26,6 +26,15 @@ class AuthHandler
         }
     }
 
+    public static function isLoggedIn()
+    {
+        if (isset($_SESSION['user'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function logout()
     {
         unset($_SESSION['user']);

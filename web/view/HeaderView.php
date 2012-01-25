@@ -2,7 +2,11 @@
 
 class HeaderView
 {
-
+    /**
+     * @param $name string Name of user
+     * @param $userPic string url of user avatar
+     * @return string View of header with logged in layout
+     */
     public function inloggedHeader($name, $userPic)
     {
         $html = "<div class='topbar-wrapper'>
@@ -47,6 +51,9 @@ class HeaderView
         return $html;
     }
 
+    /**
+     * @return string View of header when user not logged in
+     */
     public function notLoggedInHeader()
     {
         $html = "<div class='topbar-wrapper'>

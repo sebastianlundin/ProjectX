@@ -34,5 +34,4 @@ class HeaderController
         
         return $this->_html;
     }
-
 }

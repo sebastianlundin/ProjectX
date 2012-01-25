@@ -13,8 +13,7 @@ class CommentView
         $captcha = new Captcha();
         $form = "<div id='comment'>
                     <h3>Post a comment</h3>
-                    <form action='' method='POST'>
-                        <input type='text' name='commentAuthor' value='6'/>
+                    <form action='#' method='POST'>
                         <textarea name='commentText' maxlength='1500' placeholder='Your comment'></textarea>
                         <label for='secure'></label>
                         <img src='secure.jpg' alt='Captcha image'/>
@@ -37,7 +36,7 @@ class CommentView
         if (!empty($comments)) {
             for ($i = 0; $i < count($comments); $i++) {
                 $message .= "<div class='comments'>";
-                $message .= "<p class='snippet-author'>" . $comments[$i]->getUser()->getUserName() . "</p>";
+                $message .= "<p class='snippet-author'>" . $comments[$i]->getUsername() . "</p>";
                 $message .= "<p class='date'>2012-01-01</p>";
                 $message .= "<p class='text'>" . $comments[$i]->getCommentText() . "</p>";
                 $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a> ";
@@ -62,8 +61,7 @@ class CommentView
         if ($comment) {
             $form = "<div id='comment'>
                         <h3>Update your comment</h3>
-                        <form action='' method='POST'>
-                            <input type='text' name='commentAuthor' placeholder='Name' value='" . $comment->getUser()->getUserName() . "' readonly='readonly'/>
+                        <form action='#' method='POST'>
                             <textarea name='commentText' maxlength='1500' placeholder='Your comment'>" . $comment->getCommentText() . "</textarea>
                             <input type='submit' name='updateComment' value='Update comment'/>
                         </form>
