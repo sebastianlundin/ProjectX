@@ -8,10 +8,6 @@ spl_autoload_register('spl_autoload');
 $r = new Restler();
 $r->setSupportedFormats('JsonFormat', 'XmlFormat');
 $r->addAPIClass('Snippets');
-<<<<<<< HEAD
-$r->addAPIClass('Snippet');
-=======
->>>>>>> upstream/master
 $r->handle();
 
 ?>
