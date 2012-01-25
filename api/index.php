@@ -1,7 +1,6 @@
 <?php
 
 require_once 'restler/restler.php';
-require_once 'application/models/snippet.php';
 require_once 'application/models/snippets.php';
 
 spl_autoload_register('spl_autoload');
@@ -9,7 +8,10 @@ spl_autoload_register('spl_autoload');
 $r = new Restler();
 $r->setSupportedFormats('JsonFormat', 'XmlFormat');
 $r->addAPIClass('Snippets');
+<<<<<<< HEAD
 $r->addAPIClass('Snippet');
+=======
+>>>>>>> upstream/master
 $r->handle();
 
 ?>

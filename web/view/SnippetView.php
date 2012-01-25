@@ -32,7 +32,7 @@ class SnippetView
      * @param array $aSnippets is an array of snippets
      * @return string
      */
-    public function listView($snippets, $previousLink, $links, $nextLink, $showPrevious, $showNext)
+    public function listView($snippets, $previousLink, $links, $beforeLinks, $afterLinks, $nextLink, $showPrevious, $showNext)
     {
         $html = '<h1>Snippets</h1>';
 
@@ -55,26 +55,41 @@ class SnippetView
         }
 
         if ($showPrevious == true) {
-
-            $html .= '<a href="?page=listsnippets&pagenumber=' . $previousLink . '">Previous</a> ';
+            if($_GET['pagenumber'] != 2) {
+                $html .= ' | <a href="?page=listsnippets&pagenumber=1">First</a> ';    
+            }
+            
+            $html .= ' | <a href="?page=listsnippets&pagenumber=' . $previousLink . '"><</a> | ';
         }
         if (isset($_GET['pagenumber'])) {
-            foreach ($links as $i) {
+            foreach ($beforeLinks as $i) {
+                if ($i > 0) {
+                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '">' . $i . '</a> ';    
+                }
+            }
 
+            foreach ($links as $i) {
                 if ($i == $_GET['pagenumber']) {
 
                     $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '"><span id="activePage">' . $i . '</span></a> ';
-                } else {
+                }
+            }
 
-                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '">' . $i . '</a> ';
+            foreach ($afterLinks as $i) {
+                if ($i < (count($links) + 1 )) {
+                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '">' . $i . '</a> ';    
                 }
             }
         }
+        
         if ($showNext == true) {
-
-            $html .= ' <a href="?page=listsnippets&pagenumber=' . $nextLink . '">Next</a><br>';
+            $html .= ' | <a href="?page=listsnippets&pagenumber=' . $nextLink . '">></a> ';
+            
+            if ($_GET['pagenumber'] != (count($links) - 1)) {
+                $html .= ' | <a href="?page=listsnippets&pagenumber=' . count($links). '">Last</a> | ';
+            }    
         }
-
+        
         return $html;
     }
 
@@ -122,6 +137,56 @@ class SnippetView
 			</div>
 		';
         return $view;
+    }
+    
+
+    /**
+     * Creates HTML for voting with jquery ajax
+     * @param int $snippet_id, array $rating with total, likes and dislikes
+     * @return string
+     */
+    public function rateSnippet($snippet_id, $rating) {
+        $html = '<div id="rating">
+                    <button name="like" type="button" id="like"><img src="content/image/like.png" title="Like!" /></button>
+                    <button name="dislike" type="button" id="dislike"><img src="content/image/dislike.png" title="Dislike!" /></button>
+                
+                    <div id="ratingbars">
+                        <div class="likes" style="width: ' . ($rating['total'] != 0 ? round($rating['likes'] / $rating['total'] * 100) : 0) . '%"></div>
+                        <div class="dislikes" style="width: ' . ($rating['total'] != 0 ? round($rating['dislikes'] / $rating['total'] * 100) : 0) . '%"></div>
+                    </div>
+                    <p>' . $rating['likes'] . ' likes, ' . $rating['dislikes'] . ' dislikes</p>
+                    <div id="message"></div>
+                </div>';
+        $html .= "<script>
+                    $('#like').click(function(){
+                         $.ajax({ type: 'POST',
+                            url: 'model/RateSnippet.php',
+                            data: {
+                                'snippet_id': " . $snippet_id . ",
+                                rating: 1
+                            },
+                            dataType: 'html',
+                            success: function(data) {
+                                $('#message').html(data);
+                            }
+                        });
+                    });
+                    $('#dislike').click(function(){
+                        $.ajax({ type: 'POST',
+                            url: 'model/RateSnippet.php',
+                            data: {
+                                'snippet_id': " . $snippet_id . ",
+                                rating: 0
+                            },
+                            dataType: 'html',
+                            success: function(data) {
+                                $('#message').html(data);
+                            }
+                        });
+                    });
+                </script>";
+                
+        return $html;
     }
 
     public function triedToCreateSnippet()

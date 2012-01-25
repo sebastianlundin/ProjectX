@@ -1,0 +1,17 @@
+Escaping Values
+Query Parameters (Prepared Statements)
+No column or table name in parameter
+NO SQL-keywords as parameter
+(Stored Procedures)
+
+
+
+tag	snippet		tag_snippet
+
+id	allt annat	tagid+snippetid
+tag			tagid+snippetid
+
+	tags
+
+php
+csharp	php, sharp	

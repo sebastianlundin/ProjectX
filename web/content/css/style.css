@@ -64,6 +64,10 @@ input, textarea, select  {
     margin: 0 auto;
 }
 
+.topbar #topAvatar {
+    margin: 0px 5px 0px 4px;
+}
+
 /*
  * CONTAINER
  * ---------------------------- */
@@ -114,6 +118,12 @@ a {
     font-style: italic;
 }
 
+.content .search .langDropdown {
+    padding: 2px;
+    text-align: left;
+    display: inline;
+}
+
 /*
  * SNIPPET LIST
  * ---------------------------- */
@@ -147,6 +157,43 @@ a {
 
 .snippet-tags {
     margin: 5px 0 10px;
+}
+
+/*
+ * RATING
+ * ---------------------------- */
+
+#rating {
+    margin: 10px 0;
+}
+
+#rating button {
+    background: none;
+    border: none;
+}
+
+#ratingbars {
+    width: 200px;
+    height: 5px;
+    background: #CCCCCC;
+    border: solid 1px #000;
+    margin: 5px 0;
+}
+
+#ratingbars .likes { 
+    background-color: #7FAF1B;
+    float: left;
+    height: 5px;
+}
+
+#ratingbars .dislikes {
+    background-color: #A40802;
+    float: left;
+    height: 5px;
+}
+
+#message {
+    clear: both;
 }
 
 /*
