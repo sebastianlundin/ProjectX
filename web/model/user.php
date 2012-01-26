@@ -5,35 +5,32 @@ class User
     private $mUserId = null;
     private $mUserName = null;
 
+    private $_id;
+    private $_name;
+    private $_username;
+    private $_email;
+
     /**
      * User::__construct()
      *
      * @return new User object
      */
-    public function __construct($aUserId, $aUserName)
+    public function __construct($id, $name, $username, $email)
     {
-        $this->mUserId = $aUserId;
-        $this->mUserName = $aUserName;
+        $this->_email = $email;
+        $this->_name = $name;
+        $this->_username = $username;
+        $this->_id = $id;
     }
 
-    /**
-     * User::getUserId()
-     *
-     * @return int, id of the user
-     */
-    public function getUserId()
+    public function getName()
     {
-        return $this->mUserId;
+        return $this->_name;
     }
 
-    /**
-     * User::getUserName()
-     *
-     * @return string, name of the user
-     */
-    public function getUserName()
+    public function getEmail()
     {
-        return $this->mUserName;
+        return $this->_email;
     }
 
 }
