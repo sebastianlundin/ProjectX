@@ -7,7 +7,7 @@ class HeaderView
      * @param $userPic string url of user avatar
      * @return string View of header with logged in layout
      */
-    public function inloggedHeader($name, $userPic)
+    public function inloggedHeader($name, $userPic, $email)
     {
         $html = "<div class='topbar-wrapper'>
             <div class='topbar'>
@@ -41,7 +41,7 @@ class HeaderView
                             <img id='topAvatar' src='$userPic' alt='as' />
                         </li>
                         <li class='right'>
-                            Hello, $name
+                            Hello,<a href='?page=profile&user=$email'>$name</a>
                         </li>
                     </ul>
                 </div>

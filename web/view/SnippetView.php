@@ -145,7 +145,7 @@ class SnippetView
      * @param int $snippet_id, array $rating with total, likes and dislikes
      * @return string
      */
-    public function rateSnippet($snippet_id, $rating) {
+    public function rateSnippet($snippet_id, $user_id,$rating) {
         $html = '<div id="rating">
                     <button name="like" type="button" id="like"><img src="content/image/like.png" title="Like!" /></button>
                     <button name="dislike" type="button" id="dislike"><img src="content/image/dislike.png" title="Dislike!" /></button>
@@ -163,6 +163,7 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
+                                'user_id': ".$user_id.",
                                 rating: 1
                             },
                             dataType: 'html',
@@ -176,6 +177,7 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
+                                'user_id': ".$user_id.",
                                 rating: 0
                             },
                             dataType: 'html',

@@ -7,6 +7,7 @@ require_once dirname(__FILE__) . '/../controller/CommentController.php';
 require_once dirname(__FILE__) . '/../model/CommentHandler.php';
 require_once dirname(__FILE__) . '/../view/CommentView.php';
 require_once dirname(__FILE__) . '/../model/PagingHandler.php';
+require_once dirname(__FILE__) . '/../model/AuthHandler.php';
 
 class SnippetController
 {
@@ -33,7 +34,7 @@ class SnippetController
         if ($page == 'list') {
             if (isset($_GET['snippet'])) {
                 $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
-                $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], $this->_snippetHandler->getSnippetRating($_GET['snippet']));
+                $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], AuthHandler::getUser()->getId(), $this->_snippetHandler->getSnippetRating($_GET['snippet']));
                 $this->_html .= $this->_commentController->doControll();
             } else {
                 if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
@@ -58,12 +59,20 @@ class SnippetController
 
             if ($this->_snippetView->triedToCreateSnippet()) {
 
-                $snippet = new Snippet('kimsan', $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage());
+                $snippet = new Snippet(AuthHandler::getUser()->getId(), $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage());
                 $this->_snippetHandler->createSnippet($snippet);
             }
         }
 
         return $this->_html;
+    }
+
+    public function listView() {
+        
+    }
+
+    public function singleView() {
+        
     }
 
 }

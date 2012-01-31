@@ -40,5 +40,14 @@ class AuthHandler
         unset($_SESSION['user']);
         session_destroy();
     }
+    
+    public static function isOwner($email) {
+        if(isset($_SESSION['user'])) {
+            if($_SESSION['user']->getEmail() == $email) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

@@ -5,7 +5,7 @@ require_once dirname(__FILE__) . '/SnippetController.php';
 require_once dirname(__FILE__) . '/SearchController.php';
 require_once dirname(__FILE__) . '/HeaderController.php';
 require_once dirname(__FILE__) . '/AuthController.php';
-require_once dirname(__FILE__) . '/../model/AuthHandler.php';
+require_once dirname(__FILE__) . '/ProfileController.php';
 
 class MasterController
 {
@@ -13,6 +13,7 @@ class MasterController
     private $_searchController;
     private $_headerController;
     private $_authController;
+    private $_profileController;
     private $_html;
 
     public function __construct()
@@ -22,6 +23,7 @@ class MasterController
         $this->_searchController = new SearchController();
         $this->_headerController = new HeaderController();
         $this->_authController = new AuthController();
+        $this->_profileController = new ProfileController();
         $this->_html = '';
     }
 
@@ -34,13 +36,15 @@ class MasterController
                 $this->_html .= $this->_snippetController->doControll('add');
             } else if ($_GET['page'] == 'search') {
                 $this->_html .= $this->_searchController->doControll();
-            } else if($_GET['page'] == 'login') {
+            } else if ($_GET['page'] == 'login') {
                 $this->_authController->checkAuthToken();
+            } else if ($_GET['page'] == 'profile') {
+                $this->_html .= $this->_profileController->doControll();
             }
         } else {
             $this->_html .= $this->_searchController->doControll();
         }
-        
+
         if (!empty($_GET['logout']) && $_GET['logout'] == 'true') {
             AuthHandler::getInstance()->logout();
         }

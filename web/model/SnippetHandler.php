@@ -67,13 +67,13 @@ class SnippetHandler
     public function createSnippet(Snippet $snippet)
     {
         $this->_dbHandler->__wakeup();
-        $author = $snippet->getAuthor();
+        $author = $snippet->getAuthorId();
         $code = $snippet->getCode();
         $title = $snippet->getTitle();
         $desc = $snippet->getDesc();
         $language = $snippet->getLanguageID();
 
-        if ($databaseQuery = $this->_dbHandler->PrepareStatement("INSERT INTO snippet (author, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
+        if ($databaseQuery = $this->_dbHandler->PrepareStatement("INSERT INTO snippet (user_id, code, title, description, language) VALUES (?, ?, ?, ?, ?)")) {
             $databaseQuery->bind_param('sssss', $author, $code, $title, $desc, $language);
             $databaseQuery->execute();
             if ($databaseQuery->affected_rows == null) {

@@ -138,6 +138,23 @@ class UserHandler
         return $user;
     }
 
+    public function getUsernameByID($id)
+    {
+        $autorName = 'errorName';
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT name FROM user WHERE user_id = ? LIMIT 1")) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->bind_result($name);
+            $autorName = $name;
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $autorName;
+    }
+
     /**
      * Get user from database by identifier
      * @param $identifier string
@@ -192,6 +209,95 @@ class UserHandler
         }
         $this->_dbHandler->Close();
         return false;
+    }
+
+    /**
+     * return number of comments of a user
+     * @param String user id
+     * @return int total number of created comments
+     */
+    public function nrOfComments($id)
+    {
+        $nrOfComments = -1;
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT id FROM comment WHERE user_id = ?")) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->store_result();
+            $nrOfComments = $stmt->num_rows;
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $nrOfComments;
+    }
+
+    /**
+     * return number of snippets of a user
+     * @param String user id
+     * @return int total number of created snippets
+     */
+    public function nrOfSnippets($id)
+    {
+        $nrOfSnippets = -1;
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT id FROM snippet WHERE user_id = ?")) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->store_result();
+            $nrOfSnippets = $stmt->num_rows;
+            $stmt->close();
+        } else {
+
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $nrOfSnippets;
+    }
+
+    /**
+     * return number liked snippets
+     * @param String user id
+     * @return int total number of liked snippets
+     */
+    public function nrOfLikes($id)
+    {
+        $nrOfLikes = -1;
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT ratingId FROM rating WHERE userId = ? AND rating = 1")) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->store_result();
+            $nrOfLikes = $stmt->num_rows;
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $nrOfLikes;
+    }
+
+    /**
+     * return number disliked snippets
+     * @param String user id
+     * @return int total number of disliked snippets
+     */
+    public function nrOfDislikes($id)
+    {
+        $nrOfDislikes = -1;
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT ratingId FROM rating WHERE userId = ? AND rating = 0")) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->store_result();
+            $nrOfDislikes = $stmt->num_rows;
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $nrOfDislikes;
     }
 
 }
