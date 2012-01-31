@@ -19,13 +19,11 @@ class SnippetController
     private $_pagingHandler;
 
     public function __construct()
-    {
-        
+    {      
         $this->_dbHandler = new DbHandler();
         $this->_snippetHandler = new SnippetHandler($this->_dbHandler);
         $this->_snippetView = new SnippetView();
         $this->_commentController = new CommentController($this->_dbHandler);
-        $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
         $this->_html = '';
     }
 
@@ -33,11 +31,13 @@ class SnippetController
     {
         if ($page == 'list') {
             if (isset($_GET['snippet'])) {
+                
                 $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
                 $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], AuthHandler::getUser()->getId(), $this->_snippetHandler->getSnippetRating($_GET['snippet']));
                 $this->_html .= $this->_commentController->doControll();
             } else {
-                if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
+                $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
+               if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
                     $_GET['pagenumber'] = 1;
                 } else {
                     $this->_pagingHandler->setPage($_GET['pagenumber']);

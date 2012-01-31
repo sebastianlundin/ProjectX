@@ -1,4 +1,8 @@
 <?php
+$time = microtime(); 
+$time = explode(" ", $time); 
+$time = $time[1] + $time[0]; 
+$start = $time;
 require_once 'controller/MasterController.php';
 require_once 'model/AuthHandler.php';
 
@@ -25,3 +29,13 @@ $_html = $_mc->doControll();
         </div>
     </body>
 </html>
+
+<?php
+$time = microtime(); 
+$time = explode(" ", $time); 
+$time = $time[1] + $time[0]; 
+$finish = $time; 
+$totaltime = ($finish - $start); 
+printf ("This page took %f seconds to load.", $totaltime); 
+
+?>

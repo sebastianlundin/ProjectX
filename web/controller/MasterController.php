@@ -19,11 +19,7 @@ class MasterController
     public function __construct()
     {
         session_start();
-        $this->_snippetController = new SnippetController();
-        $this->_searchController = new SearchController();
         $this->_headerController = new HeaderController();
-        $this->_authController = new AuthController();
-        $this->_profileController = new ProfileController();
         $this->_html = '';
     }
 
@@ -31,17 +27,23 @@ class MasterController
     {
         if (isset($_GET['page'])) {
             if ($_GET['page'] == 'listsnippets') {
+                $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('list');
             } else if ($_GET['page'] == 'addsnippet') {
+                $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('add');
             } else if ($_GET['page'] == 'search') {
+                $this->_searchController = new SearchController();
                 $this->_html .= $this->_searchController->doControll();
             } else if ($_GET['page'] == 'login') {
+                $this->_authController = new AuthController();
                 $this->_authController->checkAuthToken();
             } else if ($_GET['page'] == 'profile') {
+                $this->_profileController = new ProfileController();
                 $this->_html .= $this->_profileController->doControll();
             }
         } else {
+            $this->_searchController = new SearchController();
             $this->_html .= $this->_searchController->doControll();
         }
 

@@ -140,19 +140,22 @@ class UserHandler
 
     public function getUsernameByID($id)
     {
-        $autorName = 'errorName';
+        $authorName = 'errorName';
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->prepareStatement("SELECT name FROM user WHERE user_id = ? LIMIT 1")) {
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT name FROM user WHERE id = ?")) {
             $stmt->bind_param('i', $id);
             $stmt->execute();
             $stmt->bind_result($name);
-            $autorName = $name;
+            while ($stmt->fetch()) {
+                $authorName = $name;
+            }
+            $authorName = $name;
             $stmt->close();
         } else {
             return false;
         }
         $this->_dbHandler->close();
-        return $autorName;
+        return $authorName;
     }
 
     /**

@@ -29,7 +29,7 @@ class Snippet
         $this->_language = $lang['name'];
 
         $uh = new UserHandler();
-        $this->_author = $uh->getUsernameByID($this->_authorID);
+        $this->_author = $uh->getUsernameByID($this->_authorID);        
     }
 
     /**
