@@ -18,23 +18,35 @@ class SearchController
         $this->_langHandler = new LanguageHandler($this->_dbHandler);
         $this->_searchView = new SearchView();
         $this->_snippetView = new SnippetView();
-        $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
         $this->_html = '';
     }
 
     public function doControll() {
-
-        $this->_html = $this->_searchView->doSearchForm($this->_langHandler->getAllLang());
-
+        
+        if($this->_searchView->wantsAdvSearch()) {
+            
+            $this->_html .= $this->_searchView->doAdvSearchForm($this->_langHandler->getAllLang());
+        }
+        else {
+            $this->_html .= $this->_searchView->doSearchForm();
+        }
+        
         if($this->_searchView->doSearch()) {
+            $searchQuery = $this->_searchView->getSearchQuery();
+            //För pageningen
+            $arrToPreventError = array(1,1,1,1,1);
+            $this->_html .= $this->_searchView->searchAnswerView($this->_snippetHandler->fullSearch($searchQuery),1,$arrToPreventError,1,false,false);  
+        }
+        
+        if($this->_searchView->doAdvSearch()) {
             $searchQuery = $this->_searchView->getSearchQuery();
             $lang = $this->_searchView->getSearchLang();
             //För pageningen
             $arrToPreventError = array(1,1,1,1,1);
-            
-            //makes a full serch for description, code and titel, user must choose a lang or PHP as dafault
             $this->_html .= $this->_searchView->searchAnswerView($this->_snippetHandler->fullSearchWithLang($searchQuery, $lang),1,$arrToPreventError,1,false,false);  
         }
+        
+        
         return $this->_html;
     }
 }

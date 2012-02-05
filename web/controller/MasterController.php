@@ -32,7 +32,7 @@ class MasterController
                 $this->_html .= $this->_snippetController->doControll('list');
             } else if ($_GET['page'] == 'addsnippet') {
                 $this->_html .= $this->_snippetController->doControll('add');
-            } else if ($_GET['page'] == 'search') {
+            } else if ($_GET['page'] == 'advsearch') {
                 $this->_html .= $this->_searchController->doControll();
             } else if($_GET['page'] == 'login') {
                 $this->_authController->checkAuthToken();

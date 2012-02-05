@@ -2,7 +2,19 @@
 
 class SearchView {
     
-    public function doSearchForm($langs) {
+    public function doSearchForm() {
+            $searchForm =       '<div class="search">
+                                    <form name="searchForm" action"" method="POST">
+                                    <img src="content/image/logo.png" />
+                                    <input type="text" name="q" />
+                                    <input type="submit" name="submitSearch" value="Search" class="searchbutton" /><br />
+                                    </form>
+                                    <a href="?page=advsearch">Advanced search</a> &bull; <a href="#">Browse</a>
+                                </div>';
+            return $searchForm;
+    }
+    
+    public function doAdvSearchForm($langs) {
             $searchForm =       '<div class="search">
                                     <form name="searchForm" action"" method="POST">
                                     <img src="content/image/logo.png" />
@@ -13,9 +25,9 @@ class SearchView {
                                         $searchForm .= "<option value='".$lang->getLangId()."'>".$lang->getLanguage()."</option>";
                             		}
                 $searchForm .=      '</select>';     
-                $searchForm .=      '<input type="submit" name="submitSearch" value="Search" class="searchbutton" /><br />
+                $searchForm .=      '<input type="submit" name="submitAdvSearch" value="Search" class="searchbutton" /><br />
                                     </form>
-                                    <a href="#">Advanced search</a> &bull; <a href="#">Browse</a>
+                                    <a href="index.php">Simple search</a> &bull; <a href="#">Browse</a>
                                 </div>';
             return $searchForm;
     }
@@ -27,7 +39,7 @@ class SearchView {
             $html .= '
                 <div class="snippet-list-item">
                     <div class="snippet-title">
-                        <h3><a href="?snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
+                        <h3><a href="?page=listsnippets&snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></h3>
                     </div>
                     <div class="snippet-description">
                         <p>' . $snippet->getDesc() . '</p>
@@ -64,6 +76,23 @@ class SearchView {
     
     public function doSearch() {
         if (isset($_POST['submitSearch'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function wantsAdvSearch() {
+        if (isset($_GET['page']) && ($_GET['page'] == 'advsearch')) {
+            return true;
+        } else {
+            return false;
+        }
+            
+    }
+    
+    public function doAdvSearch() {
+        if (isset($_POST['submitAdvSearch'])) {
             return true;
         } else {
             return false;
