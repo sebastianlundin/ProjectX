@@ -29,10 +29,7 @@ class HeaderView
                             <a href='#'>Downloads</a> /
                         </li>
                         <li>
-                            <a href='#'>About</a> /
-                        </li>
-                        <li>
-                            <a href='#'>Register</a>
+                            <a href='#'>About</a>
                         </li>
                         <li class ='right'>
                             <a href='?logout=true'>Logga ut</a>

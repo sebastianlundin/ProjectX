@@ -31,21 +31,20 @@ class CommentHandler
                         WHERE comment.snippet_id = ?
                         ORDER by comment.id DESC
         ";
-        
+
         if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
             $stmt->bind_param('i', $snippetId);
             $stmt->execute();
             $stmt->bind_result($snippetId, $commentId, $commentText, $username, $userId);
 
-            
             while ($stmt->fetch()) {
                 $comment = new Comment($snippetId, $commentId, $userId, $commentText);
                 $comment->setUsername($username);
-                array_push($commentsArray,$comment);
+                array_push($commentsArray, $comment);
             }
             $stmt->close();
         }
-        
+
         return $commentsArray;
     }
 
@@ -58,7 +57,6 @@ class CommentHandler
      */
     public function addComment($snippetId, $commentText, $userId)
     {
-        echo "addComment";
         $sqlQuery = "INSERT INTO comment (snippet_id, comment, user_id) VALUES(?,?,?)";
         if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
             $stmt->bind_param("isi", $snippetId, $commentText, $userId);
@@ -163,6 +161,34 @@ class CommentHandler
         $stmt->close();
 
         return $comment;
+    }
+
+    /**
+     * @return Array Comment
+     * @param id of user
+     *
+     */
+    public function getCommentsByUser($id)
+    {
+        $commentArr = array();
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM comment WHERE user_id = ?")) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->bind_result($id, $snippetID, $comment, $userID);
+
+            while ($stmt->fetch()) {
+                $tempComment = new Comment($snippetID, $id, $userID, $comment);
+                array_push($commentArr, $tempComment);
+            }
+            $stmt->close();
+        } else {
+            $stmt->close();
+            $this->_dbHandler->close();
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $commentArr;
     }
 
 }

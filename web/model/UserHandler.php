@@ -52,7 +52,7 @@ class UserHandler
         $this->_dbHandler->__wakeup();
         $insertedKey = -1;
 
-        //@TODO ÄNDRA OM TILL TRANSAKTIONER!!111!1!
+        //@TODO ÄNDRA OM TILL TRANSAKTIONER OM MÖJLIGT
         //Insert data into user table
         if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO User (username, name) VALUES (?, ?)")) {
             $stmt->bind_param('ss', $email, $name);

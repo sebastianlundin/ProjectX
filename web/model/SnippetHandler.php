@@ -64,6 +64,34 @@ class SnippetHandler
         return $snippets;
     }
 
+    /**
+     * @return Array Snippets
+     * @param id of user
+     *
+     */
+    public function getSnippetsByUser($id)
+    {
+        $snippetArr = array();
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM snippet WHERE user_id = ?")) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->bind_result($id, $userID, $code, $title, $description, $languageID);
+
+            while ($stmt->fetch()) {
+                $temtSnippet = new Snippet($userID, $code, $title, $description, $languageID, $id);
+                array_push($snippetArr, $temtSnippet);
+            }
+            $stmt->close();
+        } else {
+            $stmt->close();
+            $this->_dbHandler->close();
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $snippetArr;
+    }
+
     public function createSnippet(Snippet $snippet)
     {
         $this->_dbHandler->__wakeup();
@@ -119,11 +147,11 @@ class SnippetHandler
      */
     public function getNrOfSnippets($nr)
     {
-        if($nr == 0) {
+        if ($nr == 0) {
             $nr = 1;
-        }    
+        }
         $snippets = array();
-  
+
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet LIMIT ?")) {
             $stmt->bind_param("i", $nr);
@@ -199,19 +227,19 @@ class SnippetHandler
         $this->_dbHandler->Close();
         return $languages;
     }
-    
 
     /**
      * returns array with total votes, likes and dislikes
      * @param int id of snippet
      * @return Array
      */
-    public function getSnippetRating($id) {
+    public function getSnippetRating($id)
+    {
         $rating = array();
-        
+
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT COUNT(IF(`rating` = 1, 1, null)) AS Likes, COUNT(IF(`rating` = 0, 1, null)) AS Dislikes FROM `rating` WHERE `snippetId` = ?")) {
-            $stmt->bind_param("i", $id);    
+            $stmt->bind_param("i", $id);
             $stmt->execute();
 
             $stmt->bind_result($likes, $dislikes);
@@ -224,20 +252,21 @@ class SnippetHandler
             $stmt->close();
 
         }
-        
+
         $this->_dbHandler->Close();
-        
+
         return $rating;
     }
-    
-    public function searchByTitle($title) {
+
+    public function searchByTitle($title)
+    {
         $titles = array();
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author,code,title,description,language FROM (snippet) WHERE MATCH title AGAINST (?) ")) {
             $stmt->bind_param("s", $title);
             $stmt->execute();
 
-            $stmt->bind_result($id, $author,$code,$title,$description,$language);
+            $stmt->bind_result($id, $author, $code, $title, $description, $language);
             while ($stmt->fetch()) {
                 $answer = new Snippet($author, $code, $title, $description, $language, $id);
                 array_push($titles, $answer);
@@ -251,15 +280,16 @@ class SnippetHandler
         $this->_dbHandler->Close();
         return $titles;
     }
-    
-    public function searchByDescription($description) {
+
+    public function searchByDescription($description)
+    {
         $titles = array();
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author,code,title,description,language FROM (snippet) WHERE MATCH description AGAINST (?) ")) {
             $stmt->bind_param("s", $description);
             $stmt->execute();
 
-            $stmt->bind_result($id, $author,$code,$title,$description,$language);
+            $stmt->bind_result($id, $author, $code, $title, $description, $language);
             while ($stmt->fetch()) {
                 $answer = new Snippet($author, $code, $title, $description, $language, $id);
                 array_push($titles, $answer);
@@ -273,15 +303,16 @@ class SnippetHandler
         $this->_dbHandler->Close();
         return $titles;
     }
-    
-    public function searchByCode($code) {
+
+    public function searchByCode($code)
+    {
         $titles = array();
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author,code,title,description,language FROM (snippet) WHERE MATCH code AGAINST (?) ")) {
             $stmt->bind_param("s", $code);
             $stmt->execute();
 
-            $stmt->bind_result($id, $author,$code,$title,$description,$language);
+            $stmt->bind_result($id, $author, $code, $title, $description, $language);
             while ($stmt->fetch()) {
                 $answer = new Snippet($author, $code, $title, $description, $language, $id);
                 array_push($titles, $answer);
@@ -295,16 +326,17 @@ class SnippetHandler
         $this->_dbHandler->Close();
         return $titles;
     }
-    
-    public function fullSearch($q) {
+
+    public function fullSearch($q)
+    {
         $titles = array();
         $this->_dbHandler->__wakeup();
-        
+
         if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author,code,title,description,language FROM (snippet) WHERE MATCH code,title,description AGAINST (?) ")) {
             $stmt->bind_param("s", $q);
             $stmt->execute();
 
-            $stmt->bind_result($id, $author,$code,$title,$description,$language);
+            $stmt->bind_result($id, $author, $code, $title, $description, $language);
             while ($stmt->fetch()) {
                 $answer = new Snippet($author, $code, $title, $description, $language, $id);
                 array_push($titles, $answer);
@@ -318,24 +350,24 @@ class SnippetHandler
         $this->_dbHandler->Close();
         return $titles;
     }
-    
-    
-    public function fullSearchWithLang($q, $lang) {
+
+    public function fullSearchWithLang($q, $lang)
+    {
         $titles = array();
         $this->_dbHandler->__wakeup();
-        
+
         $sqlQuery = "   SELECT snippet.id, snippet.author, snippet.code, snippet.title, snippet.description, snippet.language
                         FROM snippet
                         LEFT JOIN snippet_language ON snippet.language = snippet_language.id
                         WHERE MATCH code, title, description
                         AGAINST (?)
                         AND snippet_language.id = ?";
-        
+
         if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
             $stmt->bind_param("si", $q, $lang);
             $stmt->execute();
 
-            $stmt->bind_result($id, $author,$code,$title,$description,$language);
+            $stmt->bind_result($id, $author, $code, $title, $description, $language);
             while ($stmt->fetch()) {
                 $answer = new Snippet($author, $code, $title, $description, $language, $id);
                 array_push($titles, $answer);

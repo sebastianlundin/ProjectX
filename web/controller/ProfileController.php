@@ -10,12 +10,17 @@ class ProfileController
     private $_profileView;
     private $_userHandler;
     private $_gravatarHandler;
+    private $_snippetHandler;
+    private $_commentHandler;
 
     public function __construct()
     {
         $this->_profileView = new ProfileView();
         $this->_userHandler = new UserHandler();
         $this->_gravatarHandler = new GravatarHandler();
+        $this->_snippetHandler = new SnippetHandler();
+        $this->_commentHandler = new CommentHandler();
+        
     }
 
     public function doControll()
@@ -26,13 +31,20 @@ class ProfileController
             $email = AuthHandler::getUser()->getEmail();
             $id = AuthHandler::getUser()->getID();
             $avatar = $this->_gravatarHandler->getProfileGravatar($email);
+            
             $stats['comments'] = $this->_userHandler->nrOfComments($id);
             $stats['snippets'] = $this->_userHandler->nrOfSnippets($id);
             $stats['likes'] = $this->_userHandler->nrOfLikes($id);
             $stats['dislikes'] = $this->_userHandler->nrOfDislikes($id);
+            
+            $snippets = $this->_snippetHandler->getSnippetsByUser($id);
+            
+            //Borde vara get Snippets by comments written by logged in user
+            //Eller en sådan också
+            $comments = $this->_commentHandler->getCommentsByUser($id);
 
             if (AuthHandler::isOwner($email)) {
-                $html .= $this->_profileView->profile($avatar,$stats);
+                $html .= $this->_profileView->profile($avatar,$stats,$snippets,$comments);
             }
         } else {
 

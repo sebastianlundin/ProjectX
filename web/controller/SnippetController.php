@@ -67,12 +67,4 @@ class SnippetController
         return $this->_html;
     }
 
-    public function listView() {
-        
-    }
-
-    public function singleView() {
-        
-    }
-
 }
