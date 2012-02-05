@@ -22,17 +22,16 @@ class HeaderController
         $user = AuthHandler::getInstance()->getUser();
         $userPic = '';
         if ($user != null) {
-            if($user->getEmail() != null) {
+            if($user->getEmail() != 'null') {
                 $userPic = $this->_gravatarHandler->getTopGravatar($user->getEmail());
             } else {
                 $userPic = $this->_gravatarHandler->getTopGravatar();
             }
-            $this->_html = $this->_headerView->inloggedHeader($user->getName(),$userPic);
+            $this->_html = $this->_headerView->inloggedHeader($user->getName(),$userPic,$user->getEmail());
         } else {
             $this->_html = $this->_headerView->notLoggedInHeader();
         }
         
         return $this->_html;
     }
-
 }

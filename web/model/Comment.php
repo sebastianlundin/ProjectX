@@ -10,7 +10,8 @@ class Comment
     private $_user;
     private $_getCommentUp;
     private $_getCommentDown;
-    private $__commentDate;
+    private $_commentDate;
+    private $_username;
 
     /**
      * Comment::__construct()
@@ -36,6 +37,26 @@ class Comment
     public function setUser($user)
     {
         $this->_user = $user;
+    }
+
+    /**
+     * Comment::setUsername()
+     * String username
+     * @param string
+     */
+    public function setUsername($username)
+    {
+        $this->_username = $username;
+    }
+
+    /**
+     * Comment::getUsername()
+     *
+     * @return String username
+     */
+    public function getUsername()
+    {
+        return $this->_username;
     }
 
     /**

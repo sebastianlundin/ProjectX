@@ -5,7 +5,7 @@ require_once dirname(__FILE__) . '/SnippetController.php';
 require_once dirname(__FILE__) . '/SearchController.php';
 require_once dirname(__FILE__) . '/HeaderController.php';
 require_once dirname(__FILE__) . '/AuthController.php';
-require_once dirname(__FILE__) . '/../model/AuthHandler.php';
+require_once dirname(__FILE__) . '/ProfileController.php';
 
 class MasterController
 {
@@ -13,15 +13,13 @@ class MasterController
     private $_searchController;
     private $_headerController;
     private $_authController;
+    private $_profileController;
     private $_html;
 
     public function __construct()
     {
         session_start();
-        $this->_snippetController = new SnippetController();
-        $this->_searchController = new SearchController();
         $this->_headerController = new HeaderController();
-        $this->_authController = new AuthController();
         $this->_html = '';
     }
 
@@ -29,18 +27,26 @@ class MasterController
     {
         if (isset($_GET['page'])) {
             if ($_GET['page'] == 'listsnippets') {
+                $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('list');
             } else if ($_GET['page'] == 'addsnippet') {
+                $this->_snippetController = new SnippetController();
                 $this->_html .= $this->_snippetController->doControll('add');
             } else if ($_GET['page'] == 'search') {
+                $this->_searchController = new SearchController();
                 $this->_html .= $this->_searchController->doControll();
-            } else if($_GET['page'] == 'login') {
+            } else if ($_GET['page'] == 'login') {
+                $this->_authController = new AuthController();
                 $this->_authController->checkAuthToken();
+            } else if ($_GET['page'] == 'profile') {
+                $this->_profileController = new ProfileController();
+                $this->_html .= $this->_profileController->doControll();
             }
         } else {
+            $this->_searchController = new SearchController();
             $this->_html .= $this->_searchController->doControll();
         }
-        
+
         if (!empty($_GET['logout']) && $_GET['logout'] == 'true') {
             AuthHandler::getInstance()->logout();
         }

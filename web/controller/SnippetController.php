@@ -7,6 +7,7 @@ require_once dirname(__FILE__) . '/../controller/CommentController.php';
 require_once dirname(__FILE__) . '/../model/CommentHandler.php';
 require_once dirname(__FILE__) . '/../view/CommentView.php';
 require_once dirname(__FILE__) . '/../model/PagingHandler.php';
+require_once dirname(__FILE__) . '/../model/AuthHandler.php';
 
 class SnippetController
 {
@@ -23,7 +24,6 @@ class SnippetController
         $this->_snippetHandler = new SnippetHandler($this->_dbHandler);
         $this->_snippetView = new SnippetView();
         $this->_commentController = new CommentController($this->_dbHandler);
-        $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
         $this->_html = '';
     }
 
@@ -31,11 +31,15 @@ class SnippetController
     {
         if ($page == 'list') {
             if (isset($_GET['snippet'])) {
+                
                 $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
-                $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], $this->_snippetHandler->getSnippetRating($_GET['snippet']));
+                if(AuthHandler::isLoggedIn()) {
+                    $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], AuthHandler::getUser()->getId(), $this->_snippetHandler->getSnippetRating($_GET['snippet']));  
+                }
                 $this->_html .= $this->_commentController->doControll();
             } else {
-                if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
+                $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
+               if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
                     $_GET['pagenumber'] = 1;
                 } else {
                     $this->_pagingHandler->setPage($_GET['pagenumber']);
@@ -56,7 +60,7 @@ class SnippetController
             $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
 
             if ($this->_snippetView->triedToCreateSnippet()) {
-                $snippet = new Snippet('kimsan', $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), null, $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
+                $snippet = new Snippet(AuthHandler::getUser()->getId(), $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
                 $this->_snippetHandler->createSnippet($snippet);
             }
         }

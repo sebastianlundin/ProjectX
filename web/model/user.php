@@ -23,14 +23,36 @@ class User
         $this->_email = $email;
     }
 
+    /**
+     * @return int ID of user
+     */
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    /**
+     *@return string Name of user
+     */
     public function getName()
     {
         return $this->_name;
     }
 
+    /**
+     * @return string User email adress
+     */
     public function getEmail()
     {
         return $this->_email;
+    }
+
+    /**
+     * @return string Currently email adress, since the user doesn't have a username.
+     */
+    public function getUsername()
+    {
+        return $this->_username;
     }
 
 }
