@@ -23,13 +23,33 @@ class Snippet
         $this->_title = $title;
         $this->_desc = $desc;
         $this->_languageID = $languageID;
+        
+        //Get name of language and author
+        $this->getLangName();
+        $this->getAuthorName();
+    }
 
-        $sh = new SnippetHandler();
-        $lang = $sh->getLanguageByID($this->_languageID);
-        $this->_language = $lang['name'];
+    /**
+     * Get name of Author from UserHandler
+     */
+    private function getAuthorName()
+    {
+        if (isset($this->_authorID)) {
+            $uh = new UserHandler();
+            $this->_author = $uh->getUsernameByID($this->_authorID);
+        }
+    }
 
-        $uh = new UserHandler();
-        $this->_author = $uh->getUsernameByID($this->_authorID);        
+    /**
+     * Gets the name of a language by ID from SnippetHandler
+     */
+    private function getLangName()
+    {
+        if (isset($this->_languageID)) {
+            $sh = new SnippetHandler();
+            $lang = $sh->getLanguageByID($this->_languageID);
+            $this->_language = $lang['name'];
+        }
     }
 
     /**

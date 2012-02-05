@@ -22,7 +22,7 @@ class HeaderController
         $user = AuthHandler::getInstance()->getUser();
         $userPic = '';
         if ($user != null) {
-            if($user->getEmail() != null) {
+            if($user->getEmail() != 'null') {
                 $userPic = $this->_gravatarHandler->getTopGravatar($user->getEmail());
             } else {
                 $userPic = $this->_gravatarHandler->getTopGravatar();

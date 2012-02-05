@@ -92,6 +92,63 @@ class SnippetHandler
         return $snippetArr;
     }
 
+    /**
+     * @param int ID of user
+     * @return array snippet objects
+     */
+    public function getRatedSnippetsByUser($id, $rating)
+    {
+        $snippetArr = array();
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT snippet.id, snippet.title, snippet.description, snippet.language
+                                                        FROM snippet
+                                                        INNER JOIN rating
+                                                        ON rating.snippetId = snippet.id
+                                                        WHERE rating.rating = ?
+                                                        AND rating.userId = ?")) {
+            $stmt->bind_param('ii', $rating, $id);
+            $stmt->execute();
+            $stmt->bind_result($id, $title, $description, $lang);
+            while ($stmt->fetch()) {
+                $snippet = new Snippet(null, null, $title, $description, $lang ,$id);
+                array_push($snippetArr, $snippet);
+            }
+            $stmt->close();
+        }
+        $this->_dbHandler->close();
+        return $snippetArr;
+    }
+
+    /**
+     * @param int ID of user
+     * @return Array
+     */
+    public function getCommentedSnippetByUser($id)
+    {
+        $snippetArr = array();
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT snippet.id, snippet.title, snippet.description,comment.comment
+                                                        FROM snippet
+                                                        INNER JOIN comment
+                                                        ON comment.snippet_id = snippet.id
+                                                        WHERE comment.user_id = ?")) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->bind_result($id, $title, $description,$comment);
+            $i = 0;
+            while ($stmt->fetch()) {
+                $snippetArr[$i]['id'] = $id;
+                $snippetArr[$i]['title'] = $title;
+                $snippetArr[$i]['description'] = $description;
+                $snippetArr[$i]['comment'] = $comment;
+                $i++;
+            }
+            $stmt->close();
+        }
+        $this->_dbHandler->close();
+        return $snippetArr;
+    }
+
     public function createSnippet(Snippet $snippet)
     {
         $this->_dbHandler->__wakeup();

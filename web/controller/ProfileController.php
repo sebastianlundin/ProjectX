@@ -30,21 +30,19 @@ class ProfileController
             //Get info and stats of a user
             $email = AuthHandler::getUser()->getEmail();
             $id = AuthHandler::getUser()->getID();
+            $name = AuthHandler::getUser()->getName();
             $avatar = $this->_gravatarHandler->getProfileGravatar($email);
             
-            $stats['comments'] = $this->_userHandler->nrOfComments($id);
-            $stats['snippets'] = $this->_userHandler->nrOfSnippets($id);
-            $stats['likes'] = $this->_userHandler->nrOfLikes($id);
-            $stats['dislikes'] = $this->_userHandler->nrOfDislikes($id);
-            
-            $snippets = $this->_snippetHandler->getSnippetsByUser($id);
+            $data['snippets'] = $this->_snippetHandler->getSnippetsByUser($id);
+            $data['likes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
+            $data['dislikes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
             
             //Borde vara get Snippets by comments written by logged in user
             //Eller en sådan också
-            $comments = $this->_commentHandler->getCommentsByUser($id);
+            $data['comments'] = $this->_snippetHandler->getCommentedSnippetByUser($id);
 
             if (AuthHandler::isOwner($email)) {
-                $html .= $this->_profileView->profile($avatar,$stats,$snippets,$comments);
+                $html .= $this->_profileView->profile($avatar,$name,$data);
             }
         } else {
 
