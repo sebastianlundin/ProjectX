@@ -392,11 +392,8 @@ class SnippetHandler
                         WHERE MATCH code, title, description
                         AGAINST (? IN BOOLEAN MODE)";
         
-<<<<<<< HEAD
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author, code, title, description, language, created, updated FROM (snippet) WHERE MATCH code,title,description AGAINST (?) ")) {
-=======
+
         if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
->>>>>>> 6d02bd5f23bafa54ccb605a22c7006768420218e
             $stmt->bind_param("s", $q);
             $stmt->execute();
 
