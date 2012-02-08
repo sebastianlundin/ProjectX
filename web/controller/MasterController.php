@@ -48,7 +48,7 @@ class MasterController
         }
 
         if (!empty($_GET['logout']) && $_GET['logout'] == 'true') {
-            AuthHandler::getInstance()->logout();
+            AuthHandler::logout();
         }
         return $this->_html;
     }

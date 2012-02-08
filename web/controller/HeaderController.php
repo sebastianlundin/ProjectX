@@ -19,7 +19,7 @@ class HeaderController
 
     public function doControll()
     {
-        $user = AuthHandler::getInstance()->getUser();
+        $user = AuthHandler::getUser();
         $userPic = '';
         if ($user != null) {
             if($user->getEmail() != 'null') {

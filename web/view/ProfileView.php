@@ -17,10 +17,12 @@ class ProfileView
                 </div>
                 <br />
                 <div id='userActivity'>";
+                
+         $html.= $this->doApiKey($data['apiKey']); 
          $html.= $this->createdSnippets($data['snippets'] );   
          $html.= $this->CommentedSnippets($data['comments']);   
          $html.= $this->likedSnippets($data['likes']);   
-         $html.= $this->dislikedSnippets($data['dislikes']);   
+         $html.= $this->dislikedSnippets($data['dislikes']);
 
          $html .='</div>';
         return $html;
@@ -64,6 +66,12 @@ class ProfileView
                     $html .= "<li><a href='?page=listsnippets&snippet=".$snippet['id']."'>".$snippet['title'].'</a><br />'.$snippet['comment'].'</li>';
                     }
         $html .= "</ul>";
+        return $html;
+    }
+    
+    public function doApiKey($apiKey) {
+        $html = 'api key ' .$apiKey;
+        $html .= " - <a href='/profile?api_key=generate'>Generate new<a/>";
         return $html;
     }
 

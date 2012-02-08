@@ -9,18 +9,20 @@ class User
     private $_name;
     private $_username;
     private $_email;
+    private $_apiKey;
 
     /**
      * User::__construct()
      *
      * @return new User object
      */
-    public function __construct($id, $name, $username, $email)
+    public function __construct($id, $name, $username, $email, $apiKey)
     {
         $this->_id = $id;
         $this->_name = $name;
         $this->_username = $username;
         $this->_email = $email;
+        $this->_apiKey = $apiKey;
     }
 
     /**
@@ -48,11 +50,27 @@ class User
     }
 
     /**
-     * @return string Currently email adress, since the user doesn't have a username.
+     * @return string Username
      */
     public function getUsername()
     {
         return $this->_username;
+    }
+
+    /**
+     * @return int Api key
+     */
+    public function getApiKey()
+    {
+        return $this->_apiKey;
+    }
+
+    /**
+     * @param int Api key
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->_apiKey = $apiKey;
     }
 
 }
