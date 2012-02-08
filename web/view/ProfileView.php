@@ -5,8 +5,9 @@ class ProfileView
 
     public function profile($avatar, $name, $data, $user)
     {
+        $html = $this->doProfileMenu(true);
 
-        $html = "
+        $html .= "
                 <h3>Hi there $name</h3><br>
                 <img src='$avatar' alt='User' />
                 <div id='stats'>
@@ -19,11 +20,7 @@ class ProfileView
                 <br />
                 <div id='userActivity'>";
 
-        $html .= $this->doApiKey($data['apiKey']);
-        $html .= $this->createdSnippets($data['snippets']);
-        $html .= $this->CommentedSnippets($data['comments']);
-        $html .= $this->likedSnippets($data['likes']);
-        $html .= $this->dislikedSnippets($data['dislikes']);
+        $html .= $data['content'];
 
         $html .= '</div>';
         return $html;
@@ -80,6 +77,34 @@ class ProfileView
         $html .= " - <a href='/profile?api_key=generate'>Generate new<a/>";
         return $html;
     }
+    
+    public function doProfileMenu($isAdmin) {
+        $html = "    
+                <ul>
+                <li><a href='?p=created'>Created snippets</a></li>
+                <li><a href='?p=commented'>Commented Snippets</a></li>
+                <li><a href='?p=liked'>Liked snippets</a></li>
+                <li><a href='?p=disliked'>DislikedSnippets</a></li>
+                <li><a href='?p=settings'>Settings</a></li>
+                ";
+                
+                if($isAdmin) {
+                    $html .= "<li><a href='?p=users'>Search for users</a></li>";
+                }
+                $html .= "</ul>";
+        return $html;
+    }
+    
+    public function searchForUsers() {
+        return "<form action='/profile?p=users' method='GET' name='usersearch'>
+            <input type='text' name='q' />
+            <input type='submit' name'searchuser' value='search' />
+        </form>";
+    }
+    
+    public function settings() {
+        return "sättings";
+    }
 
     public function isUpdateProfile()
     {
@@ -88,6 +113,20 @@ class ProfileView
         } else {
             return false;
         }
+    }
+    
+    public function getPage() {
+        if(isset($_GET['p'])) {
+            return $_GET['p'];
+        }
+        return false;
+    }
+
+    public function doSearch() {
+        if(isset($_GET['q'])) {
+            return $_GET['q'];
+        }
+        return false;
     }
 
 }
