@@ -70,7 +70,6 @@ class SnippetView
 
             foreach ($links as $i) {
                 if ($i == $_GET['pagenumber']) {
-
                     $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '"><span id="activePage">' . $i . '</span></a> ';
                 }
             }
