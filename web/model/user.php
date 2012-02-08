@@ -10,19 +10,21 @@ class User
     private $_username;
     private $_email;
     private $_apiKey;
+    private $_role;
 
     /**
      * User::__construct()
      *
      * @return new User object
      */
-    public function __construct($id, $name, $username, $email, $apiKey)
+    public function __construct($id, $name, $username, $email, $apiKey, $role)
     {
         $this->_id = $id;
         $this->_name = $name;
         $this->_username = $username;
         $this->_email = $email;
         $this->_apiKey = $apiKey;
+        $this->_role = $role;
     }
 
     /**
@@ -55,6 +57,14 @@ class User
     public function getUsername()
     {
         return $this->_username;
+    }
+
+    /**
+     * @return string Role of a user
+     */
+    public function getRole()
+    {
+        return $this->_role;
     }
 
     /**

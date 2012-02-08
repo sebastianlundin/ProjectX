@@ -27,6 +27,7 @@ class ProfileController
     {
         $html = '';
         if (AuthHandler::isLoggedIn()) {
+            
             //Get info and stats of a user
             $email = AuthHandler::getUser()->getEmail();
             $id = AuthHandler::getUser()->getID();
@@ -38,9 +39,9 @@ class ProfileController
             $data['likes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
             $data['dislikes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
 
-            //Borde vara get Snippets by comments written by logged in user
-            //Eller en sådan också
             $data['comments'] = $this->_snippetHandler->getCommentedSnippetByUser($id);
+            
+            $user = AuthHandler::getUser();
 
             if (AuthHandler::isOwner($email)) {
 
@@ -54,7 +55,7 @@ class ProfileController
                     }
                 }
 
-                $html .= $this->_profileView->profile($avatar, $name, $data);
+                $html .= $this->_profileView->profile($avatar, $name, $data, $user);
             }
         } else {
 

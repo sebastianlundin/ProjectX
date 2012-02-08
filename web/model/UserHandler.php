@@ -72,14 +72,14 @@ class UserHandler
         $apiKey = $this->generateApiKey();
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->prepareStatement("UPDATE user SET api_key = ? WHERE id = ?")) {
-            
+
             $stmt->bind_param('si', $apiKey, $id);
             $stmt->execute();
             $stmt->store_result();
             if ($stmt->affected_rows != 1) {
                 $stmt->close();
                 $this->_dbHandler->close();
-                
+
                 return false;
             }
         } else {
@@ -142,6 +142,35 @@ class UserHandler
     }
 
     /**
+     * @param $email string
+     * @param $identifier string
+     * @param $provider string
+     * @param $id int User id
+     */
+    public function extendUser($email, $provider, $identifier, $id)
+    {
+        echo "function";
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("INSERT INTO user_auth (email, provider, identifier, user_id) 
+                                                        VALUES(?, ?, ?, ?)")) {
+            $stmt->bind_param('sssi',$email, $provider, $identifier, $id);
+            $stmt->execute();
+            $stmt->store_result();
+            echo "inne";
+            if ($stmt->affected_rows == 1) {
+                $stmt->close();
+                $this->_dbHandler->close();
+                echo "true";
+                return true;
+            }
+            $stmt->close();
+        }
+
+        $this->_dbHandler->close();
+        return false;
+    }
+
+    /**
      *Delete a user from database
      * @param int id of a user
      * @return boolean true if succsess
@@ -171,17 +200,17 @@ class UserHandler
     {
         $user = null;
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username, user.api_key ,auth.email
-                                                        FROM `user` as user
-                                                        INNER JOIN user_auth as auth
-                                                        ON user.id = auth.user_id
-                                                        WHERE auth.email = ?")) {
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username, user.api_key, user.role ,auth.email
+FROM `user` as user
+INNER JOIN user_auth as auth
+ON user.id = auth.user_id
+WHERE auth.email = ?")) {
             $stmt->bind_param('s', $email);
             $stmt->execute();
 
-            $stmt->bind_result($id, $name, $username, $apiKey, $email);
+            $stmt->bind_result($id, $name, $username, $apiKey, $role, $email);
             while ($stmt->fetch()) {
-                $user = new User($id, $name, $username, $email, $apiKey);
+                $user = new User($id, $name, $username, $email, $apiKey, $role);
             }
 
             $stmt->close();
@@ -220,17 +249,17 @@ class UserHandler
     {
         $user = null;
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username ,auth.email
-                                                        FROM `user` as user
-                                                        INNER JOIN user_auth as auth
-                                                        ON user.id = auth.user_id
-                                                        WHERE auth.identifier = ?")) {
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username ,auth.email, user.api_key, user.role
+FROM `user` as user
+INNER JOIN user_auth as auth
+ON user.id = auth.user_id
+WHERE auth.identifier = ?")) {
             $stmt->bind_param('s', $identifier);
             $stmt->execute();
 
-            $stmt->bind_result($id, $name, $username, $email);
+            $stmt->bind_result($id, $name, $username, $email, $apiKey, $role);
             while ($stmt->fetch()) {
-                $user = new User($id, $name, $username, $email);
+                $user = new User($id, $name, $username, $email, $apiKey, $role);
             }
 
             $stmt->close();

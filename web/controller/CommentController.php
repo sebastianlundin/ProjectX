@@ -22,29 +22,46 @@ class CommentController
                 $text = $commentView->getCommentText();
                 $author = AuthHandler::getUser()->getId();
                 $id = $commentView->whichSnippetToComment();
-                
+
                 if ($commentView->getCaptchaAnswer() == $_SESSION['security_number']) {
                     $commentHandler->addComment($id, $text, $author);
                 }
             }
 
+            //Delete Comments
             if ($commentView->triesToRemoveComment()) {
-                $commentHandler->deleteComment($commentView->whichCommentToDelete());
+                $comment = $commentHandler->getCommentByID($commentView->whichCommentToDelete());
+                if ($comment != null) {
+                    if ($comment->getUserId() == AuthHandler::getUser()->getId()) {
+                        $commentHandler->deleteComment($commentView->whichCommentToDelete());
+                    }
+                }
             }
 
+            //Edit Comment
             if ($commentView->triesToUpdateComment()) {
-                $commentHandler->updateComment($commentView->whichCommentToEdit(), $commentView->getCommentText());
+                $comment = $commentHandler->getCommentByID($commentView->whichCommentToEdit());
+                if ($comment != null) {
+                    if ($comment->getUserId() == AuthHandler::getUser()->getId()) {
+                        $comment = $commentHandler->getCommentByID($commentView->whichCommentToDelete());
+                        $commentHandler->updateComment($commentView->whichCommentToEdit(), $commentView->getCommentText());
+                    }
+                }
             }
 
+            //Get content of comment and present it in the form
             if ($commentView->triesToEditComment()) {
                 $html .= $commentView->editComment($commentHandler->getCommentByID($commentView->WhichCommentToEdit()));
             } else {
                 $html .= $commentView->doCommentForm();
             }
-        }
 
-        $html .= $commentView->showAllCommentsForSnippet($commentHandler->getAllCommentsForSnippet($commentView->whichSnippetToComment()));
-        
+            $id = AuthHandler::getUser()->getId();
+            $comments = $commentHandler->getAllCommentsForSnippet($commentView->whichSnippetToComment());
+            $html .= $commentView->showAllCommentsForSnippet($comments, $id);
+        } else {
+            $html .= $commentView->showAllCommentsForSnippet($commentHandler->getAllCommentsForSnippet($commentView->whichSnippetToComment()));
+        }
         return $html;
     }
 

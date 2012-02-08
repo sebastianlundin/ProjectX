@@ -59,8 +59,14 @@ class AuthController
                 } else {
                     if (!$this->_userHandler->doesUserExist($email)) {
                         $this->_userHandler->addUser($identifier, $provider, $name, $email);
+                    } else if(!$this->_userHandler->getUserByIdentifier($identifier)) {
+                        //Add user_auth info if user exists with andother provider
+                        $user = $this->_userHandler->getUserByEmail($email);
+                        $this->_userHandler->ExtendUser($email, $provider, $identifier, $user->getId());
                     }
-                    $user = $this->_userHandler->getUserByEmail($email);
+                    if($user == null) {
+                        $user = $this->_userHandler->getUserByEmail($email);
+                    }
                     
                 }
                 AuthHandler::login($user);
