@@ -20,7 +20,7 @@ class ProfileController
         $this->_gravatarHandler = new GravatarHandler();
         $this->_snippetHandler = new SnippetHandler();
         $this->_commentHandler = new CommentHandler();
-        
+
     }
 
     public function doControll()
@@ -32,21 +32,34 @@ class ProfileController
             $id = AuthHandler::getUser()->getID();
             $name = AuthHandler::getUser()->getName();
             $avatar = $this->_gravatarHandler->getProfileGravatar($email);
-            
+
+            $data['apiKey'] = AuthHandler::getUser()->getApiKey();
             $data['snippets'] = $this->_snippetHandler->getSnippetsByUser($id);
             $data['likes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
             $data['dislikes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
-            
+
             //Borde vara get Snippets by comments written by logged in user
             //Eller en sådan också
             $data['comments'] = $this->_snippetHandler->getCommentedSnippetByUser($id);
 
             if (AuthHandler::isOwner($email)) {
-                $html .= $this->_profileView->profile($avatar,$name,$data);
+
+                if (!empty($_GET['api_key']) && $_GET['api_key'] == 'generate') {
+                    $newKey = $this->_userHandler->changeApiKey($id);
+                    if ($newKey != false) {
+                        AuthHandler::getUser()->setApiKey($newKey);
+                        $data['apiKey'] = AuthHandler::getUser()->getApiKey();
+                    } else {
+                        echo "Något gick fel när api-key genererades";
+                    }
+                }
+
+                $html .= $this->_profileView->profile($avatar, $name, $data);
             }
         } else {
 
         }
+
         return $html;
     }
 

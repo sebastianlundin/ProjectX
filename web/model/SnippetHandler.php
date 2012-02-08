@@ -2,15 +2,18 @@
 
 require_once 'DbHandler.php';
 require_once 'Snippet.php';
+require_once 'API.php';
 
 class SnippetHandler
 {
 
     private $_dbHandler;
+    private $_api;
 
     public function __construct()
     {
         $this->_dbHandler = new DbHandler();
+        $this->_api = new API();
     }
 
     /**
@@ -47,22 +50,13 @@ class SnippetHandler
     public function getAllSnippets()
     {
         $snippets = array();
-        $created = 
         
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet")) {
-            $stmt->execute();
+        $jsonsnippet = json_decode(file_get_contents($this->_api->GetURL() . "snippets"));
 
-            $stmt->bind_result($id, $code, $author, $title, $description, $language, $created, $updated);
-            while ($stmt->fetch()) {
-                $snippet = new Snippet($code, $author, $title, $description, $language, $created, $updated, $id);
-                array_push($snippets, $snippet);
-            }
-
-            $stmt->close();
+        foreach ($jsonsnippet as $snippet) {
+            $snippets[] = new Snippet($snippet->username, $snippet->code, $snippet->title, $snippet->description, $snippet->languageid, $snippet->date, "0000-00-00 00:00:00", $snippet->id);
         }
-        $this->_dbHandler->close();
-
+        
         return $snippets;
     }
 
@@ -392,8 +386,14 @@ class SnippetHandler
     {
         $titles = array();
         $this->_dbHandler->__wakeup();
+                
+        $sqlQuery = "   SELECT snippet.id, snippet.author, snippet.code, snippet.title, snippet.description, snippet.language, snippet.created, snippet.updated
+                        FROM snippet
+                        WHERE MATCH code, title, description
+                        AGAINST (? IN BOOLEAN MODE)";
         
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author, code, title, description, language, created, updated FROM (snippet) WHERE MATCH code,title,description AGAINST (?) ")) {
+
+        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
             $stmt->bind_param("s", $q);
             $stmt->execute();
 
@@ -421,7 +421,7 @@ class SnippetHandler
                         FROM snippet
                         LEFT JOIN snippet_language ON snippet.language = snippet_language.id
                         WHERE MATCH code, title, description
-                        AGAINST (?)
+                        AGAINST (? IN BOOLEAN MODE)
                         AND snippet_language.id = ?";
 
         if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {

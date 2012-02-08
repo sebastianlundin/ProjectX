@@ -9,12 +9,12 @@ class AuthHandler
         $_SESSION['user'] = $user;
     }
 
-    public static function getInstance()
+    public static function getRole()
     {
-        if (is_null(self::$instance)) {
-            self::$instance = new self();
+        if($this->isLoggedIn()) {
+            return $this->getUser()->getRole();
         }
-        return self::$instance;
+        return null;
     }
 
     public static function getUser()
@@ -40,10 +40,11 @@ class AuthHandler
         unset($_SESSION['user']);
         session_destroy();
     }
-    
-    public static function isOwner($email) {
-        if(isset($_SESSION['user'])) {
-            if($_SESSION['user']->getEmail() == $email) {
+
+    public static function isOwner($email)
+    {
+        if (isset($_SESSION['user'])) {
+            if ($_SESSION['user']->getEmail() == $email) {
                 return true;
             }
         }

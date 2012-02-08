@@ -40,6 +40,59 @@ class UserHandler
     }
 
     /**
+     * Generates api key
+     * @return string api key
+     */
+    public function generateApiKey()
+    {
+        $key = sha1(time() . rand(0, PHP_INT_MAX));
+        $results = -1;
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT api_key FROM user WHERE api_key = ?")) {
+            $stmt->bind_param('s', $key);
+            $stmt->execute();
+            $stmt->store_result();
+            $results = $stmt->num_rows();
+        }
+        $stmt->close();
+        $this->_dbHandler->close();
+        if ($results == 0) {
+            return $key;
+        } else {
+            $this->generateApiKey();
+        }
+    }
+
+    /**
+     * Changes the api key of a user
+     * @param int ID user id
+     */
+    public function changeApiKey($id)
+    {
+        $apiKey = $this->generateApiKey();
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("UPDATE user SET api_key = ? WHERE id = ?")) {
+            
+            $stmt->bind_param('si', $apiKey, $id);
+            $stmt->execute();
+            $stmt->store_result();
+            if ($stmt->affected_rows != 1) {
+                $stmt->close();
+                $this->_dbHandler->close();
+                
+                return false;
+            }
+        } else {
+            $stmt->close();
+            $this->_dbHandler->close();
+            return false;
+        }
+        $stmt->close();
+        $this->_dbHandler->close();
+        return $apiKey;
+    }
+
+    /**
      * Adds a user
      * @param $identifier string
      * @param $provider string
@@ -47,15 +100,15 @@ class UserHandler
      * @param $email string
      * @return boolean true if succsess
      */
-    public function addUser($identifier, $provider, $name, $email = 'null')
+    public function addUser($identifier, $provider, $name, $email = 'null', $role = null)
     {
         $this->_dbHandler->__wakeup();
         $insertedKey = -1;
-
+        $apiKey = $this->generateApiKey();
         //@TODO ÄNDRA OM TILL TRANSAKTIONER OM MÖJLIGT
         //Insert data into user table
-        if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO User (username, name) VALUES (?, ?)")) {
-            $stmt->bind_param('ss', $email, $name);
+        if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO User (username, name, role, api_key) VALUES (?, ?, ?, ?)")) {
+            $stmt->bind_param('ssss', $email, $name, $role, $apiKey);
             $stmt->execute();
             if ($stmt->affected_rows == null) {
                 $stmt->close();
@@ -118,7 +171,7 @@ class UserHandler
     {
         $user = null;
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username ,auth.email
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username, user.api_key ,auth.email
                                                         FROM `user` as user
                                                         INNER JOIN user_auth as auth
                                                         ON user.id = auth.user_id
@@ -126,9 +179,9 @@ class UserHandler
             $stmt->bind_param('s', $email);
             $stmt->execute();
 
-            $stmt->bind_result($id, $name, $username, $email);
+            $stmt->bind_result($id, $name, $username, $apiKey, $email);
             while ($stmt->fetch()) {
-                $user = new User($id, $name, $username, $email);
+                $user = new User($id, $name, $username, $email, $apiKey);
             }
 
             $stmt->close();
