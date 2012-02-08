@@ -13,6 +13,11 @@ class UserHandler
         $this->_dbHandler = new DbHandler();
     }
 
+    /**
+     *Check if a user exist in database
+     * @param $email string Email adress to check user against
+     * @return boolean true if user exist
+     */
     public function doesUserExist($email)
     {
         $this->_dbHandler->__wakeup();
@@ -34,12 +39,20 @@ class UserHandler
         return false;
     }
 
+    /**
+     * Adds a user
+     * @param $identifier string
+     * @param $provider string
+     * @param $name string
+     * @param $email string
+     * @return boolean true if succsess
+     */
     public function addUser($identifier, $provider, $name, $email = 'null')
     {
         $this->_dbHandler->__wakeup();
         $insertedKey = -1;
 
-        //@TODO ÄNDRA OM TILL TRANSAKTIONER!!111!1!
+        //@TODO ÄNDRA OM TILL TRANSAKTIONER OM MÖJLIGT
         //Insert data into user table
         if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO User (username, name) VALUES (?, ?)")) {
             $stmt->bind_param('ss', $email, $name);
@@ -75,6 +88,11 @@ class UserHandler
         return true;
     }
 
+    /**
+     *Delete a user from database
+     * @param int id of a user
+     * @return boolean true if succsess
+     */
     public function deleteUser($id)
     {
         $stmt = $this->_dbHandler->PrepareStatement("DELETE FROM User WHERE userID = ?");
@@ -91,6 +109,11 @@ class UserHandler
         return true;
     }
 
+    /**
+     * Get user from database by email
+     * @param $email string
+     * @return User
+     */
     public function getUserByEmail($email)
     {
         $user = null;
@@ -115,6 +138,31 @@ class UserHandler
         return $user;
     }
 
+    public function getUsernameByID($id)
+    {
+        $authorName = 'errorName';
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT name FROM user WHERE id = ?")) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->bind_result($name);
+            while ($stmt->fetch()) {
+                $authorName = $name;
+            }
+            $authorName = $name;
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $authorName;
+    }
+
+    /**
+     * Get user from database by identifier
+     * @param $identifier string
+     * @return User
+     */
     public function getUserByIdentifier($identifier)
     {
         $user = null;
@@ -139,6 +187,11 @@ class UserHandler
         return $user;
     }
 
+    /**
+     *Check if a user exist in database
+     * @param $identifier string Identifier to check user against
+     * @return boolean true if user exist
+     */
     public function twitterExists($identifier)
     {
         $this->_dbHandler->__wakeup();
@@ -147,7 +200,7 @@ class UserHandler
             $stmt->bind_param("s", $identifier);
             $stmt->execute();
             $stmt->store_result();
-            
+
             if ($stmt->num_rows > 0) {
                 return true;
             }
@@ -159,11 +212,6 @@ class UserHandler
         }
         $this->_dbHandler->Close();
         return false;
-    }
-
-    public function mergeUser()
-    {
-
     }
 
 }

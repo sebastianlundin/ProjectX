@@ -1,11 +1,11 @@
 <?php
-
 require_once 'DbHandler.php';
+require_once 'AuthHandler.php';
 
 $dbHandler = new DbHandler();
 $sqlQuery = "INSERT INTO rating (userId, snippetId, rating) VALUES (?, ?, ?)";
 
-$user_id = 6; // Should get user_id from cookie or something here
+$user_id = $_POST['user_id']; // Should get user_id from cookie or something here
 $snippet_id = $_POST['snippet_id'];
 $rating = $_POST['rating'];
 

@@ -18,15 +18,16 @@ class SearchController
         $this->_langHandler = new LanguageHandler($this->_dbHandler);
         $this->_searchView = new SearchView();
         $this->_snippetView = new SnippetView();
-        $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
         $this->_html = '';
     }
 
     public function doControll() {
 
+        
         $this->_html = $this->_searchView->doSearchForm($this->_langHandler->getAllLang());
 
         if($this->_searchView->doSearch()) {
+            $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3); // borde få in resultat som ska pagineras
             $searchQuery = $this->_searchView->getSearchQuery();
             $lang = $this->_searchView->getSearchLang();
             //För pageningen

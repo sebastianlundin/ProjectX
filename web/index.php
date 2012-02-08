@@ -1,6 +1,5 @@
 <?php
 require_once 'controller/MasterController.php';
-require_once 'model/AuthHandler.php';
 
 $_mc = new MasterController();
 $_html = $_mc->doControll();

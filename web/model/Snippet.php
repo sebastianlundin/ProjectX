@@ -4,6 +4,7 @@ require_once 'SnippetHandler.php';
 class Snippet
 {
     private $_id;
+    private $_authorID;
     private $_author;
     private $_code;
     private $_title;
@@ -13,79 +14,119 @@ class Snippet
     private $_created;
     private $_updated;
 
-    public function __construct($author, $code, $title, $desc, $languageID, $id = null, $created, $updated)
+    public function __construct($author, $code, $title, $desc, $languageID, $created, $updated, $id = null)
     {
         if ($id != null) {
             $this->_id = $id;
         }
-        $this->_author = $author;
+        $this->_authorID = $author;
         $this->_code = $code;
         $this->_title = $title;
         $this->_desc = $desc;
         $this->_languageID = $languageID;
         $this->_created = $created;
         $this->_updated = $updated;
-        
-        $sh = new SnippetHandler();
-        $lang = $sh->getLanguageByID($this->_languageID);
-        $this->_language = $lang['name'];
+
+        //Get name of language and author
+        $this->getLangName();
+        $this->getAuthorName();
+    }
+
+    /**
+     * Get name of Author from UserHandler
+     */
+    private function getAuthorName()
+    {
+        if (isset($this->_authorID)) {
+            $uh = new UserHandler();
+            $this->_author = $uh->getUsernameByID($this->_authorID);
+        }
+    }
+
+    /**
+     * Gets the name of a language by ID from SnippetHandler
+     */
+    private function getLangName()
+    {
+        if (isset($this->_languageID)) {
+            $sh = new SnippetHandler();
+            $lang = $sh->getLanguageByID($this->_languageID);
+            $this->_language = $lang['name'];
+        }
     }
 
     /**
      * @return int ID of the snippet
      */
-    public function getID() {
+    public function getID()
+    {
         return $this->_id;
     }
 
     /**
-     * @return String The author of the snippet
+     * @return int The author id of the snippet
      */
-    public function getAuthor() {
+    public function getAuthorId()
+    {
+        return $this->_authorID;
+    }
+
+    /**
+     * @return int The author id of the snippet
+     */
+    public function getAuthor()
+    {
         return $this->_author;
     }
 
     /**
      * @return String The code snippet
      */
-    public function getCode() {
+    public function getCode()
+    {
         return $this->_code;
     }
 
     /**
      * @return String title of the snippet
      */
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->_title;
     }
 
     /**
      * @return String description of the snippet
      */
-    public function getDesc() {
+    public function getDesc()
+    {
         return $this->_desc;
     }
 
     /**
      * @return String language of the snippet
      */
-    public function getLanguage() {
+    public function getLanguage()
+    {
         return $this->_language;
     }
 
     /**
      * @return int id of language
      */
-    public function getLanguageID() {
+    public function getLanguageID()
+    {
         return $this->_languageID;
 
     }
-    
-    public function getCreatedDate() {
+
+    public function getCreatedDate()
+    {
         return $this->_created;
     }
-    
-    public function getUpdatedDate() {
+
+    public function getUpdatedDate()
+    {
         return $this->_updated;
     }
 

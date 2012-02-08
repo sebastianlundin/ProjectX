@@ -26,10 +26,28 @@ class AuthHandler
         }
     }
 
+    public static function isLoggedIn()
+    {
+        if (isset($_SESSION['user'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function logout()
     {
         unset($_SESSION['user']);
         session_destroy();
+    }
+    
+    public static function isOwner($email) {
+        if(isset($_SESSION['user'])) {
+            if($_SESSION['user']->getEmail() == $email) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
