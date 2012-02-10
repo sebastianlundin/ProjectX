@@ -3,7 +3,7 @@
 require_once dirname(__FILE__) . '/../model/janrain-engage/lib.php';
 require_once dirname(__FILE__) . '/../model/janrain-engage/auth.php';
 require_once dirname(__FILE__) . '/../model/janrain-engage/config.php';
-require_once dirname(__FILE__) . '/../model/userHandler.php';
+require_once dirname(__FILE__) . '/../model/UserHandler.php';
 require_once dirname(__FILE__) . '/../model/AuthHandler.php';
 
 class AuthController
@@ -79,7 +79,7 @@ class AuthController
             echo "token !isset";
         }
         
-        header('location: index.php');
+        header('location: /');
     }
 
 }

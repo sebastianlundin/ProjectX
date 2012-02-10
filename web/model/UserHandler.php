@@ -21,12 +21,12 @@ class UserHandler
     public function doesUserExist($email)
     {
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM user_auth WHERE email = ?")) {
-
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id FROM user_auth WHERE email = ?")) {
             $stmt->bind_param("s", $email);
-            $stmt->execute();
+            $stmt->execute();                                        
             $stmt->store_result();
-            if ($stmt->num_rows > 0) {
+
+            if ($stmt->num_rows() > 0) {
                 return true;
             }
 
@@ -53,8 +53,9 @@ class UserHandler
             $stmt->execute();
             $stmt->store_result();
             $results = $stmt->num_rows();
+            $stmt->close();
         }
-        $stmt->close();
+
         $this->_dbHandler->close();
         if ($results == 0) {
             return $key;
@@ -100,14 +101,15 @@ class UserHandler
      * @param $email string
      * @return boolean true if succsess
      */
-    public function addUser($identifier, $provider, $name, $email = 'null', $role = null)
+    public function addUser($identifier, $provider, $name, $email = null, $role = null)
     {
-        $this->_dbHandler->__wakeup();
         $insertedKey = -1;
-        $apiKey = $this->generateApiKey();
+        //$apiKey = $this->generateApiKey();
+        $apiKey = 'apikey';
         //@TODO ÄNDRA OM TILL TRANSAKTIONER OM MÖJLIGT
         //Insert data into user table
-        if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO User (username, name, role, api_key) VALUES (?, ?, ?, ?)")) {
+        $this->_dbHandler->__wakeup();
+        if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO user (username, name, role, api_key) VALUES (?, ?, ?, ?)")) {
             $stmt->bind_param('ssss', $email, $name, $role, $apiKey);
             $stmt->execute();
             if ($stmt->affected_rows == null) {
@@ -138,7 +140,8 @@ class UserHandler
         }
 
         $this->_dbHandler->close();
-        return true;
+        //return id of the created user
+        return $insertedKey;
     }
 
     /**
@@ -150,8 +153,7 @@ class UserHandler
     public function extendUser($email, $provider, $identifier, $id)
     {
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->prepareStatement("INSERT INTO user_auth (email, provider, identifier, user_id) 
-                                                        VALUES(?, ?, ?, ?)")) {
+        if ($stmt = $this->_dbHandler->prepareStatement("INSERT INTO user_auth (email, provider, identifier, user_id) VALUES(?, ?, ?, ?)")) {
             $stmt->bind_param('sssi', $email, $provider, $identifier, $id);
             $stmt->execute();
             $stmt->store_result();
@@ -173,11 +175,16 @@ class UserHandler
      * @return boolean true if succsess
      */
     public function deleteUser($id)
-    {
-        $stmt = $this->_dbHandler->PrepareStatement("DELETE FROM User WHERE userID = ?");
-        $stmt->bind_param('i', $snippetID);
+    {   
+        $this->_dbHandler->__wakeup();
+        $stmt = $this->_dbHandler->PrepareStatement("DELETE u.*, a.*
+                                                        FROM user_auth a
+                                                        INNER JOIN user u
+                                                        ON u.id = a.user_id
+                                                        WHERE u.id = ?");
+        $stmt->bind_param('i', $id);
         $stmt->execute();
-        if ($stmt->affected_rows == null) {
+        if ($stmt->affected_rows != 2) {
             $stmt->close();
             $this->_dbHandler->close();
             return false;
