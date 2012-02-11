@@ -306,18 +306,20 @@ WHERE auth.identifier = ?")) {
      */
     public function searchUser($searchString)
     {
-        $userArr = null;
+        $userArr = array();
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM user WHERE name LIKE %?%")) {
-            $stmt->bind_param('s', $searchString);
+        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM user WHERE name LIKE '%$searchString%'")) {
+            //$stmt->bind_param('s', $searchString);
             $stmt->execute();
-            $stmt->bind_result($id, $name, $username, $role, $apiKey);
+            $stmt->bind_result($id, $name, $username, $apiKey, $role);
 
             while ($stmt->fetch()) {
-                $user = new User($id, $name, $username, $role, $apiKey);
-                array_push($userArr, $user);
+                $userArr[] = $user = new User($id, $name, $username, 'mail', $apiKey, $role);
             }
+
             $stmt->close();
+        } else {
+            echo "fel";
         }
         $this->_dbHandler->close();
         return $userArr;

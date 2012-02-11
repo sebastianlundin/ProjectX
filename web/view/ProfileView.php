@@ -89,17 +89,31 @@ class ProfileView
                 ";
                 
                 if($isAdmin) {
-                    $html .= "<li><a href='?p=users'>Search for users</a></li>";
+                    $html .= "<li><a href='?p=search'>Search for users</a></li>";
                 }
                 $html .= "</ul>";
         return $html;
     }
     
-    public function searchForUsers() {
-        return "<form action='/profile?p=users' method='GET' name='usersearch'>
+    public function searchForUsers($users = null) {
+        $html =  "<form action='/profile?p=search' method='POST' name='usersearch'>
             <input type='text' name='q' />
             <input type='submit' name'searchuser' value='search' />
         </form>";
+
+        if($users) {
+            $html .= "<ul>";
+            foreach ($users as $user) {
+                $html .= "<li><a href='?username=".$user->getUsername()."'>".$user->getName()."</a></li>";
+            }
+            $html .= "</ul>";
+        } else {
+            if($this->doSearch()){
+                $html .= "no matches found";
+            }
+        }
+
+        return $html;
     }
     
     public function settings() {
@@ -123,8 +137,8 @@ class ProfileView
     }
 
     public function doSearch() {
-        if(isset($_GET['q'])) {
-            return $_GET['q'];
+        if(isset($_POST['q'])) {
+            return $_POST['q'];
         }
         return false;
     }
