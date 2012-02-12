@@ -83,4 +83,15 @@ class User
         $this->_apiKey = $apiKey;
     }
 
+    /**
+     * @return bool true if user is admin
+    */
+    public function isAdmin() 
+    {
+        if($this->_role == 'admin') {
+            return true;
+        }
+        return false;    
+    }
+
 }

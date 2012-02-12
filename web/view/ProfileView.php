@@ -5,7 +5,7 @@ class ProfileView
 
     public function profile($avatar, $name, $data, $user)
     {
-        $html = $this->doProfileMenu(true);
+        $html = $this->doProfileMenu($data['isAdmin'],$data['isOwner']);
 
         $html .= "
                 <h3>Hi there $name</h3><br>
@@ -70,23 +70,17 @@ class ProfileView
         $html .= "</ul>";
         return $html;
     }
-
-    public function doApiKey($apiKey)
-    {
-        $html = 'api key ' . $apiKey;
-        $html .= " - <a href='/profile?api_key=generate'>Generate new<a/>";
-        return $html;
-    }
     
-    public function doProfileMenu($isAdmin) {
+    public function doProfileMenu($isAdmin, $isOwner) {
         $html = "    
                 <ul>
                 <li><a href='?p=created'>Created snippets</a></li>
                 <li><a href='?p=commented'>Commented Snippets</a></li>
                 <li><a href='?p=liked'>Liked snippets</a></li>
-                <li><a href='?p=disliked'>DislikedSnippets</a></li>
-                <li><a href='?p=settings'>Settings</a></li>
-                ";
+                <li><a href='?p=disliked'>DislikedSnippets</a></li>";
+                if($isOwner) {
+                    $html .= "<li><a href='?p=settings'>Settings</a></li>";
+                }
                 
                 if($isAdmin) {
                     $html .= "<li><a href='?p=search'>Search for users</a></li>";
@@ -116,8 +110,10 @@ class ProfileView
         return $html;
     }
     
-    public function settings() {
-        return "sättings";
+    public function settings($apiKey) {
+        $html = 'api key ' . $apiKey;
+        $html .= " - <a href='/profile?p=settings&api_key=generate'>Generate new<a/>";
+        return $html;
     }
 
     public function isUpdateProfile()

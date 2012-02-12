@@ -34,9 +34,8 @@ class ProfileController
             //Get data from user 
             $email = $user->getEmail();
             $id = $user->getID();
-
-            //Generate new Api key
-            $this->generateApiKey($id, $email);
+            $this->_data['isAdmin'] = $user->isAdmin();
+            $this->_data['isOwner'] = AuthHandler::isOwner($email);
 
             //Submenu controll for profile pages
             if ($page = $this->_profileView->getPage()) {
@@ -49,23 +48,34 @@ class ProfileController
                     $this->showLikedSnippets($id);
                 } else if ($page == 'disliked') {
                     $this->showDislikedSnippets($id);
-                } else if ($page == 'search') {
-                    $this->showUserSearch($id);
-                } else if($page == 'settings') {
-                    $this->showSettingsPage($id);
                 } else {
-                   $data['content'] = 'hej startsidan'; 
+                    if($page == 'settings') {
+                        if(AuthHandler::isOwner($email)) {
+                            //Generate new Api key
+                            $this->generateApiKey($id, $email);
+                            $this->showSettingsPage($id, $user->getApiKey());
+                        } else {
+                            $this->_data['content'] = 'nope!';
+                        }
+                    } else if($page == 'search') {
+                        if($user->isAdmin()) {
+                            $this->showUserSearch($id);
+                        } else {
+                            $this->_data['content'] = 'nein!';
+                        }
+                    }
+
                 }
             } else {
-                $data['content'] = 'hej startsidan';
+                $this->_data['content'] = '';
             }
 
-            //get stats of userActivities
+            //set stats of userActivities
             $this->setStats($id);
             //Get avatar for user
             $avatar = $this->_gravatarHandler->getProfileGravatar($email);
             $name = $user->getName();
-            $html .= $this->_profileView->profile($avatar, $name, $this->data, $user);
+            $html .= $this->_profileView->profile($avatar, $name, $this->_data, $user);
         } else {
             header('location: /');
         }
@@ -79,13 +89,13 @@ class ProfileController
      */
     private function generateApiKey($id, $email) {
         if (AuthHandler::isOwner($email)) {
-            $data['apiKey'] = AuthHandler::getUser()->getApiKey();
+            $this->_data['apiKey'] = AuthHandler::getUser()->getApiKey();
 
             if (!empty($_GET['api_key']) && $_GET['api_key'] == 'generate') {
                 $newKey = $this->_userHandler->changeApiKey($id);
                 if ($newKey != false) {
                     AuthHandler::getUser()->setApiKey($newKey);
-                    $data['apiKey'] = AuthHandler::getUser()->getApiKey();
+                    $this->_data['apiKey'] = AuthHandler::getUser()->getApiKey();
                 } else {
                     echo "Något gick fel när api-key genererades";
                 }
@@ -115,10 +125,10 @@ class ProfileController
      * @param $id User id
      */
     private function setStats($id) {
-        $this->data['snippets'] = $this->_snippetHandler->getSnippetsByUser($id);
-        $this->data['likes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
-        $this->data['dislikes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
-        $this->data['comments'] = $this->_snippetHandler->getCommentedSnippetByUser($id);
+        $this->_data['snippets'] = $this->_snippetHandler->getSnippetsByUser($id);
+        $this->_data['likes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
+        $this->_data['dislikes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
+        $this->_data['comments'] = $this->_snippetHandler->getCommentedSnippetByUser($id);
     }
 
     /**
@@ -127,7 +137,7 @@ class ProfileController
     private function showCreatedSnippets($id) {
         //Get snippets created by User
         $createdSnippets = $this->_snippetHandler->getSnippetsByUser($id);
-        $this->data['content'] = $this->_profileView->createdSnippets($createdSnippets);
+        $this->_data['content'] = $this->_profileView->createdSnippets($createdSnippets);
     }
     
     /**
@@ -136,7 +146,7 @@ class ProfileController
     private function showCommentedSnippets($id) {
         //Hämtar snippets som användaren har kommenterat
         $commentedSnippets = $this->_snippetHandler->getCommentedSnippetByUser($id);
-        $this->data['content'] = $this->_profileView->commentedSnippets($commentedSnippets);
+        $this->_data['content'] = $this->_profileView->commentedSnippets($commentedSnippets);
     }
     
     /**
@@ -145,7 +155,7 @@ class ProfileController
     private function showLikedSnippets($id) {
         //Show liked snippets by user
         $likedSnippets = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
-        $this->data['content']  = $this->_profileView->likedSnippets($likedSnippets);
+        $this->_data['content']  = $this->_profileView->likedSnippets($likedSnippets);
     }
 
     /**
@@ -154,15 +164,15 @@ class ProfileController
     private function showDislikedSnippets($id) {
         //Show disliked snippets by user
         $dislikedSnippets = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
-        $this->data['content']  = $this->_profileView->dislikedSnippets($dislikedSnippets);
+        $this->_data['content']  = $this->_profileView->dislikedSnippets($dislikedSnippets);
     }
 
     /**
      * @param $id User id
      */
-    private function showSettingsPage($id) {
+    private function showSettingsPage($id, $apiKey) {
         //Get settings options for user
-        $this->data['content'] = $this->_profileView->settings(); 
+        $this->_data['content'] = $this->_profileView->settings($apiKey); 
     }
 
     /**
@@ -174,7 +184,7 @@ class ProfileController
         if($query = $this->_profileView->doSearch()) {
             $users = $this->_userHandler->searchUser($query);
         }
-        $this->data['content'] = $this->_profileView->searchForUsers($users);
+        $this->_data['content'] = $this->_profileView->searchForUsers($users);
     }
 
 }
