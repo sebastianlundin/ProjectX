@@ -87,7 +87,8 @@ class ProfileController
      * @param $id User id
      * @param $email User email
      */
-    private function generateApiKey($id, $email) {
+    private function generateApiKey($id, $email) 
+    {
         if (AuthHandler::isOwner($email)) {
             $this->_data['apiKey'] = AuthHandler::getUser()->getApiKey();
 
@@ -106,7 +107,8 @@ class ProfileController
     /**
      * Get wich user to be shown
      */
-    public function setProfileUser() {
+    public function setProfileUser() 
+    {
         $user = AuthHandler::getUser(); 
         //Se ifall efterfrågade användaren finns
         if($user->getRole() == 'admin' && isset($_GET['username'])){
@@ -124,7 +126,8 @@ class ProfileController
     /**
      * @param $id User id
      */
-    private function setStats($id) {
+    private function setStats($id) 
+    {
         $this->_data['snippets'] = $this->_snippetHandler->getSnippetsByUser($id);
         $this->_data['likes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
         $this->_data['dislikes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
@@ -134,7 +137,8 @@ class ProfileController
     /**
      * @param $id User id
      */
-    private function showCreatedSnippets($id) {
+    private function showCreatedSnippets($id) 
+    {
         //Get snippets created by User
         $createdSnippets = $this->_snippetHandler->getSnippetsByUser($id);
         $this->_data['content'] = $this->_profileView->createdSnippets($createdSnippets);
@@ -143,7 +147,8 @@ class ProfileController
     /**
      * @param $id User id
      */
-    private function showCommentedSnippets($id) {
+    private function showCommentedSnippets($id) 
+    {
         //Hämtar snippets som användaren har kommenterat
         $commentedSnippets = $this->_snippetHandler->getCommentedSnippetByUser($id);
         $this->_data['content'] = $this->_profileView->commentedSnippets($commentedSnippets);
@@ -152,7 +157,8 @@ class ProfileController
     /**
      * @param $id User id
      */
-    private function showLikedSnippets($id) {
+    private function showLikedSnippets($id) 
+    {
         //Show liked snippets by user
         $likedSnippets = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
         $this->_data['content']  = $this->_profileView->likedSnippets($likedSnippets);
@@ -161,7 +167,8 @@ class ProfileController
     /**
      * @param $id User id
      */
-    private function showDislikedSnippets($id) {
+    private function showDislikedSnippets($id) 
+    {
         //Show disliked snippets by user
         $dislikedSnippets = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
         $this->_data['content']  = $this->_profileView->dislikedSnippets($dislikedSnippets);
@@ -170,7 +177,8 @@ class ProfileController
     /**
      * @param $id User id
      */
-    private function showSettingsPage($id, $apiKey) {
+    private function showSettingsPage($id, $apiKey) 
+    {
         //Get settings options for user
         $this->_data['content'] = $this->_profileView->settings($apiKey); 
     }
@@ -178,7 +186,8 @@ class ProfileController
     /**
      *Search for a user
      */
-    private function showUserSearch() {
+    private function showUserSearch() 
+    {
         //Search for user 
         $users = null;
         if($query = $this->_profileView->doSearch()) {
