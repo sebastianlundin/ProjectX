@@ -3,7 +3,7 @@
 require_once dirname(__FILE__) . '/../model/janrain-engage/lib.php';
 require_once dirname(__FILE__) . '/../model/janrain-engage/auth.php';
 require_once dirname(__FILE__) . '/../model/janrain-engage/config.php';
-require_once dirname(__FILE__) . '/../model/userHandler.php';
+require_once dirname(__FILE__) . '/../model/UserHandler.php';
 require_once dirname(__FILE__) . '/../model/AuthHandler.php';
 
 class AuthController
@@ -59,8 +59,14 @@ class AuthController
                 } else {
                     if (!$this->_userHandler->doesUserExist($email)) {
                         $this->_userHandler->addUser($identifier, $provider, $name, $email);
+                    } else if(!$this->_userHandler->getUserByIdentifier($identifier)) {
+                        //Add user_auth info if user exists with andother provider
+                        $user = $this->_userHandler->getUserByEmail($email);
+                        $this->_userHandler->ExtendUser($email, $provider, $identifier, $user->getId());
                     }
-                    $user = $this->_userHandler->getUserByEmail($email);
+                    if($user == null) {
+                        $user = $this->_userHandler->getUserByEmail($email);
+                    }
                     
                 }
                 AuthHandler::login($user);
@@ -73,7 +79,7 @@ class AuthController
             echo "token !isset";
         }
         
-        header('location: index.php');
+        header('location: /');
     }
 
 }

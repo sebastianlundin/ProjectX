@@ -9,9 +9,9 @@ class Settings
 
     public function __construct()
     {
-        $this->_dbname = "projectx";
-        $this->_password = "";
-        $this->_host = "127.0.0.1";
+        $this->_dbname = "projectX";
+        $this->_password = "root";
+        $this->_host = "localhost";
         $this->_username = "root";
     }
 

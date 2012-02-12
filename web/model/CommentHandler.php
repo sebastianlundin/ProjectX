@@ -142,24 +142,22 @@ class CommentHandler
      */
     public function getCommentByID($commentId)
     {
-
+        $comment = null;
         $sqlQuery = "   SELECT comment.snippet_id, comment.id, comment.comment, comment.user_id, user.username
                         FROM comment
                         INNER JOIN user ON user.id = comment.user_id
                         WHERE comment.id = ?
                     ";
-        $stmt = $this->_dbHandler->PrepareStatement($sqlQuery);
-        $stmt->bind_param('i', $commentId);
-        $stmt->execute();
-        $stmt->bind_result($snippetId, $commentId, $commentText, $userId, $username);
+        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
+            $stmt->bind_param('i', $commentId);
+            $stmt->execute();
+            $stmt->bind_result($snippetId, $commentId, $commentText, $userId, $username);
 
-        $comment = null;
-
-        if ($stmt->fetch()) {
-            $comment = new Comment($snippetId, $commentId, $userId, $commentText);
+            if ($stmt->fetch()) {
+                $comment = new Comment($snippetId, $commentId, $userId, $commentText);
+            }
         }
         $stmt->close();
-
         return $comment;
     }
 

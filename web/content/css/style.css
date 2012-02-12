@@ -42,7 +42,7 @@ input, textarea, select  {
     color: #fff;
     font-family: Arial;
     font-size: 14px;
-    font-style: italic;
+    /*font-style: italic;*/
     text-decoration: none;
 }
 
@@ -54,8 +54,17 @@ input, textarea, select  {
     display: inline;
 }
 
+.topbar .right:last-child {
+    padding-right: 5px;
+}
+
+.topbar #logout-topbar {
+    margin-left: 10px;
+}
+
 .topbar .right {
     float: right;
+    margin: 0 auto;
 }
 
 .topbar-inner {
@@ -65,7 +74,8 @@ input, textarea, select  {
 }
 
 .topbar #topAvatar {
-    margin: 0px 5px 0px 4px;
+    padding-top: 3px;
+    margin-right: 5px;
 }
 
 /*
