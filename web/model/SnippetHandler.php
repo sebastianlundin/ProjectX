@@ -21,27 +21,6 @@ class SnippetHandler
      * @param int $aID id of a snippet
      * @return Snippet
      */
-//    public function getSnippetByID($id)
-//    {
-//        
-//        $snippet = null;
-//        $this->_dbHandler->__wakeup();
-//        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet WHERE id = ?")) {
-//
-//            $stmt->bind_param("i", $id);
-//            $stmt->execute();
-//
-//            $stmt->bind_result($snippetID, $author, $code, $title, $desc, $language, $created, $updated);
-//            while ($stmt->fetch()) {
-//                $snippet = new Snippet($author, $code, $title, $desc, $language, $created, $updated, $snippetID);
-//            }
-//
-//            $stmt->close();
-//
-//        }
-//        $this->_dbHandler->Close();
-//        return $snippet;
-//    }
     public function getSnippetByID($id)
     {
         $snippet = null;
@@ -158,30 +137,34 @@ class SnippetHandler
 
     public function createSnippet(Snippet $snippet)
     {
-        $this->_dbHandler->__wakeup();
         $author = $snippet->getAuthorId();
         $code = $snippet->getCode();
         $title = $snippet->getTitle();
         $desc = $snippet->getDesc();
         $language = $snippet->getLanguageID();
         $created = $snippet->getCreatedDate();
-
-        $inserterId = null;
-        if ($databaseQuery = $this->_dbHandler->PrepareStatement("INSERT INTO snippet (user_id, code, title, description, language, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-            $databaseQuery->bind_param('sssssss', $author, $code, $title, $desc, $language, $created, $updated);
-            $databaseQuery->execute();
-            if ($databaseQuery->affected_rows != 1) {
-                $databaseQuery->close();
-                return false;
-            }
-            $inserterId = $databaseQuery->insert_id; 
-            $databaseQuery->close();
-        } else {
-            return false;
+        
+        $url = $this->_api->GetURL() . "snippets";
+        $query = array('userid' => $snippet->getAuthorId(), 'code' => $snippet->getCode(), 'desc' => $snippet->getDesc(), 'title' => $snippet->getTitle(), 'languageid' => $snippet->getLanguageID(), 'apikey' => '5435gdfhghdghdf');
+        
+        $fields = '';
+        foreach ($query as $key => $value) {
+            $fields .= $key . '=' . $value . '&';
         }
+        rtrim($fields, '&');
+        
+        $post = curl_init();
 
-        $this->_dbHandler->close();
-        return $inserterId;
+        curl_setopt($post, CURLOPT_URL, $url);
+        curl_setopt($post, CURLOPT_POST, count($query));
+        curl_setopt($post, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($post, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($post);
+
+        curl_close($post);
+        
+        return $result;
     }
 
     //kom ihåg att anropa snippetHandler->SetDate i Controllen för att få $updated korrekt

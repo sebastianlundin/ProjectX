@@ -38,7 +38,7 @@ class SnippetController
                 }
                 $this->_html .= $this->_commentController->doControll();
             } else {
-                $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
+               $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
                if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
                     $_GET['pagenumber'] = 1;
                 } else {
@@ -60,7 +60,7 @@ class SnippetController
             $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
 
             if ($this->_snippetView->triedToCreateSnippet()) {
-                $snippet = new Snippet(AuthHandler::getUser()->getId(), $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
+                $snippet = new Snippet(2, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
                 $this->_snippetHandler->createSnippet($snippet);
             }
         }
