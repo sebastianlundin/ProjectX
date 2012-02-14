@@ -204,11 +204,11 @@ class UserHandler
     {
         $user = null;
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username, user.api_key, user.role ,auth.email
-FROM `user` as user
-INNER JOIN user_auth as auth
-ON user.id = auth.user_id
-WHERE auth.email = ?")) {
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username, user.api_key, user.role_id ,auth.email
+                                                        FROM `user` as user
+                                                        INNER JOIN user_auth as auth
+                                                        ON user.id = auth.user_id
+                                                        WHERE auth.email = ?")) {
             $stmt->bind_param('s', $email);
             $stmt->execute();
 
@@ -325,4 +325,46 @@ WHERE auth.identifier = ?")) {
         return $userArr;
     }
 
+    /**
+     * @param $roleId int id of role from table user_role
+     * @return String name of role, false if query fails
+     */
+    public function getRoleByID($roleId) 
+    {
+        $roleName = 'none';
+        $this->_dbHandler->__wakeup();
+        if($stmt = $this->_dbHandler->prepareStatement('SELECT role FROM user_role WHERE id = ? ')) {
+            $stmt->bind_param('i', $roleId);
+            $stmt->execute();
+            $stmt->bind_result($roleName);
+            $stmt->fetch();
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $roleName;
+    }
+
+    /**
+     * @return Array
+     */
+    public function getAllRoles()
+    {
+        $this->_dbHandler->__wakeup();
+        $roleArr = array();
+        if($stmt = $this->_dbHandler->prepareStatement('SELECT * FROM user_role')) {
+            $stmt->execute();
+            $stmt->bind_param($id, $param);
+
+            while ($stmt->fetch()) {
+                $roleArr[$id] = $role; 
+            }
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $roleArr;
+    }
 }

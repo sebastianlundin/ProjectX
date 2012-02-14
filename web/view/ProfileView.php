@@ -5,7 +5,7 @@ class ProfileView
 
     public function profile($avatar, $name, $data, $user)
     {
-        $html = $this->doProfileMenu($data['isAdmin'],$data['isOwner']);
+        $html = $this->doProfileMenu($data['isAdmin'],$data['isOwner'], $data['email']);
 
         $html .= "
                 <h3>Hi there $name</h3><br>
@@ -15,7 +15,7 @@ class ProfileView
                     <p>Commented snippets: " . count($data['comments']) . "</p>
                     <p>Total likes: " . count($data['likes']) . "</p>
                     <p>Total dislikes: " . count($data['dislikes']) . "</p>
-                    <p>User role: " . $user->getRole() . "</p>
+                    <p>User role: " . $user->getRoleName() . "</p>
                 </div>
                 <br />
                 <div id='userActivity'>";
@@ -65,25 +65,25 @@ class ProfileView
         $html = "<h3>Commented snippets</h3>
                     <ul>";
         foreach ($commentedSnippets as $snippet) {
-            $html .= "<li><a href='?page=listsnippets&snippet=" . $snippet['id'] . "'>" . $snippet['title'] . '</a><br />' . $snippet['comment'] . '</li>';
+            $html .= "<li><a href='?&page=listsnippets&snippet=" . $snippet['id'] . "'>" . $snippet['title'] . '</a><br />' . $snippet['comment'] . '</li>';
         }
         $html .= "</ul>";
         return $html;
     }
     
-    public function doProfileMenu($isAdmin, $isOwner) {
+    public function doProfileMenu($isAdmin, $isOwner, $email) {
         $html = "    
                 <ul>
-                <li><a href='?p=created'>Created snippets</a></li>
-                <li><a href='?p=commented'>Commented Snippets</a></li>
-                <li><a href='?p=liked'>Liked snippets</a></li>
-                <li><a href='?p=disliked'>DislikedSnippets</a></li>";
+                <li><a href='?username=".$email."&p=created'>Created snippets</a></li>
+                <li><a href='?username=".$email."&p=commented'>Commented Snippets</a></li>
+                <li><a href='?username=".$email."&p=liked'>Liked snippets</a></li>
+                <li><a href='?username=".$email."&p=disliked'>DislikedSnippets</a></li>";
                 if($isOwner) {
-                    $html .= "<li><a href='?p=settings'>Settings</a></li>";
+                    $html .= "<li><a href='?username=".$email."&p=settings'>Settings</a></li>";
                 }
                 
                 if($isAdmin) {
-                    $html .= "<li><a href='?p=search'>Search for users</a></li>";
+                    $html .= "<li><a href='?username=".$email."&p=search'>Search for users</a></li>";
                 }
                 $html .= "</ul>";
         return $html;
@@ -125,16 +125,25 @@ class ProfileView
         }
     }
     
-    public function getPage() {
+    public function getPage()
+    {
         if(isset($_GET['p'])) {
             return $_GET['p'];
         }
         return false;
     }
 
-    public function doSearch() {
+    public function doSearch()
+    {
         if(isset($_POST['q'])) {
             return $_POST['q'];
+        }
+        return false;
+    }
+
+    public function changingUserRole() {
+        if(isset($_POST['role'])) {
+            return $_POST['role'];
         }
         return false;
     }

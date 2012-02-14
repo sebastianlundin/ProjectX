@@ -36,6 +36,7 @@ class ProfileController
             $id = $user->getID();
             $this->_data['isAdmin'] = $user->isAdmin();
             $this->_data['isOwner'] = AuthHandler::isOwner($email);
+            $this->_data['email'] = $email;
 
             //Submenu controll for profile pages
             if ($page = $this->_profileView->getPage()) {
@@ -53,7 +54,7 @@ class ProfileController
                         if(AuthHandler::isOwner($email)) {
                             //Generate new Api key
                             $this->generateApiKey($id, $email);
-                            $this->showSettingsPage($id, $user->getApiKey());
+                            $this->showSettingsPage($id, $user->getApiKey(), $user);
                         } else {
                             $this->_data['content'] = 'nope!';
                         }
@@ -63,6 +64,8 @@ class ProfileController
                         } else {
                             $this->_data['content'] = 'nein!';
                         }
+                    } else {
+                        $this->_data['content'] = 'Sidan du söker finns inte';
                     }
 
                 }
@@ -111,7 +114,7 @@ class ProfileController
     {
         $user = AuthHandler::getUser(); 
         //Se ifall efterfrågade användaren finns
-        if($user->getRole() == 'admin' && isset($_GET['username'])){
+        if($user->getRoleName() == 'admin' && isset($_GET['username'])){
             $user = $this->_userHandler->getUserByEmail($_GET['username']);
             
             //Om användaren inte existerar sätt den inloggade användaren
@@ -177,10 +180,23 @@ class ProfileController
     /**
      * @param $id User id
      */
-    private function showSettingsPage($id, $apiKey) 
+    private function showSettingsPage($id, $apiKey, $user) 
     {
         //Get settings options for user
-        $this->_data['content'] = $this->_profileView->settings($apiKey); 
+        $this->_data['content'] = $this->_profileView->settings($apiKey);
+
+        if(!AuthHandler::isOwner($user->getEmail()) && $user->isAdmin()) {
+            $roles = $this->_userHandler->getAllRoles();
+            $this->_data['content'] .= $this->_profileView->changeUserRole($roles);
+
+            //if user tries to change role
+            if($roleId = $this->_profileView->isChangeUserRole) {
+                $userEmail = $this->_profileView->getUser();
+                //Användaren som ska byta roll
+                $tempUser = $this->_userHandler->getUserByEmail($userEmail);
+                $this->_userHandler->changeUserRole($user->getId(), $roleId);
+            }
+        }
     }
 
     /**
@@ -195,5 +211,18 @@ class ProfileController
         }
         $this->_data['content'] = $this->_profileView->searchForUsers($users);
     }
+
+    /**
+     *
+     */
+     private function changeUserRole(User $user)
+     {
+        if($user->isAdmin() && !$user->isOwner()) {
+            if($this->_profileView->changingSuerRole()) {
+                $role = $this->_profileView->GetUserRole();
+                $this->_userHandler->changeUserRole($id, $role);
+            }
+        }
+     }
 
 }
