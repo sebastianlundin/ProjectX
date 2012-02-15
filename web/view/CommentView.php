@@ -28,9 +28,9 @@ class CommentView
      * CommentView::showAllCommentsForSnippet()
      * html that shows all comments taht was added for a snippet
      * @return String
-     * @parram array of the Comment object
+     * @param array of the Comment object
      */
-    public function showAllCommentsForSnippet($comments)
+    public function showAllCommentsForSnippet($comments, $userId = null)
     {
         $message = "";
         if (!empty($comments)) {
@@ -39,8 +39,11 @@ class CommentView
                 $message .= "<p class='snippet-author'>" . $comments[$i]->getUsername() . "</p>";
                 $message .= "<p class='date'>2012-01-01</p>";
                 $message .= "<p class='text'>" . $comments[$i]->getCommentText() . "</p>";
-                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a> ";
-                $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&controller=commentcontroller&editComment=" . $comments[$i]->getCommentId() . "'>Redigera</a>";
+                if($comments[$i]->getUserId() == $userId && $userId != null) {
+                    $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen ta bort kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&deleteComment=" . $comments[$i]->getCommentId() . "'>Radera</a> ";
+                    $message .= "<a onclick=\"javascript: return confirm('Vill du verkligen editera kommentar? [" . $comments[$i]->getCommentId() . "]')\" href='index.php?page=listsnippets&snippet=" . $comments[$i]->getSnippetId() . "&editComment=" . $comments[$i]->getCommentId() . "'>Redigera</a>";
+                }
+                
                 $message .= "</div>";
             }
         } else {

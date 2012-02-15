@@ -15,14 +15,15 @@ class SnippetTest extends UnitTestCase
 
     public function __construct()
     {
-        $this->_author = 'testAuthor';
+        $this->_author = '18';
         $this->_code = 'testCode';
         $this->_title = 'testTitle';
         $this->_desc = 'testDesc';
-        $this->_language = 'testLang';
+        $this->_language = '1';
         $this->_id = 0;
+        $date = "0000-00-00 00:00:00";
 
-        $this->_snippet = new Snippet($this->_author, $this->_code, $this->_title, $this->_desc, $this->_language, $this->_id);
+        $this->_snippet = new Snippet($this->_author, $this->_code, $this->_title, $this->_desc, $this->_language, $date, $date, $this->_id);
     }
 
     public function testGetID()
@@ -32,7 +33,7 @@ class SnippetTest extends UnitTestCase
 
     public function testGetAuthor()
     {
-        $this->assertEqual($this->_author, $this->_snippet->getAuthor());
+        $this->assertEqual($this->_author, $this->_snippet->getAuthorId());
     }
 
     public function testGetCode()
@@ -52,7 +53,7 @@ class SnippetTest extends UnitTestCase
 
     public function testGetLanguage()
     {
-        $this->assertEqual($this->_language, $this->_snippet->getLanguage());
+        $this->assertEqual($this->_language, $this->_snippet->getLanguageID());
     }
 
 }
