@@ -1,5 +1,6 @@
 <?php
 require_once 'SnippetHandler.php';
+require_once 'UserHandler.php';
 
 class Snippet
 {

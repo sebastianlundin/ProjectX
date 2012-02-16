@@ -189,20 +189,22 @@ class SnippetHandler
         $language = $snippet->getLanguageID();
         $created = $snippet->getCreatedDate();
 
+        $inserterId = null;
         if ($databaseQuery = $this->_dbHandler->PrepareStatement("INSERT INTO snippet (user_id, code, title, description, language, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
             $databaseQuery->bind_param('sssssss', $author, $code, $title, $desc, $language, $created, $updated);
             $databaseQuery->execute();
-            if ($databaseQuery->affected_rows == null) {
+            if ($databaseQuery->affected_rows != 1) {
                 $databaseQuery->close();
                 return false;
             }
+            $inserterId = $databaseQuery->insert_id; 
             $databaseQuery->close();
         } else {
             return false;
         }
 
         $this->_dbHandler->close();
-        return true;
+        return $inserterId;
     }
 
     //kom ihåg att anropa snippetHandler->SetDate i Controllen för att få $updated korrekt
@@ -218,15 +220,17 @@ class SnippetHandler
         return true;
     }
 
-    public function deleteSnippet($snippetID)
+    public function deleteSnippet($id)
     {
-        $databaseQuery = $this->_dbHandler->PrepareStatement("DELETE FROM SnippetsTable WHERE snippetID = ?");
-        $databaseQuery->bind_param('i', $snippetID);
+        $this->_dbHandler->__wakeup();
+        $databaseQuery = $this->_dbHandler->PrepareStatement("DELETE FROM snippet WHERE id = ?");
+        $databaseQuery->bind_param('i', $id);
         $databaseQuery->execute();
         if ($databaseQuery->affected_rows == null) {
             return false;
         }
         $databaseQuery->close();
+        return true;
     }
 
     /**
@@ -236,7 +240,7 @@ class SnippetHandler
      */
     public function getNrOfSnippets($nr)
     {
-        if ($nr == 0) {
+        if ($nr <= 0) {
             $nr = 1;
         }
         $snippets = array();
@@ -248,7 +252,7 @@ class SnippetHandler
 
             $stmt->bind_result($id, $code, $author, $title, $description, $language, $created, $updated);
             while ($stmt->fetch()) {
-                $snippet = new Snippet($code, $author, $title, $description, $language, $id, $created, $updated);
+                $snippet = new Snippet($author, $code, $title, $description, $language, $created, $updated, $id);
                 array_push($snippets, $snippet);
             }
 

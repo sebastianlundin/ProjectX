@@ -102,7 +102,7 @@ class Comment
     /**
      * Comment::getUserId()
      *
-     * @return int ID of the user
+     * @return int ID of the user who wrote the comment
      */
     public function getUserId()
     {

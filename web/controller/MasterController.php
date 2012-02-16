@@ -49,6 +49,7 @@ class MasterController
 
         if (!empty($_GET['logout']) && $_GET['logout'] == 'true') {
             AuthHandler::logout();
+            header('location: /');
         }
         return $this->_html;
     }
