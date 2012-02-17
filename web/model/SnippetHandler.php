@@ -134,7 +134,12 @@ class SnippetHandler
         $this->_dbHandler->close();
         return $snippetArr;
     }
-
+    
+    /**
+     * Creates a snippet via the API
+     * @param Snippet $snippet
+     * @return bool
+     */
     public function createSnippet(Snippet $snippet)
     {
         $author = $snippet->getAuthorId();
@@ -167,30 +172,47 @@ class SnippetHandler
         return $result;
     }
 
-    //kom ihåg att anropa snippetHandler->SetDate i Controllen för att få $updated korrekt
-    public function updateSnippet($snippetName, $snippetCode, $snippetID, $updated)
+    /**
+     * Updates a snippet via the API
+     * @param string $snippetName, string $snippetCode, string $snippetDesc, int $snippetID, date $updated
+     * @return bool
+     */
+    public function updateSnippet($snippetName, $snippetCode, $snippetDesc, $snippetID, $updated)
     {
-        $databaseQuery = $this->_dbHandler->PrepareStatement("UPDATE SnippetsTable SET snippetName = ?, snippetCode = ?, updated = ? WHERE snippetID = ?");
-        $databaseQuery->bind_param('ssis', $snippetName, $snippetCode, $snippetID, $updated);
-        $databaseQuery->execute();
-        if ($databaseQuery->affected_rows == null) {
-            return false;
+        $url = $this->_api->GetURL() . "snippets";
+        $query = array('id' => $snippetID, 'userid' => 2, 'code' => $snippetCode, 'desc' => $snippetDesc, 'title' => $snippetName, 'languageid' => '2', 'apikey' => '5435gdfhghdghdf');
+        
+        $fields = '';
+        foreach ($query as $key => $value) {
+            $fields .= $key . '=' . $value . '&';
         }
-        $databaseQuery->close();
-        return true;
+        rtrim($fields, '&');
+        
+        $post = curl_init();
+        
+        curl_setopt($post, CURLOPT_URL, $url);
+        curl_setopt($post, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($post, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($post, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($post);
+
+        curl_close($post);
+        
+        return $result;
     }
 
-    public function deleteSnippet($id)
+    public function deleteSnippet(Snippet $snippet)
     {
-        $this->_dbHandler->__wakeup();
-        $databaseQuery = $this->_dbHandler->PrepareStatement("DELETE FROM snippet WHERE id = ?");
-        $databaseQuery->bind_param('i', $id);
-        $databaseQuery->execute();
-        if ($databaseQuery->affected_rows == null) {
-            return false;
-        }
-        $databaseQuery->close();
-        return true;
+        $ch = curl_init($this->_api->GetURL() . 'snippets/' . $snippet->getID() . '/2/5435gdfhghdghdf');
+        
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        $result = curl_exec($ch);
+        
+        return $result;
     }
 
     /**

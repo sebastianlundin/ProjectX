@@ -63,6 +63,16 @@ class SnippetController
                 $snippet = new Snippet(2, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
                 $this->_snippetHandler->createSnippet($snippet);
             }
+        } else if ($page == 'update') {
+            $this->_html = null;
+            $this->_html .= $this->_snippetView->updateSnippet($this->_snippetHandler->getSnippetByID($_GET['snippet']));
+            
+            if ($this->_snippetView->triedToUpdateSnippet()) {
+                $this->_snippetHandler->updateSnippet($this->_snippetView->getUpdateSnippetName(), $this->_snippetView->getUpdateSnippetCode(), $this->_snippetView->getUpdateSnippetDesc(), $_GET['snippet'], $this->_snippetHandler->SetDate());
+            }
+        } else if ($page == 'remove') {
+            $this->_html = "Removed";
+            $this->_snippetHandler->deleteSnippet($this->_snippetHandler->getSnippetByID($_GET['snippet']));
         }
 
         return $this->_html;
