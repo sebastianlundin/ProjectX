@@ -18,7 +18,7 @@ class GravatarHandler
 	 */
 	public function getTopGravatar($email = "")
 	{
-		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($this->_topDefault) . "&s=" . $this->_topSize . "&d=mm";
+		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($this->_topDefault) . "&amp;s=" . $this->_topSize . "&amp;d=mm";
 	}
 
 	/**
@@ -28,7 +28,7 @@ class GravatarHandler
 	 */
 	public function getPostGravatar($email = "")
 	{
-		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($this->_postDefault) . "&s=" . $this->_postSize . "&d=mm";
+		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($this->_postDefault) . "&amp;s=" . $this->_postSize . "&amp;d=mm";
 	}
 
 	/**
@@ -38,6 +38,6 @@ class GravatarHandler
 	 */
 	public function getProfileGravatar($email = "")
 	{
-		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($this->_profileDefault) . "&s=" . $this->_profileSize . "&d=mm";
+		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=" . urlencode($this->_profileDefault) . "&amp;s=" . $this->_profileSize . "&amp;d=mm";
 	}
 }

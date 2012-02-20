@@ -34,7 +34,7 @@ class ProfileController
             //Get data from user 
             $email = $user->getEmail();
             $id = $user->getID();
-            $this->_data['isAdmin'] = $user->isAdmin();
+            $this->_data['isAdmin'] = AuthHandler::isAdmin();
             $this->_data['isOwner'] = AuthHandler::isOwner($email);
             $this->_data['email'] = $email;
 
@@ -51,7 +51,7 @@ class ProfileController
                     $this->showDislikedSnippets($id);
                 } else {
                     if($page == 'settings') {
-                        if(AuthHandler::isOwner($email)) {
+                        if(AuthHandler::isOwner($email) || AuthHandler::getRole() == 2) {
                             //Generate new Api key
                             $this->generateApiKey($id, $email);
                             $this->showSettingsPage($id, $user->getApiKey(), $user);
@@ -92,7 +92,7 @@ class ProfileController
      */
     private function generateApiKey($id, $email) 
     {
-        if (AuthHandler::isOwner($email)) {
+        if (AuthHandler::isOwner($email) || AuthHandler::isAdmin()) {
             $this->_data['apiKey'] = AuthHandler::getUser()->getApiKey();
 
             if (!empty($_GET['api_key']) && $_GET['api_key'] == 'generate') {
@@ -182,20 +182,18 @@ class ProfileController
      */
     private function showSettingsPage($id, $apiKey, $user) 
     {
-        //Get settings options for user
-        $this->_data['content'] = $this->_profileView->settings($apiKey);
-
-        if(!AuthHandler::isOwner($user->getEmail()) && $user->isAdmin()) {
+        if(AuthHandler::isOwner($user->getEmail()) || AuthHandler::isAdmin()) {
             $roles = $this->_userHandler->getAllRoles();
-            $this->_data['content'] .= $this->_profileView->changeUserRole($roles);
-
+            $this->_data['content'] = $this->_profileView->settings($apiKey, $roles, $user->getRole());
             //if user tries to change role
-            if($roleId = $this->_profileView->isChangeUserRole) {
+            if($roleId = $this->_profileView->isChangeUserRole()) {
                 $userEmail = $this->_profileView->getUser();
                 //Användaren som ska byta roll
                 $tempUser = $this->_userHandler->getUserByEmail($userEmail);
                 $this->_userHandler->changeUserRole($user->getId(), $roleId);
             }
+        } else {
+            $this->_data['content'] = $this->_profileView->settings($apiKey);
         }
     }
 
@@ -213,16 +211,15 @@ class ProfileController
     }
 
     /**
-     *
+     * change user role for a
      */
      private function changeUserRole(User $user)
      {
-        if($user->isAdmin() && !$user->isOwner()) {
+        if($user->isAdmin() || $user->isOwner()) {
             if($this->_profileView->changingSuerRole()) {
                 $role = $this->_profileView->GetUserRole();
                 $this->_userHandler->changeUserRole($id, $role);
             }
         }
      }
-
 }

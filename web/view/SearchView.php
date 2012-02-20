@@ -4,8 +4,8 @@ class SearchView {
     
     public function doSearchForm() {
             $searchForm =       '<div class="search">
-                                    <form name="searchForm" action"" method="POST">
-                                    <img src="content/image/logo.png" />
+                                    <form name="searchForm" action="#" method="POST">
+                                    <img src="content/image/logo.png" alt="snippt" />
                                     <input type="text" name="q" />
                                     <input type="submit" name="submitSearch" value="Search" class="searchbutton" /><br />
                                     </form>
