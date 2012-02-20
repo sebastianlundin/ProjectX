@@ -13,7 +13,7 @@ class UserHanderTest extends UnitTestCase
 	}
 
 	function testIfUserCanBeInsertedInDatabase() {
-		$this->_userID = $this->_userHandler->addUser('identifier', 'provider', 'name', 'email', 'member');
+		$this->_userID = $this->_userHandler->addUser('identifier', 'provider', 'name','email');
 		$this->assertTrue($this->_userID);
 	}
 
@@ -43,6 +43,27 @@ class UserHanderTest extends UnitTestCase
 		//By identifier
 		$user = $this->_userHandler->getUserByIdentifier('identifier');
 		$this->assertNotNull($user);
+	}
+
+	function testIfRoleIdIsCorrect() {
+		$role = $this->_userHandler->getRoleByID(1);
+		$this->assertEqual('member', $role);
+
+		$role = $this->_userHandler->getRoleByID(2);
+		$this->assertEqual('admin', $role);
+
+		$role = $this->_userHandler->getRoleByID(3);
+		$this->assertEqual('moderator', $role);
+	}
+
+	function testIfCanChangeUserRole() {
+		$user = $this->_userHandler->getUserByEmail('email');
+		$role = $user->getRole();
+		$this->assertEqual(1, $role);
+
+		$this->_userHandler->changeUserRole($this->_userID, 2);
+		$user = $this->_userHandler->getUserByEmail('email');
+		$this->assertEqual($user->getRole(), 2);
 	}
 
 	function testIfUserCanBeDeleted() {

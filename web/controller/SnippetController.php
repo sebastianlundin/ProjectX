@@ -38,7 +38,7 @@ class SnippetController
                 }
                 $this->_html .= $this->_commentController->doControll();
             } else {
-                $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
+               $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
                if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
                     $_GET['pagenumber'] = 1;
                 } else {
@@ -60,9 +60,19 @@ class SnippetController
             $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
 
             if ($this->_snippetView->triedToCreateSnippet()) {
-                $snippet = new Snippet(AuthHandler::getUser()->getId(), $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
+                $snippet = new Snippet(2, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
                 $this->_snippetHandler->createSnippet($snippet);
             }
+        } else if ($page == 'update') {
+            $this->_html = null;
+            $this->_html .= $this->_snippetView->updateSnippet($this->_snippetHandler->getSnippetByID($_GET['snippet']));
+            
+            if ($this->_snippetView->triedToUpdateSnippet()) {
+                $this->_snippetHandler->updateSnippet($this->_snippetView->getUpdateSnippetName(), $this->_snippetView->getUpdateSnippetCode(), $this->_snippetView->getUpdateSnippetDesc(), $_GET['snippet'], $this->_snippetHandler->SetDate());
+            }
+        } else if ($page == 'remove') {
+            $this->_html = "Removed";
+            $this->_snippetHandler->deleteSnippet($this->_snippetHandler->getSnippetByID($_GET['snippet']));
         }
 
         return $this->_html;

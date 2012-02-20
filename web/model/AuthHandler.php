@@ -11,8 +11,9 @@ class AuthHandler
 
     public static function getRole()
     {
-        if($this->isLoggedIn()) {
-            return $this->getUser()->getRole();
+        if(self::isLoggedIn()) {
+            $role = self::getUser()->getRole();
+            return $role;
         }
         return null;
     }
@@ -47,6 +48,13 @@ class AuthHandler
             if ($_SESSION['user']->getEmail() == $email) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static function isAdmin() {
+        if(self::getRole() == 2){
+            return true;
         }
         return false;
     }
