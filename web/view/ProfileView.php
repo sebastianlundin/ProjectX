@@ -5,7 +5,7 @@ class ProfileView
 
     public function profile($avatar, $name, $data, $user)
     {
-        $html = $this->doProfileMenu($data['isAdmin'],$data['isOwner']);
+        $html = $this->doProfileMenu($data['isAdmin'],$data['isOwner'], $data['email']);
 
         $html .= "
                 <h3>Hi there $name</h3><br>
@@ -15,7 +15,7 @@ class ProfileView
                     <p>Commented snippets: " . count($data['comments']) . "</p>
                     <p>Total likes: " . count($data['likes']) . "</p>
                     <p>Total dislikes: " . count($data['dislikes']) . "</p>
-                    <p>User role: " . $user->getRole() . "</p>
+                    <p>User role: " . $user->getRoleName() . "</p>
                 </div>
                 <br />
                 <div id='userActivity'>";
@@ -32,7 +32,7 @@ class ProfileView
                     <ul>";
 
         foreach ($likedSnippets as $snippet) {
-            $html .= "<li><a href='?page=listsnippets&snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+            $html .= "<li><a href='?page=listsnippets&amp;snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
         }
         $html .= "</ul>";
         return $html;
@@ -43,7 +43,7 @@ class ProfileView
         $html = "<h3>Disliked snippets</h3>
                     <ul>";
         foreach ($dislikedSnippets as $snippet) {
-            $html .= "<li><a href='?page=listsnippets&snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+            $html .= "<li><a href='?page=listsnippetssnippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
         }
         $html .= "</ul>";
         return $html;
@@ -54,7 +54,7 @@ class ProfileView
         $html = "<h3>Created snippets</h3>
                     <ul>";
         foreach ($createdSnippets as $snippet) {
-            $html .= "<li><a href='?page=listsnippets&snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+            $html .= "<li><a href='?page=listsnippets&amp;snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
         }
         $html .= "</ul>";
         return $html;
@@ -65,25 +65,25 @@ class ProfileView
         $html = "<h3>Commented snippets</h3>
                     <ul>";
         foreach ($commentedSnippets as $snippet) {
-            $html .= "<li><a href='?page=listsnippets&snippet=" . $snippet['id'] . "'>" . $snippet['title'] . '</a><br />' . $snippet['comment'] . '</li>';
+            $html .= "<li><a href='?&page=listsnippets&snippet=" . $snippet['id'] . "'>" . $snippet['title'] . '</a><br />' . $snippet['comment'] . '</li>';
         }
         $html .= "</ul>";
         return $html;
     }
     
-    public function doProfileMenu($isAdmin, $isOwner) {
+    public function doProfileMenu($isAdmin, $isOwner, $email) {
         $html = "    
                 <ul>
-                <li><a href='?p=created'>Created snippets</a></li>
-                <li><a href='?p=commented'>Commented Snippets</a></li>
-                <li><a href='?p=liked'>Liked snippets</a></li>
-                <li><a href='?p=disliked'>DislikedSnippets</a></li>";
-                if($isOwner) {
-                    $html .= "<li><a href='?p=settings'>Settings</a></li>";
+                <li><a href='?username=".$email."&amp;p=created'>Created snippets</a></li>
+                <li><a href='?username=".$email."&amp;p=commented'>Commented Snippets</a></li>
+                <li><a href='?username=".$email."&amp;p=liked'>Liked snippets</a></li>
+                <li><a href='?username=".$email."&amp;p=disliked'>DislikedSnippets</a></li>";
+                if($isOwner || $isAdmin) {
+                    $html .= "<li><a href='?username=".$email."&p=settings'>Settings</a></li>";
                 }
                 
                 if($isAdmin) {
-                    $html .= "<li><a href='?p=search'>Search for users</a></li>";
+                    $html .= "<li><a href='?username=".$email."&p=search'>Search for users</a></li>";
                 }
                 $html .= "</ul>";
         return $html;
@@ -110,9 +110,24 @@ class ProfileView
         return $html;
     }
     
-    public function settings($apiKey) {
-        $html = 'api key ' . $apiKey;
-        $html .= " - <a href='/profile?p=settings&api_key=generate'>Generate new<a/>";
+    public function settings($apiKey, $roles = null, $currentRole = null) {
+        $username = $this->getUser();
+        $html = '<span>api key ' . $apiKey . ' - </span>';
+        $html .= "<a href='/profile?username=".$username."&p=settings&amp;api_key=generate'>Generate new</a>";
+        if($roles != null) {
+            $html .= "<form action='#' method='POST' >
+                        <select name='role'>";
+                            foreach ($roles as $k => $value) {
+                                if($k == $currentRole) {
+                                    $html .= "<option selected='selected' value='".$k."'>".$value."</option>";
+                                } else {
+                                    $html .= "<option value='".$k."'>".$value."</option>";
+                                }
+                            }
+            $html .= "</select>
+                        <input type='submit' name='changerole' />
+                    </form>";
+        }
         return $html;
     }
 
@@ -125,16 +140,32 @@ class ProfileView
         }
     }
     
-    public function getPage() {
+    public function getPage()
+    {
         if(isset($_GET['p'])) {
             return $_GET['p'];
         }
         return false;
     }
 
-    public function doSearch() {
+    public function doSearch()
+    {
         if(isset($_POST['q'])) {
             return $_POST['q'];
+        }
+        return false;
+    }
+
+    public function isChangeUserRole() {
+        if(isset($_POST['changerole'])) {
+            return $_POST['role'];
+        }
+        return false;
+    }
+
+    public function getUser() {
+        if(isset($_GET['username'])) {
+            return $_GET['username'];
         }
         return false;
     }
