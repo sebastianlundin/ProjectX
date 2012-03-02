@@ -1,29 +1,23 @@
 <?php
 
-class SnippetObject
+class CommentObject
 {
-    private $_id;
+	private $_commentid;
+    private $_snippetid;
     private $_userid;
-    private $_code;
-    private $_title;
-    private $_desc;
-    private $_languageid;
+    private $_comment;
     private $_apikey;
     private $_date;
-	private $_updated;
+   
 
     public function __construct()
     {
-		$datetime = date("Y-m-d h:i:s");
-        $this->_id = null;
+    	$this->_commentid = null;
+        $this->_snippetid = null;
         $this->_userid = null;
-        $this->_code = null;
-        $this->_title = null;
-        $this->_desc = null;
-        $this->_languageid = null;
+        $this->_comment = null;
         $this->_apikey = null;
-        $this->_date = $datetime;
-		$this->_updated = $datetime;
+        $this->_date = date("Y-m-d h:i:s");
     }
     
     public function __get($property)

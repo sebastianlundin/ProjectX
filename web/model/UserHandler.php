@@ -101,7 +101,7 @@ class UserHandler
      * @param $email string
      * @return boolean true if succsess
      */
-    public function addUser($identifier, $provider, $name, $email = null, $role = null)
+    public function addUser($identifier, $provider, $name, $email = null, $role = 1)
     {
         $insertedKey = -1;
         //$apiKey = $this->generateApiKey();
@@ -109,8 +109,8 @@ class UserHandler
         //@TODO ÄNDRA OM TILL TRANSAKTIONER OM MÖJLIGT
         //Insert data into user table
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO user (username, name, role, api_key) VALUES (?, ?, ?, ?)")) {
-            $stmt->bind_param('ssss', $email, $name, $role, $apiKey);
+        if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO user (name, username, api_key, role_id) VALUES (?, ?, ?, ?)")) {
+            $stmt->bind_param('ssis', $name, $email, $apiKey, $role);
             $stmt->execute();
             if ($stmt->affected_rows == null) {
                 $stmt->close();
@@ -204,11 +204,11 @@ class UserHandler
     {
         $user = null;
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username, user.api_key, user.role ,auth.email
-FROM `user` as user
-INNER JOIN user_auth as auth
-ON user.id = auth.user_id
-WHERE auth.email = ?")) {
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username, user.api_key, user.role_id ,auth.email
+                                                        FROM `user` as user
+                                                        INNER JOIN user_auth as auth
+                                                        ON user.id = auth.user_id
+                                                        WHERE auth.email = ?")) {
             $stmt->bind_param('s', $email);
             $stmt->execute();
 
@@ -253,7 +253,7 @@ WHERE auth.email = ?")) {
     {
         $user = null;
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username ,auth.email, user.api_key, user.role
+        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT user.id, user.name, user.username ,auth.email, user.api_key, user.role_id
 FROM `user` as user
 INNER JOIN user_auth as auth
 ON user.id = auth.user_id
@@ -325,4 +325,69 @@ WHERE auth.identifier = ?")) {
         return $userArr;
     }
 
+    /**
+     * Get name of role from table user_role by the id
+     * @param $roleId int id of role from table user_role
+     * @return String name of role, false if query fails
+     */
+    public function getRoleByID($roleId) 
+    {
+        $roleName = 'none';
+        $this->_dbHandler->__wakeup();
+        if($stmt = $this->_dbHandler->prepareStatement('SELECT role FROM user_role WHERE id = ? ')) {
+            $stmt->bind_param('i', $roleId);
+            $stmt->execute();
+            $stmt->bind_result($roleName);
+            $stmt->fetch();
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $roleName;
+    }
+
+    /**
+     * @return Array
+     */
+    public function getAllRoles()
+    {
+        $this->_dbHandler->__wakeup();
+        $roleArr = array();
+        if($stmt = $this->_dbHandler->prepareStatement('SELECT * FROM user_role')) {
+            $stmt->execute();
+            $stmt->bind_result($id, $role);
+
+            while ($stmt->fetch()) {
+                $roleArr[$id] = $role; 
+            }
+            $stmt->close();
+        } else {
+            return false;
+        }
+        $this->_dbHandler->close();
+        return $roleArr;
+    }
+
+    public function changeUserRole($userId, $roleId) {
+        $this->_dbHandler->__wakeup();
+
+        if($stmt = $this->_dbHandler->prepareStatement("UPDATE user SET role_id = ? WHERE id = ?")) {
+            $stmt->bind_param('ii', $roleId, $userId);
+            $stmt->execute();
+            $stmt->store_result();
+            if($stmt->affected_rows == 1) {
+                $stmt->close();
+                $this->_dbHandler->close();
+
+                return true;
+            }
+        } else {
+            $this->_dbHandler->close();
+            return false;
+        }
+        $stmt->close();
+        $this->_dbHandler->close();
+        return false;
+    }
 }

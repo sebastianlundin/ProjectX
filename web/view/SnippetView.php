@@ -10,9 +10,8 @@ class SnippetView
      */
     public function singleView($snippet)
     {
-
         $sh = new Functions();
-
+        
         $html = "<h2 class='snippet-title'>" . $snippet->getTitle() . "</h2>
 		<div class='snippet-description'>
 			<p>" . $snippet->getDesc() . "</p>	
@@ -21,9 +20,18 @@ class SnippetView
 			<code>" . $sh->geshiHighlight($snippet->getCode(), $snippet->getLanguage()) . "</code>
 		</div>
 		<div class='snippet-author'>
-			<span>Posted by " . $snippet->getAuthor() . "</span>
-		</div>";
-
+			<span>Posted by " . $snippet->getAuthor();
+        
+        var_dump($snippet);
+        
+		if (AuthHandler::isLoggedIn() && $snippet->getAuthorID() === 2) {
+		    $html .= "<a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
+		    <a href='?page=updatesnippet&snippet=" . $snippet->getID() . "'>Update</a>";
+        }
+		
+		$html .= "</span>
+	          </div>";
+        
         return $html;
     }
 
@@ -44,11 +52,6 @@ class SnippetView
                     </div>
                     <div class="snippet-author">
                         <p>' . $snippet->getDesc() . '</p>
-                    </div>
-                    <div class="snippet-tags">
-                        <a href="#">PHP</a>, 
-                        <a href="#">Snippet</a>, 
-                        <a href="#">lipsum</a>
                     </div>
                 </div>
             ';
@@ -116,27 +119,17 @@ class SnippetView
 
     public function updateSnippet($snippet)
     {
-        $view = '
-			<div id="updateSnippetContainer">
-				<form action="" method="post">
-					<div id="updateSnippetNameDiv">
-						<p>Name:</p>
-						<input type="text" name="updateSnippetNameInput" id="updateSnippetNameInput" value="' . $snippet[0]->getTitle() . '" /> 
-					</div>
-
-					<div id="updateSnippetCodeDiv">
-						<p>Snippet:</p>
-						<textarea cols="50" rows="50" name="updateSnippetCodeInput" id="updateSnippetCodeInput">' . $snippet[0]->getCode() . '</textarea>
-					</div>
-
-					<div id="updateSnippetButton">
-						<input type="hidden" name="updateSnippetID" value="' . $snippet[0]->getID() . '" />
-						<input type="submit" name="updateSnippetUpdateButton" id="updateSnippetUpdateButton" value="Update snippet" />
-					</div>
-				</form>
-			</div>
-		';
-        return $view;
+        $html = '<h1>Update the snippet "' . $snippet->getTitle() . '"</h1>
+            <div id="createSnippetContainer">
+                <form action="" method="post">
+                    <input type="text" name="updateSnippetTitle" placeholder="Title" value="' . $snippet->getTitle() . '" />
+                    <input type="text" name="updateSnippetDescription" placeholder="Description" value="' . $snippet->getDesc() . '"  />
+                    <textarea name="updateSnippetCodeInput" maxlength="1500" placeholder="Your snippet">' . $snippet->getCode() . '</textarea>
+                    <input type="submit" name="updateSnippetUpdateButton" id="updateSnippetUpdateButton" value="Update snippet" />
+                </form>
+            </div>';
+            
+        return $html;
     }
     
 
@@ -163,7 +156,7 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
-                                'user_id': ".$user_id.",
+                                'user_id': ". $user_id .",
                                 rating: 1
                             },
                             dataType: 'html',
@@ -177,7 +170,7 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
-                                'user_id': ".$user_id.",
+                                'user_id': ". $user_id .",
                                 rating: 0
                             },
                             dataType: 'html',
@@ -255,9 +248,9 @@ class SnippetView
         return false;
     }
 
-    public function triedToChangeSnippet()
+    public function triedToUpdateSnippet()
     {
-        if (isset($_GET['chsnippet'])) {
+        if (isset($_POST['updateSnippetUpdateButton'])) {
             return true;
         } else {
             return false;
@@ -275,18 +268,9 @@ class SnippetView
         return false;
     }
 
-    public function triedToSaveSnippet()
-    {
-        if (isset($_POST['updateSnippetUpdateButton'])) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public function getUpdateSnippetName()
     {
-        $snippetName = $_POST['updateSnippetNameInput'];
+        $snippetName = $_POST['updateSnippetTitle'];
         if ($snippetName == null) {
             return null;
         } else {
@@ -304,7 +288,17 @@ class SnippetView
         }
         return false;
     }
-
+    
+    public function getUpdateSnippetDesc() {
+        $snippetDesc = $_POST['updateSnippetDescription'];
+        if ($snippetDesc == null) {
+            return null;
+        } else {
+            return $snippetDesc;
+        }
+        return false;
+    }
+    
     public function getUpdateSnippetID()
     {
         $snippetID = $_POST['updateSnippetID'];

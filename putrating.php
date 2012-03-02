@@ -5,8 +5,8 @@
         //extract($_POST);
 
         //set POST variables
-        $url = 'localhost/ProjectX/api/snippets';
-        $fields = array('userid' => '2', 'code' => 'Unika ord som glänser i solen', 'desc' => 'Blaster mobile IS GOOD TO EAT!', 'title' => 'DjSlim with HoodyShirt and Boxing Gloves', 'languageid' => '1', 'apikey' => '5435gdfhghdghdf');
+        $url = 'localhost/ProjectX/api/ratings';
+        $fields = array('snippetid' => '20009', 'ratingid' => '5', 'userid' => '1', 'rating' => '0', 'apikey' => '23434jdkfdjfkfdslfds');
 
         tourl($url, $fields);
         
@@ -21,9 +21,9 @@
         rtrim($fields, '&');
 
         $post = curl_init();
-
+        
         curl_setopt($post, CURLOPT_URL, $url);
-        curl_setopt($post, CURLOPT_POST, count($data));
+        curl_setopt($post, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($post, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($post, CURLOPT_RETURNTRANSFER, 1);
 

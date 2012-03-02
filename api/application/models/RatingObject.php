@@ -1,29 +1,23 @@
 <?php
 
-class SnippetObject
+class RatingObject
 {
-    private $_id;
+	private $_ratingid;
+    private $_snippetid;
     private $_userid;
-    private $_code;
-    private $_title;
-    private $_desc;
-    private $_languageid;
+    private $_rating;
     private $_apikey;
     private $_date;
-	private $_updated;
+   
 
     public function __construct()
     {
-		$datetime = date("Y-m-d h:i:s");
-        $this->_id = null;
+    	$this->_ratingid = null;
+        $this->_snippetid = null;
         $this->_userid = null;
-        $this->_code = null;
-        $this->_title = null;
-        $this->_desc = null;
-        $this->_languageid = null;
+        $this->_rating = null;
         $this->_apikey = null;
-        $this->_date = $datetime;
-		$this->_updated = $datetime;
+        $this->_date = date("Y-m-d h:i:s");
     }
     
     public function __get($property)
