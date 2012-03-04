@@ -44,7 +44,7 @@ class AuthHandler
 
     public static function isOwner($email)
     {
-        if (isset($_SESSION['user'])) {
+        if (self::isLoggedIn()) {
             if ($_SESSION['user']->getEmail() == $email) {
                 return true;
             }

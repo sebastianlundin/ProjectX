@@ -30,14 +30,20 @@ class SnippetController
     public function doControll($page)
     {
         if ($page == 'list' || $page == 'search') {
+            // Show single snippet
             if (isset($_GET['snippet'])) {
-                
-                $this->_html .= $this->_snippetView->singleView($this->_snippetHandler->getSnippetByID($_GET['snippet']));
-                if(AuthHandler::isLoggedIn()) {
-                    $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], AuthHandler::getUser()->getId(), $this->_snippetHandler->getSnippetRating($_GET['snippet']));  
+                //Check if snipept exist
+                if($snippet = $this->_snippetHandler->getSnippetByID($_GET['snippet'])) {
+                    $this->_html .= $this->_snippetView->singleView($snippet);
+                    if(AuthHandler::isLoggedIn()) {
+                        $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], AuthHandler::getUser()->getId(), $this->_snippetHandler->getSnippetRating($_GET['snippet']));  
+                    }
+                    $this->_html .= $this->_commentController->doControll();
+                } else {
+                    echo 'sidan saknas';
                 }
-                $this->_html .= $this->_commentController->doControll();
             } else {
+                // Show list of snippets
                 if($snippets = $this->_snippetHandler->getAllSnippets()) {
                     $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
                     if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
@@ -60,7 +66,7 @@ class SnippetController
                  }
             }
         } else if ($page == 'add') {
-            if (true) {
+            if (AuthHandler::isLoggedIn()) {
                 $this->_html = null;
                 $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
     
