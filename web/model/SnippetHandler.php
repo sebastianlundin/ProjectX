@@ -17,6 +17,22 @@ class SnippetHandler
     }
 
     /**
+     * Check response and content
+     * @param string URL, url to API
+     * @return json content on succsess or FALSE failiure
+     */
+    private function getJson($url) {
+        if($this->_api->checkApiUrl($url)) {
+            if($content = file_get_contents($url)) {
+                if($json = json_decode($content)) {
+                    return $json;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      *Get a snippet by id
      * @param int $aID id of a snippet
      * @return Snippet
@@ -24,13 +40,15 @@ class SnippetHandler
     public function getSnippetByID($id)
     {
         $snippet = null;
-        $json = json_decode(file_get_contents($this->_api->GetURL() . "snippets/?id=".$id));
-        foreach($json as $j)
-        {
-            $snippet = new Snippet($j->userid, $j->username, $j->code, $j->title, $j->description, $j->languageid, $j->date, "0000-00-00 00:00:00", $j->id);
+        $url = $this->_api->GetURL() . "snippets/?id=".$id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $snippet = new Snippet($j->userid, $j->username, $j->code, $j->title, $j->description, $j->languageid, $j->date, "0000-00-00 00:00:00", $j->id);
+            }
+            return $snippet;
         }
-        
-        return $snippet;
+        return false;
     }
     
     /**
@@ -39,15 +57,18 @@ class SnippetHandler
     */
     public function getAllSnippets()
     {
-        $snippets = array();
-        
-        $jsonsnippet = json_decode(file_get_contents($this->_api->GetURL() . "snippets"));
+        $url = $this->_api->GetURL() . "snippets";
 
-        foreach ($jsonsnippet as $snippet) {
-            $snippets[] = new Snippet($snippet->userid, $snippet->username, $snippet->code, $snippet->title, $snippet->description, $snippet->languageid, $snippet->date, "0000-00-00 00:00:00", $snippet->id);
+        //Check if page contain json and if http_respons is 200
+        if($json = $this->getJson($url)) {
+            $snippets = array();
+            foreach ($json as $snippet) {
+                $snippets[] = new Snippet($snippet->userid, $snippet->username, $snippet->code, $snippet->title, $snippet->description, $snippet->languageid, $snippet->date, "0000-00-00 00:00:00", $snippet->id);
+            }
+            return $snippets;
         }
-        
-        return $snippets;
+
+        return false;
     }
 
     /**
@@ -169,6 +190,11 @@ class SnippetHandler
 
         curl_close($post);
         
+        if(!$result) {
+            Log::apiError('could not create snippet', $url);
+            return false;
+        }
+
         return $result->id;
     }
 
@@ -198,19 +224,27 @@ class SnippetHandler
         $result = curl_exec($post);
 
         curl_close($post);
-        
+        if(!$post) {
+            Log::apiError('could not update snippe:'. $snippetID, $url);
+        }
+
         return $result;
     }
 
     public function deleteSnippet(Snippet $snippet)
     {
-        $ch = curl_init($this->_api->GetURL() . 'snippets/' . $snippet->getID() . '/2/5435gdfhghdghdf');
+        $url = $this->_api->GetURL() . 'snippets/' . $snippet->getID() . '/2/5435gdfhghdghdf';
+        $ch = curl_init($url);
         
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         $result = curl_exec($ch);
+
+        if(!$result) {
+            Log::apiError('could not delete snippet:'.$snippet->getID(), $url);
+        }
         
         return $result;
     }
