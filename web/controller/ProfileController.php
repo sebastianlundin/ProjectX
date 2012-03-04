@@ -101,6 +101,7 @@ class ProfileController
                     AuthHandler::getUser()->setApiKey($newKey);
                     $this->_data['apiKey'] = AuthHandler::getUser()->getApiKey();
                 } else {
+                    Log::userError('could not generate new api key', $email);
                     echo "Något gick fel när api-key genererades";
                 }
             }

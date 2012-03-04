@@ -62,7 +62,7 @@ class SnippetController
                          $this->_html .= $this->_snippetView->listView($this->_pagingHandler->fetchSnippets(), $this->_pagingHandler->getPrevious(),$this->_pagingHandler->getLinks(), $this->_pagingHandler->getBeforeLinks(), $this->_pagingHandler->getAfterLinks(), $this->_pagingHandler->getNext(), true, true);    
                      }
                  } else {
-                    echo 'url till api är fel, http_code = 200 eller fel content type';
+                    echo 'url till api är fel, http_code != 200 eller fel content type';
                  }
             }
         } else if ($page == 'add') {
@@ -71,10 +71,14 @@ class SnippetController
                 $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
     
                 if ($this->_snippetView->triedToCreateSnippet()) {
-                    $snippet = new Snippet(2, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
-                    $id = $this->_snippetHandler->createSnippet($snippet);
-                    header("Location: " . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $id);
-                    exit();
+                    $authID = AuthHandler::getUser()->getID();
+                    $snippet = new Snippet(2, $authID, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
+                    if($id = $this->_snippetHandler->createSnippet($snippet)){
+                        header("Location: " . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $id);
+                        exit();
+                    } else {
+                        echo 'ett oväntat fel uppstod';
+                    }
                 }
             } else {
                 $this->_html = "<p>You must sign in to add a snippet.</p>";

@@ -190,6 +190,11 @@ class SnippetHandler
 
         curl_close($post);
         
+        if(!$result) {
+            Log::apiError('could not create snippet', $url);
+            return false;
+        }
+
         return $result->id;
     }
 
@@ -219,19 +224,27 @@ class SnippetHandler
         $result = curl_exec($post);
 
         curl_close($post);
-        
+        if(!$post) {
+            Log::apiError('could not update snippe:'. $snippetID, $url);
+        }
+
         return $result;
     }
 
     public function deleteSnippet(Snippet $snippet)
     {
-        $ch = curl_init($this->_api->GetURL() . 'snippets/' . $snippet->getID() . '/2/5435gdfhghdghdf');
+        $url = $this->_api->GetURL() . 'snippets/' . $snippet->getID() . '/2/5435gdfhghdghdf';
+        $ch = curl_init($url);
         
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
         $result = curl_exec($ch);
+
+        if(!$result) {
+            Log::apiError('could not delete snippet:'.$snippet->getID(), $url);
+        }
         
         return $result;
     }

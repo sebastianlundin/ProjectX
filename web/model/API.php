@@ -6,7 +6,7 @@ class API
 
     public function __construct()
     {
-        $this->_url = "http://tmpn.se/api/";
+        $this->_url = "http://www.tmpn.se/api/";
     }
 
     /**
@@ -29,6 +29,7 @@ class API
 
         if(!curl_exec($curl)) {
             curl_close($curl);
+            Log::apiError('page not exist', $url);
             return false;
         } else {
             $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
@@ -39,7 +40,7 @@ class API
                 return true; 
             }
         }
-
+        Log::apiError('404 or wrong content', $url);
         return false;
     }
 }
