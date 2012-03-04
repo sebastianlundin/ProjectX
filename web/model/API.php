@@ -40,7 +40,7 @@ class API
                 return true; 
             }
         }
-        Log::apiError('404 or wrong content', $url);
+        Log::apiError('404 or wrong content type', $url);
         return false;
     }
 }

@@ -18,6 +18,13 @@ class AuthHandler
         return null;
     }
 
+    public static function getApiKey() {
+        if(self::isLoggedIn()) {
+            return self::getUser()->getApiKey();
+        }
+        return false;
+    }
+
     public static function getUser()
     {
         if (isset($_SESSION['user'])) {

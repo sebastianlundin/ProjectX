@@ -59,16 +59,16 @@ class HeaderView
                 <div class='topbar-inner'>
                     <ul class='nav'>
                         <li>
-                            <a href='index.php'>Home</a> /
+                            <a href='index.php'>Home</a> |
                         </li>
                         <li>
-                            <a href='?page=listsnippets'>Snippets</a> /
+                            <a href='?page=listsnippets'>Snippets</a> |
                         </li>
                         <li>
-                            <a href='#'>News</a> /
+                            <a href='#'>News</a> |
                         </li>
                         <li>
-                            <a href='#'>Downloads</a> /
+                            <a href='#'>Downloads</a> |
                         </li>
                         <li>
                             <a href='#'>About</a>
