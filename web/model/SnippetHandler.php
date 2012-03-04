@@ -39,15 +39,21 @@ class SnippetHandler
     */
     public function getAllSnippets()
     {
-        $snippets = array();
-        
-        $jsonsnippet = json_decode(file_get_contents($this->_api->GetURL() . "snippets"));
+        $url = $this->_api->GetURL() . "snippets";
 
-        foreach ($jsonsnippet as $snippet) {
-            $snippets[] = new Snippet($snippet->userid, $snippet->username, $snippet->code, $snippet->title, $snippet->description, $snippet->languageid, $snippet->date, "0000-00-00 00:00:00", $snippet->id);
+        //Check if page contain json and if http_respons is 200
+        if($this->_api->checkApiUrl($url)) {
+            if($content = file_get_contents($url)) {
+                if($jsonsnippet = json_decode($content)) {
+                    foreach ($jsonsnippet as $snippet) {
+                        $snippets[] = new Snippet($snippet->userid, $snippet->username, $snippet->code, $snippet->title, $snippet->description, $snippet->languageid, $snippet->date, "0000-00-00 00:00:00", $snippet->id);
+                    }
+                    return $snippets;
+                }
+            }
+        } else {
+            return false;
         }
-        
-        return $snippets;
     }
 
     /**
