@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Feb 20 00:34:10 2012
+** Created: Tue Mar 6 00:40:14 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -33,6 +33,7 @@ class Ui_MainWindow
 {
 public:
     QAction *aboutSnippt;
+    QAction *actionPreferences;
     QWidget *guiGrid;
     QGridLayout *gridLayout;
     QLineEdit *searchField;
@@ -53,8 +54,16 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(909, 537);
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
+        MainWindow->setSizePolicy(sizePolicy);
+        MainWindow->setMinimumSize(QSize(909, 537));
         aboutSnippt = new QAction(MainWindow);
         aboutSnippt->setObjectName(QString::fromUtf8("aboutSnippt"));
+        actionPreferences = new QAction(MainWindow);
+        actionPreferences->setObjectName(QString::fromUtf8("actionPreferences"));
         guiGrid = new QWidget(MainWindow);
         guiGrid->setObjectName(QString::fromUtf8("guiGrid"));
         gridLayout = new QGridLayout(guiGrid);
@@ -137,6 +146,7 @@ public:
         MainWindow->setMenuBar(menubar);
 
         menubar->addAction(menuHelp->menuAction());
+        menuHelp->addAction(actionPreferences);
         menuHelp->addAction(aboutSnippt);
 
         retranslateUi(MainWindow);
@@ -148,6 +158,7 @@ public:
     {
         MainWindow->setWindowTitle(QString());
         aboutSnippt->setText(QApplication::translate("MainWindow", "About Snippt", 0, QApplication::UnicodeUTF8));
+        actionPreferences->setText(QApplication::translate("MainWindow", "Preferences", 0, QApplication::UnicodeUTF8));
         searchSnippet->setText(QApplication::translate("MainWindow", "Search", 0, QApplication::UnicodeUTF8));
         previousSearchesLabel->setText(QApplication::translate("MainWindow", "Previous searches:", 0, QApplication::UnicodeUTF8));
         listSnippetsLabel->setText(QApplication::translate("MainWindow", "Snippets:", 0, QApplication::UnicodeUTF8));

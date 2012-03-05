@@ -10,6 +10,8 @@
 #include "apifuncs.h"
 #include "cachefuncs.h"
 #include "settingsfuncs.h"
+//#include <QxtApplication>
+//#include <QxtGlobalShortcut>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -26,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->listSnippets->setHeaderLabels(snippetListHeaders);
 
     this->ShowPossiblyErrorAboutConnection();
+
+    //QxtGlobalShortcut* shortcut = new QxtGlobalShortcut(this);
+    //connect(shortcut, SIGNAL(activated()), this, SLOT(test()));
+    //shortcut->setShortcut(QKeySequence("Ctrl+L"));
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -37,7 +43,8 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
 
     if (testConnection == false)
     {
-        QMessageBox::information(this, "Can't connect!", "Can't connect to the API!\nFix the URL in the settingsfile.\nIf you know howto do it!");
+        QMessageBox::information(this, "Can't connect!", "Can't connect to the API!\nAdd the right URL under Preferences"
+                                 " in the Help/Application menu!\n\nIf its not working directly - try to restart the app a few times!");
     }
 }
 
@@ -86,9 +93,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_aboutSnippt_triggered()
 {
-    QMessageBox::about(this, "About Snippt", "Snippt is a platform for sharing snippets of code thru "
+    QMessageBox::about(this, "About Snippt", "Snippt is a platform for searching snippets of code thru "
                        "an API and some client-applications for the web etc.\n\n"
                        "This is the client for Windows/Mac OS X/Linux");
+}
+
+void MainWindow::on_actionPreferences_triggered()
+{
+    SettingsDialog *settingsDialog = new SettingsDialog();
+    settingsDialog->show();
 }
 
 void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
@@ -98,7 +111,7 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 
     QByteArray jsonCacheData = this->cacheFuncs->GetCacheFileData(cacheSelectedSnippetFilename);
     QVariantList jsonObject = this->jsonFuncs->GetJsonObject(jsonCacheData);
-    QString  snippetCode = this->jsonFuncs->GetSnippetCode(jsonObject);
+    QString snippetCode = this->jsonFuncs->GetSnippetCode(jsonObject);
 
     if (cacheSelectedSnippetFilename != 0)
     {

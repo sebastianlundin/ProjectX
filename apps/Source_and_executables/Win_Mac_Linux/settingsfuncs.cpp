@@ -4,7 +4,7 @@
 #include <QVariant>
 
 QString SettingsFuncs::GetApiUrl()
-{
+{    
     QVariant apiUrl;
     QSettings settings("ProjectX", "Snippt");
     settings.beginGroup("SnipptSettings");

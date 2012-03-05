@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Mon Mar 5 19:10:04 2012
+** Created: Tue Mar 6 00:39:53 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,6 +34,7 @@ static const uint qt_meta_data_MainWindow[] = {
       12,   11,   11,   11, 0x08,
       55,   39,   11,   11, 0x08,
       97,   11,   11,   11, 0x08,
+     122,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -43,6 +44,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "a_item,a_column\0"
     "ShowSelectedSnippet(QTreeWidgetItem*,int)\0"
     "on_copySnippet_clicked()\0"
+    "on_actionPreferences_triggered()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -54,6 +56,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->on_aboutSnippt_triggered(); break;
         case 1: _t->ShowSelectedSnippet((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 2: _t->on_copySnippet_clicked(); break;
+        case 3: _t->on_actionPreferences_triggered(); break;
         default: ;
         }
     }
@@ -91,9 +94,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }

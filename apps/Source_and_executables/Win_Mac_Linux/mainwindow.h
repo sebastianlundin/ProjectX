@@ -10,6 +10,7 @@
 #include "jsonfuncs.h"
 #include "cachefuncs.h"
 #include "settingsfuncs.h"
+#include "settingsdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +38,7 @@ private slots:
     void on_aboutSnippt_triggered();
     void ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column);
     void on_copySnippet_clicked();
+    void on_actionPreferences_triggered();
 };
 
 #endif // MAINWINDOW_H

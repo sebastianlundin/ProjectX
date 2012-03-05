@@ -3,6 +3,8 @@ QT       += core gui network sql
 TARGET = Snippt
 TEMPLATE = app
 
+#CONFIG += qxt
+#QXT += core gui
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -10,17 +12,20 @@ SOURCES += main.cpp\
     filefuncs.cpp \
     apifuncs.cpp \
     cachefuncs.cpp \
-    settingsfuncs.cpp
+    settingsfuncs.cpp \
+    settingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     jsonfuncs.h \
     filefuncs.h \
     apifuncs.h \
     cachefuncs.h \
-    settingsfuncs.h
+    settingsfuncs.h \
+    settingsdialog.h
 
 FORMS    += \
-    mainwindow.ui
+    mainwindow.ui \
+    settingsdialog.ui
 
 macx: LIBS += -L$$PWD/libs/executables/macosx -lqjson
 macx: INCLUDEPATH += $$PWD/libs/executables/macosx
