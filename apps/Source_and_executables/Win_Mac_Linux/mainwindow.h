@@ -9,6 +9,7 @@
 #include "apifuncs.h"
 #include "jsonfuncs.h"
 #include "cachefuncs.h"
+#include "settingsfuncs.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,11 +24,12 @@ private:
     ApiFuncs *apiFuncs;
     JsonFuncs *jsonFuncs;
     CacheFuncs *cacheFuncs;
+    SettingsFuncs *settingsFuncs;
     QTreeWidgetItem *group;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void Initialize();
+    void ShowPossiblyErrorAboutConnection();
     void FillListWithSnippets(QVariantList a_jsonObject);
     ~MainWindow();
 

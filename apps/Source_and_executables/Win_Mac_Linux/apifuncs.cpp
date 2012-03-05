@@ -12,7 +12,7 @@ ApiFuncs::ApiFuncs(QObject *parent) : QObject(parent)
     this->fileFuncs = new FileFuncs();
 }
 
-void ApiFuncs::ConnectToApi(QString a_filename, QString a_url)
+void ApiFuncs::ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest)
 {
     if (this->fileFuncs->CheckIfFileExists(a_filename) == false || this->fileFuncs->CheckIfFileIsTheLatest(a_filename) == false)
     {
@@ -23,20 +23,20 @@ void ApiFuncs::ConnectToApi(QString a_filename, QString a_url)
 
         QEventLoop loop;
         connect(networkReply, SIGNAL(finished()), &loop, SLOT(quit()));
+        connect(networkReply, SIGNAL(error(QNetworkReply::NetworkError)), &loop, SLOT(quit()));
         loop.exec();
 
-        if (networkReply->isFinished())
+        if (networkReply->error())
+        {
+            a_errorTest = false;
+        }
+        else if (networkReply->isFinished())
         {
             this->LoadApiData(a_filename, networkReply->readAll());
             disconnect(networkReply, SIGNAL(finished()), &loop, SLOT(quit()));
             loop.quit();
         }
     }
-}
-
-void ApiFuncs::ConnectionError()
-{
-
 }
 
 void ApiFuncs::LoadApiData(QString a_filename, QByteArray a_data)

@@ -9,13 +9,15 @@ SOURCES += main.cpp\
     jsonfuncs.cpp \
     filefuncs.cpp \
     apifuncs.cpp \
-    cachefuncs.cpp
+    cachefuncs.cpp \
+    settingsfuncs.cpp
 
 HEADERS  += mainwindow.h \
     jsonfuncs.h \
     filefuncs.h \
     apifuncs.h \
-    cachefuncs.h
+    cachefuncs.h \
+    settingsfuncs.h
 
 FORMS    += \
     mainwindow.ui

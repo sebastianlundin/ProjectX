@@ -9,6 +9,7 @@
 #include <QClipboard>
 #include "apifuncs.h"
 #include "cachefuncs.h"
+#include "settingsfuncs.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -17,24 +18,27 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->apiFuncs = new ApiFuncs();
     this->jsonFuncs = new JsonFuncs();
     this->cacheFuncs = new CacheFuncs();
+    this->settingsFuncs = new SettingsFuncs();
 
     QStringList snippetListHeaders;
     snippetListHeaders << "Languages" << "Language id" << "Title" << "Id"
                        << "Description" << "By user" << "Added/Changed" << "Rating";
     ui->listSnippets->setHeaderLabels(snippetListHeaders);
 
-    this->Initialize();
+    this->ShowPossiblyErrorAboutConnection();
 }
 
-void MainWindow::Initialize()
+void MainWindow::ShowPossiblyErrorAboutConnection()
 {
-    ApiFuncs *apiFuncs = new ApiFuncs();
-    JsonFuncs *jsonFuncs = new JsonFuncs();
-    CacheFuncs *cacheFuncs = new CacheFuncs();
-    QString cacheListAllSnippetsFilename = "list_all_snippets";
+    bool testConnection = true;
+    QString apiUrl = this->settingsFuncs->GetApiUrl();
 
-    apiFuncs->ConnectToApi(cacheListAllSnippetsFilename, "http://tmpn.se/api/snippets");
-    this->FillListWithSnippets(jsonFuncs->GetJsonObject(cacheFuncs->GetCacheFileData(cacheListAllSnippetsFilename)));
+    apiFuncs->ConnectToApi("nofile", apiUrl, testConnection);
+
+    if (testConnection == false)
+    {
+        QMessageBox::information(this, "Can't connect!", "Can't connect to the API!\nFix the URL in the settingsfile.\nIf you know howto do it!");
+    }
 }
 
 void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
@@ -90,7 +94,7 @@ void MainWindow::on_aboutSnippt_triggered()
 void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 {
     QString cacheSelectedSnippetFilename = a_item->text(3);
-    this->apiFuncs->ConnectToApi(cacheSelectedSnippetFilename, "http://tmpn.se/api/snippets?id=" + cacheSelectedSnippetFilename);
+    //this->apiFuncs->ConnectToApi(cacheSelectedSnippetFilename, "http://tmpn.se/api/snippets?id=" + cacheSelectedSnippetFilename);
 
     QByteArray jsonCacheData = this->cacheFuncs->GetCacheFileData(cacheSelectedSnippetFilename);
     QVariantList jsonObject = this->jsonFuncs->GetJsonObject(jsonCacheData);
