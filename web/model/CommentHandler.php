@@ -3,15 +3,69 @@
 require_once 'DbHandler.php';
 require_once 'Comment.php';
 require_once 'User.php';
+require_once 'API.php';
 
 class CommentHandler
 {
 
     private $_dbHandler;
+    private $_api;
 
     public function __construct()
     {
         $this->_dbHandler = new DbHandler();
+        $this->_api = new API();
+    }
+
+    /**
+     * Format array before posting via curl
+     * @param Array data
+     * @return Array
+     */
+    private function formtaData($data) {
+        $fields = '';
+        foreach ($data as $key => $value) {
+            $fields .= $key . '=' . $value . '&';
+        }
+        rtrim($fields, '&');
+        return $data;
+    }
+
+
+    public function addComment($snippetID, $userID, $comment, $apikey) {
+        $url = $this->_api->GetUrl().'comments';
+        $data = array('snippetid' => $snippetID, 'userid' => $userID, 'comment' => $comment, 'apikey' => $apikey);
+        $data = $this->formtaData($data);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, count($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        if(!$result) Log::apiError('could not create comment on snippet: '.$snippetID, $url);
+        return $result;
+    }
+
+    public function updateComment($commentID, $userID, $comment, $apikey) {
+        $url = $this->_api->GetUrl().'comments';
+        $data = array('commentid' => $commentID, 'userid' => $userID, 'comment' => $comment, 'apikey' => $apikey);
+        $data = $this->formtaData($data);
+
+        $ch = curl_init();      
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+        if(!$result) Log::apiError('could not update comment: '.$commentID, $url);   
+        
+        return $result;
     }
 
     /**
@@ -55,7 +109,7 @@ class CommentHandler
      * use it if you want to add a new commet för a snippet
      * @param snippetId, commentText and userId
      */
-    public function addComment($snippetId, $commentText, $userId)
+    public function addCommentDEPRECATED($snippetId, $commentText, $userId)
     {
         $sqlQuery = "INSERT INTO comment (snippet_id, comment, user_id) VALUES(?,?,?)";
         if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
@@ -75,7 +129,7 @@ class CommentHandler
      * use it if you want to update a comment that exists in the database
      * @param commentId, commentText
      */
-    public function updateComment($commentId, $commentText)
+    public function updateCommentDEPRECATED($commentId, $commentText)
     {
 
         $sqlQuery = "UPDATE comment SET comment = ? WHERE id = ?";
