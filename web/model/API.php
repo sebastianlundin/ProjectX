@@ -6,7 +6,7 @@ class API
 
     public function __construct()
     {
-        $this->_url = "http://www.tmpn.se/api/";
+        $this->_url = "http://tmpn.se.preview.binero.se/api/";
     }
 
     /**
