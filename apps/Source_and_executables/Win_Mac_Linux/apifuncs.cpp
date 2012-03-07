@@ -10,6 +10,7 @@
 ApiFuncs::ApiFuncs(QObject *parent) : QObject(parent)
 {
     this->fileFuncs = new FileFuncs();
+    this->jsonFuncs = new JsonFuncs();
 }
 
 void ApiFuncs::ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest)
@@ -41,5 +42,10 @@ void ApiFuncs::ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest
 
 void ApiFuncs::LoadApiData(QString a_filename, QByteArray a_data)
 {
-    this->fileFuncs->SaveFile(a_filename, a_data);
+    QVariantList jsonData = this->jsonFuncs->GetJsonObject(a_data);
+
+    if (jsonData.count() > 0)
+    {
+        this->fileFuncs->SaveFile(a_filename, a_data);
+    }
 }

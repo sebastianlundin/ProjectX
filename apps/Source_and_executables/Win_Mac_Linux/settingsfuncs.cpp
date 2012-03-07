@@ -10,15 +10,11 @@ QString SettingsFuncs::GetApiUrl()
     settings.beginGroup("SnipptSettings");
     apiUrl = settings.value("apiurl");
     QString apiUrlConv = apiUrl.toString();
-    if (apiUrlConv != "")
-    {
-        apiUrlConv += "/search/";
-    }
     settings.endGroup();
 
     if (apiUrlConv == "")
     {
-        apiUrlConv = "http://tmpn.se/api/search/";
+        apiUrlConv = "http://tmpn.se/api";
     }
 
     return apiUrlConv;

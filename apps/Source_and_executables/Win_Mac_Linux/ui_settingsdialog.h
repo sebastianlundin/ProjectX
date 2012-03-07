@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settingsdialog.ui'
 **
-** Created: Tue Mar 6 00:40:13 2012
+** Created: Wed Mar 7 09:51:37 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -57,6 +57,9 @@ public:
         SettingsDialog->setSizePolicy(sizePolicy);
         SettingsDialog->setMinimumSize(QSize(500, 316));
         SettingsDialog->setMaximumSize(QSize(500, 316));
+        QFont font;
+        font.setPointSize(11);
+        SettingsDialog->setFont(font);
         SettingsDialog->setModal(true);
         gridLayout = new QGridLayout(SettingsDialog);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
@@ -73,6 +76,7 @@ public:
         gridLayout_2->setContentsMargins(-1, 0, -1, 7);
         apiAddressField = new QLineEdit(settingsFrame);
         apiAddressField->setObjectName(QString::fromUtf8("apiAddressField"));
+        apiAddressField->setFont(font);
 
         gridLayout_2->addWidget(apiAddressField, 2, 0, 1, 1);
 
@@ -84,8 +88,6 @@ public:
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         enableDisableGlobalShortcuts = new QCheckBox(frame);
         enableDisableGlobalShortcuts->setObjectName(QString::fromUtf8("enableDisableGlobalShortcuts"));
-        QFont font;
-        font.setPointSize(11);
         enableDisableGlobalShortcuts->setFont(font);
 
         gridLayout_3->addWidget(enableDisableGlobalShortcuts, 0, 0, 1, 1);
@@ -100,6 +102,7 @@ public:
 
         activeShortcutField = new QLineEdit(frame);
         activeShortcutField->setObjectName(QString::fromUtf8("activeShortcutField"));
+        activeShortcutField->setFont(font);
 
         gridLayout_3->addWidget(activeShortcutField, 2, 0, 1, 1);
 
@@ -113,6 +116,7 @@ public:
 
         copyShortcutField = new QLineEdit(frame);
         copyShortcutField->setObjectName(QString::fromUtf8("copyShortcutField"));
+        copyShortcutField->setFont(font);
 
         gridLayout_3->addWidget(copyShortcutField, 4, 0, 1, 1);
 
@@ -136,11 +140,13 @@ public:
 
         saveButton = new QPushButton(SettingsDialog);
         saveButton->setObjectName(QString::fromUtf8("saveButton"));
+        saveButton->setFont(font);
 
         gridLayout->addWidget(saveButton, 1, 0, 1, 1);
 
         closeButton = new QPushButton(SettingsDialog);
         closeButton->setObjectName(QString::fromUtf8("closeButton"));
+        closeButton->setFont(font);
 
         gridLayout->addWidget(closeButton, 1, 1, 1, 1);
 

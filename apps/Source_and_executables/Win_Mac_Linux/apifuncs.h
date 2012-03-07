@@ -7,6 +7,7 @@
 #include <QString>
 #include <QNetworkReply>
 #include <QByteArray>
+#include "jsonfuncs.h"
 
 class ApiFuncs : public QObject
 {
@@ -14,6 +15,7 @@ class ApiFuncs : public QObject
 
 private:
     FileFuncs *fileFuncs;
+    JsonFuncs *jsonFuncs;
 
 public:
     explicit ApiFuncs(QObject *parent = 0);
