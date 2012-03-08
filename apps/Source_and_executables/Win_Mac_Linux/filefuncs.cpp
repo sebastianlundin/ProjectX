@@ -55,7 +55,7 @@ bool FileFuncs::SaveFile(QString a_filename, QByteArray a_data, QString a_search
 
     out << "";
 
-    QString dateToString = this->GetUnixTime(3600); // Add one hour into the future
+    QString dateToString = this->GetUnixTime(20); // Add one hour into the future
 
     out << dateToString + "\n";
     out << a_search + "\n";
