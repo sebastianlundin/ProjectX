@@ -102,3 +102,20 @@ QByteArray FileFuncs::LoadFile(QString a_filename)
     file.close();
     return data;
 }
+
+QString FileFuncs::GetSearchString(QString a_filename)
+{
+    QString searchString;
+    QFile file(a_filename);
+    file.open(QIODevice::ReadOnly);
+
+    if (this->CheckIfFileExists(a_filename) == true)
+    {
+        file.readLine();
+        searchString = file.readLine();
+    }
+
+    file.close();
+
+    return searchString;
+}

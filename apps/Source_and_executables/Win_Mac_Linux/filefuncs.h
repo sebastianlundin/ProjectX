@@ -14,6 +14,7 @@ public:
     bool SaveFile(QString a_filename, QByteArray a_data, QString a_search);
     bool CheckIfFileIsTheLatest(QString a_filename);
     QByteArray LoadFile(QString a_filename);
+    QString GetSearchString(QString a_filename);
 };
 
 #endif // FILEFUNCS_H
