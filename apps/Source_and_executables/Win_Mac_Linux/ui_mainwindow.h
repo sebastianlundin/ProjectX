@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Mar 8 02:04:34 2012
+** Created: Thu Mar 8 16:33:54 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -39,7 +39,7 @@ public:
     QLineEdit *searchField;
     QPushButton *searchSnippet;
     QLabel *previousSearchesLabel;
-    QComboBox *comboBox;
+    QComboBox *previousSearchesList;
     QLabel *listSnippetsLabel;
     CustomTreeWidget *listSnippets;
     QLabel *selectedSnippetLabel;
@@ -90,11 +90,11 @@ public:
 
         gridLayout->addWidget(previousSearchesLabel, 3, 0, 1, 2);
 
-        comboBox = new QComboBox(guiGrid);
-        comboBox->setObjectName(QString::fromUtf8("comboBox"));
-        comboBox->setFont(font);
+        previousSearchesList = new QComboBox(guiGrid);
+        previousSearchesList->setObjectName(QString::fromUtf8("previousSearchesList"));
+        previousSearchesList->setFont(font);
 
-        gridLayout->addWidget(comboBox, 5, 0, 1, 1);
+        gridLayout->addWidget(previousSearchesList, 5, 0, 1, 1);
 
         listSnippetsLabel = new QLabel(guiGrid);
         listSnippetsLabel->setObjectName(QString::fromUtf8("listSnippetsLabel"));

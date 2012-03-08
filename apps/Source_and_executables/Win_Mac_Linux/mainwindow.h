@@ -39,6 +39,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void ShowPossiblyErrorAboutConnection();
     void FillListWithSnippets(QVariantList a_jsonObject);
+    void ListSearchFiles();
     ~MainWindow();
 
 private slots:

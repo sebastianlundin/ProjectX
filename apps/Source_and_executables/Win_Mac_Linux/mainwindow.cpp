@@ -13,6 +13,7 @@
 #include <libs/code/libqxt/qxtglobalshortcut.h>
 #include <QTimer>
 #include <QSettings>
+#include <QDirIterator>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -43,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         ui->listSnippets->resizeColumnToContents(i);
     }
     ui->listSnippets->setSortingEnabled(true);
+
+    this->ListSearchFiles();
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -76,11 +79,11 @@ void MainWindow::SearchSnippet()
         QString apiUrl = settingsFuncs->GetApiUrl().toUtf8();
         QString theDateAndTime = this->fileFuncs->GetUnixTime(0).toUtf8();
 
-        apiFuncs->ConnectToApi("search" + theDateAndTime, apiUrl + "/search/" + ui->searchField->text(), testConn, ui->searchField->text());
+        apiFuncs->ConnectToApi("search" + theDateAndTime + ".search", apiUrl + "/search/" + ui->searchField->text(), testConn, ui->searchField->text());
 
         QVariantList jsonData = this->jsonFuncs->GetJsonObject
         (
-            cacheFuncs->GetCacheFileData("search" + theDateAndTime)
+            cacheFuncs->GetCacheFileData("search" + theDateAndTime + ".search")
         );
 
         if (jsonData.count() > 0)
@@ -89,7 +92,7 @@ void MainWindow::SearchSnippet()
             (
                 jsonFuncs->GetJsonObject
                 (
-                    cacheFuncs->GetCacheFileData("search" + theDateAndTime)
+                    cacheFuncs->GetCacheFileData("search" + theDateAndTime + ".search")
                 )
             );
 
@@ -101,6 +104,8 @@ void MainWindow::SearchSnippet()
             QTreeWidgetItemIterator item (ui->listSnippets);
             ui->listSnippets->setCurrentItem(*item);
             ui->listSnippets->expandAll();
+            ui->previousSearchesList->clear();
+            this->ListSearchFiles();
         }
         else
         {
@@ -154,6 +159,23 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
     }
 
     connect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
+}
+
+void MainWindow::ListSearchFiles()
+{
+    QDirIterator listFilesFromCacheDirectory(this->fileFuncs->GetUserDir(), QDir::Files);
+
+    while (listFilesFromCacheDirectory.hasNext())
+    {
+        listFilesFromCacheDirectory.next();
+
+        if (listFilesFromCacheDirectory.fileInfo().completeSuffix() == "search")
+        {
+            //snippetsSearchResult.append();
+            //titleComboBox->addItem(bookTitle, isbn13String);
+            ui->previousSearchesList->addItem(this->fileFuncs->GetUserDir() + listFilesFromCacheDirectory.fileName());
+        }
+    }
 }
 
 MainWindow::~MainWindow()
