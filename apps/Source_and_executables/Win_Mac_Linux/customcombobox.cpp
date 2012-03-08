@@ -6,12 +6,14 @@ CustomComboBox::CustomComboBox(QWidget *a_parent) {}
 
 void CustomComboBox::mousePressEvent(QMouseEvent *a_event)
 {
-    MainWindow *mainWindow;
+    //MainWindow *mainWindow = new MainWindow(this);
 
-    if (a_event->button() == Qt::LeftButton && this->currentText() != "")
+    this->showPopup();
+
+    if (a_event->button() == Qt::LeftButton)
     {
-        this->showPopup();
         //this->mainWindow->FillListWithPrevSearches(this->itemData(0).toString());
+        //connect(this, SIGNAL(activated(QString)), mainWindow, SLOT(FillListWithPrevSearches(QString)));
     }
 }
 

@@ -37,6 +37,7 @@ private:
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void RenderClass();
     void ShowPossiblyErrorAboutConnection();
     void FillListWithSnippets(QVariantList a_jsonObject);
     void ListSearchFiles();
@@ -52,6 +53,9 @@ private slots:
     void on_copySnippet_clicked();
     void on_actionPreferences_triggered();
     void on_searchSnippet_clicked();
+
+public slots:
+    void FillListWithPrevSearches(QString a_filename);
 };
 
 #endif // MAINWINDOW_H

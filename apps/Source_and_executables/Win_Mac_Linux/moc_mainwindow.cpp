@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Thu Mar 8 16:47:38 2012
+** Created: Thu Mar 8 20:45:51 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -40,6 +40,7 @@ static const uint qt_meta_data_MainWindow[] = {
      187,   11,   11,   11, 0x08,
      212,   11,   11,   11, 0x08,
      245,   11,   11,   11, 0x08,
+     283,  272,   11,   11, 0x0a,
 
        0        // eod
 };
@@ -52,7 +53,8 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "ShowSelectedSnippet(QTreeWidgetItem*,int)\0"
     "on_copySnippet_clicked()\0"
     "on_actionPreferences_triggered()\0"
-    "on_searchSnippet_clicked()\0"
+    "on_searchSnippet_clicked()\0a_filename\0"
+    "FillListWithPrevSearches(QString)\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -70,6 +72,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->on_copySnippet_clicked(); break;
         case 7: _t->on_actionPreferences_triggered(); break;
         case 8: _t->on_searchSnippet_clicked(); break;
+        case 9: _t->FillListWithPrevSearches((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -107,9 +110,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 10;
     }
     return _id;
 }

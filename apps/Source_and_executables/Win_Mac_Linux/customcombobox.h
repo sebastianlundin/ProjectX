@@ -10,6 +10,9 @@ class CustomComboBox : public QComboBox
 {
     Q_OBJECT
 
+private:
+    QWidget *mainWindow;
+
 public:
     CustomComboBox(QWidget *a_parent);
     void mousePressEvent(QMouseEvent *a_event);
