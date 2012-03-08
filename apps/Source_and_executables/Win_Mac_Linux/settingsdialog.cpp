@@ -2,7 +2,8 @@
 #include "ui_settingsdialog.h"
 #include <QSettings>
 #include <QMessageBox>
-#include "mainwindow.h"
+#include <QRegExp>
+#include <QRegExpValidator>
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::SettingsDialog)
 {
@@ -41,6 +42,21 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::S
     ui2->activeShortcutField->setText(activeShortcutConv.toUtf8());
 
     settings.endGroup();
+
+    // Activate regex validator (with regex code) for the api address field
+    QRegExpValidator *regexValidator1 = new QRegExpValidator(this);
+    QRegExp regexCode1("[a-z:/.]*");
+    regexCode1.setCaseSensitivity(Qt::CaseInsensitive);
+    regexValidator1->setRegExp(regexCode1);
+    ui2->apiAddressField->setValidator(regexValidator1);
+
+    // Activate regex validator (with regex code) for the field that holds the keyboard setting for bringing
+    // the whole application to front/focus with some keys (if it's activated in the settings)
+    QRegExpValidator *regexValidator2 = new QRegExpValidator(this);
+    QRegExp regexCode2("[ctrl|alt|cmd|shift]{0,5}[+]{0,1}[a-z|ctrl|alt|cmd|shift]{0,5}[0-9]{0,1}[+]{0,1}[a-z]{0,1}[0-9]{0,1}");
+    regexCode2.setCaseSensitivity(Qt::CaseInsensitive);
+    regexValidator2->setRegExp(regexCode2);
+    ui2->activeShortcutField->setValidator(regexValidator2);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -50,25 +66,41 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::on_saveButton_clicked()
 {
-    QSettings settings("ProjectX", "Snippt");
-    settings.beginGroup("SnipptSettings");
-    settings.setValue("apiurl", ui2->apiAddressField->text());
+    QRegExp regexCode1("[a-z:/.]*");
+    QRegExp regexCode2("[ctrl|alt|cmd|shift]{0,5}[+]{0,1}[a-z|ctrl|alt|cmd|shift]{0,5}[0-9]{0,1}[+]{0,1}[a-z]{0,1}[0-9]{0,1}");
+    bool isAddressValid = regexCode1.exactMatch(ui2->apiAddressField->text());
+    bool isActiveKeyValid = regexCode1.exactMatch(ui2->apiAddressField->text());
 
-    if (ui2->enableDisableGlobalShortcuts->isChecked() == true)
+    if (isAddressValid == true && isActiveKeyValid == true)
     {
-        settings.setValue("activeglobalshortcuts", "activated");
+        QSettings settings("ProjectX", "Snippt");
+        settings.beginGroup("SnipptSettings");
+        settings.setValue("apiurl", ui2->apiAddressField->text());
+
+        if (ui2->enableDisableGlobalShortcuts->isChecked() == true)
+        {
+            settings.setValue("activeglobalshortcuts", "activated");
+        }
+        else
+        {
+            settings.setValue("activeglobalshortcuts", "deactivated");
+        }
+
+        settings.setValue("activeshortcut", ui2->activeShortcutField->text());
+        settings.endGroup();
+        settings.sync();
+
+        QMessageBox::information(this, "Preferences", "Preferences has been saved!\n\nRestart the application to use the new settings with the app!");
+        this->close();
     }
-    else
+    else if (isAddressValid == false)
     {
-        settings.setValue("activeglobalshortcuts", "deactivated");
+        QMessageBox::warning(this, "Api address is not valid!", "Api address is not valid!\n\nOnly letters, periods, slashes and colon is supported.\n\nTry again!");
     }
-
-    settings.setValue("activeshortcut", ui2->activeShortcutField->text());
-    settings.endGroup();
-    settings.sync();
-
-    QMessageBox::information(this, "Settings", "Settings have been saved!\n\nRestart the application to use the new settings with the app!");
-    this->close();
+    else if (isActiveKeyValid == false)
+    {
+        QMessageBox::warning(this, "Active key is not valid!", "Active key is not valid!\n\nOnly letters, plus and numbers is supported.\n\nTry again!");
+    }
 }
 
 void SettingsDialog::on_closeButton_clicked()
