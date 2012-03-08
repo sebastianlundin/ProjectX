@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDateTime>
+#include <QDirIterator>
 
 QString FileFuncs::GetUserDir()
 {
@@ -101,4 +102,14 @@ QByteArray FileFuncs::LoadFile(QString a_filename)
 
     file.close();
     return data;
+}
+
+void FileFuncs::ListSearchFiles()
+{
+    QDirIterator listFilesFromCacheDirectory(this->GetUserDir(), QDir::Files);
+
+    while (listFilesFromCacheDirectory.hasNext())
+    {
+
+    }
 }
