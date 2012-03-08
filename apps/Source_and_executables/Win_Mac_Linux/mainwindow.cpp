@@ -9,10 +9,10 @@
 #include <QClipboard>
 #include "apifuncs.h"
 #include "cachefuncs.h"
-#include "settingsfuncs.h"
-//#include <QxtApplication>
-//#include <QxtGlobalShortcut>
+#include <libs/code/libqxt/qxtapplication.h>
+#include <libs/code/libqxt/qxtglobalshortcut.h>
 #include <QTimer>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->settingsFuncs = new SettingsFuncs();
     this->fileFuncs = new FileFuncs();
     this->animationTimer = new QTimer(this);
+    this->keyboardShortcuts = new QxtGlobalShortcut(this);
 
     QStringList snippetListHeaders;
     snippetListHeaders << "Languages" << "Language id" << "Title" << "Id"
@@ -32,11 +33,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     this->ShowPossiblyErrorAboutConnection();
 
-    //QxtGlobalShortcut* shortcut = new QxtGlobalShortcut(this);
-    //connect(shortcut, SIGNAL(activated()), this, SLOT(test()));
-    //shortcut->setShortcut(QKeySequence("Ctrl+L"));
-
     ui->foundNumberOfSnippets->setHidden(true);
+    connect(this->keyboardShortcuts, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
+    connect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
+    this->KeyboardActions();
+
+    for(int i = 0; i < 8; i++)
+    {
+        ui->listSnippets->resizeColumnToContents(i);
+    }
+    ui->listSnippets->setSortingEnabled(true);
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -44,7 +50,7 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
     bool testConnection = true;
     QString apiUrl = this->settingsFuncs->GetApiUrl();
 
-    apiFuncs->ConnectToApi("nofile", apiUrl, testConnection);
+    apiFuncs->ConnectToApi("nofile", apiUrl, testConnection, "");
 
     if (testConnection == false)
     {
@@ -56,52 +62,58 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
 void MainWindow::SearchSnippet()
 {
     ui->listSnippets->clear();
+    ui->selectedSnippet->clear();
 
-    connect(this->animationTimer, SIGNAL(timeout()), this, SLOT(UpdateSearchAnimation()));
-    ui->searchLabel->setText("Searching");
-    animationTimer->start(500);
-
-    this->ShowPossiblyErrorAboutConnection();
-    bool testConn = true;
-
-    QString apiUrl = settingsFuncs->GetApiUrl().toUtf8();
-    QString theDateAndTime = this->fileFuncs->GetUnixTime(0).toUtf8();
-
-    apiFuncs->ConnectToApi("search" + theDateAndTime, apiUrl + "/search/" + ui->searchField->text(), testConn);
-
-    QVariantList jsonData = this->jsonFuncs->GetJsonObject
-    (
-        cacheFuncs->GetCacheFileData
-        (
-            "search" + theDateAndTime
-        )
-    );
-
-    if (jsonData.count() > 0)
+    if (ui->searchField->text().count() != 0)
     {
-        this->FillListWithSnippets
+        connect(this->animationTimer, SIGNAL(timeout()), this, SLOT(UpdateSearchAnimation()));
+        ui->searchLabel->setText("Searching");
+        animationTimer->start(500);
+
+        this->ShowPossiblyErrorAboutConnection();
+        bool testConn = true;
+
+        QString apiUrl = settingsFuncs->GetApiUrl().toUtf8();
+        QString theDateAndTime = this->fileFuncs->GetUnixTime(0).toUtf8();
+
+        apiFuncs->ConnectToApi("search" + theDateAndTime, apiUrl + "/search/" + ui->searchField->text(), testConn, ui->searchField->text());
+
+        QVariantList jsonData = this->jsonFuncs->GetJsonObject
         (
-            jsonFuncs->GetJsonObject
-            (
-                cacheFuncs->GetCacheFileData
-                (
-                    "search" + theDateAndTime
-                )
-            )
+            cacheFuncs->GetCacheFileData("search" + theDateAndTime)
         );
 
-        ui->foundNumberOfSnippets->setHidden(false);
-        QString snippetNumber;
-        snippetNumber.setNum(jsonData.count());
-        ui->foundNumberOfSnippets->setText(snippetNumber.toUtf8() + " snippets found!");
+        if (jsonData.count() > 0)
+        {
+            this->FillListWithSnippets
+            (
+                jsonFuncs->GetJsonObject
+                (
+                    cacheFuncs->GetCacheFileData("search" + theDateAndTime)
+                )
+            );
+
+            ui->foundNumberOfSnippets->setHidden(false);
+            QString snippetNumber;
+            snippetNumber.setNum(jsonData.count());
+            ui->foundNumberOfSnippets->setText(snippetNumber.toUtf8() + " snippets found!");
+            ui->listSnippets->setFocus();
+            QTreeWidgetItemIterator item (ui->listSnippets);
+            ui->listSnippets->setCurrentItem(*item);
+            ui->listSnippets->expandAll();
+        }
+        else
+        {
+            this->animationTimer->stop();
+            ui->searchLabel->setText("Search for a snippet (use for example: word + word or just search for one single word):");
+            ui->foundNumberOfSnippets->setHidden(false);
+            ui->foundNumberOfSnippets->setText("0 snippets found!");
+            QMessageBox::warning(this, "No snippets found", "Couldn't find any snippets that matches with your search.\n\nTry again!");
+        }
     }
     else
     {
-        this->animationTimer->stop();
-        ui->searchLabel->setText("Search for a snippet (use for example: word + word or just search for one single word):");
-        ui->foundNumberOfSnippets->setHidden(false);
-        ui->foundNumberOfSnippets->setText("0 snippets found!");
-        QMessageBox::warning(this, "No snippets found", "Couldn't find any snippets that matches with your search.\n\nTry again!");
+        QMessageBox::warning(this, "Empty field!", "You can't search for nothing. \n\n(hint: empty field)\n\nTry again!");
     }
 }
 
@@ -146,6 +158,9 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
 
 MainWindow::~MainWindow()
 {
+    disconnect(this->keyboardShortcuts, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
+    disconnect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
+    disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
     delete ui;
 }
 
@@ -160,6 +175,36 @@ void MainWindow::on_actionPreferences_triggered()
 {
     SettingsDialog *settingsDialog = new SettingsDialog();
     settingsDialog->show();
+}
+
+void MainWindow::KeyboardActions()
+{
+    QVariant activeGlobalShortcuts, activeShortcut;
+
+    QSettings settings("ProjectX", "Snippt");
+    settings.beginGroup("SnipptSettings");
+
+    activeGlobalShortcuts = settings.value("activeglobalshortcuts");
+    QString activeGlobalShortcutsConv = activeGlobalShortcuts.toString();
+
+    activeShortcut = settings.value("activeshortcut");
+    QString activeShortcutConv = activeShortcut.toString();
+
+    if (activeGlobalShortcutsConv == "activated")
+    {
+        this->keyboardShortcuts->setShortcut(QKeySequence(activeShortcutConv));
+    }
+
+    settings.endGroup();
+}
+
+void MainWindow::ShowWindowAndFocusSearchField()
+{
+    this->showNormal();
+    this->raise();
+    this->activateWindow();
+    ui->searchField->setFocus();
+    ui->searchField->setText("");
 }
 
 void MainWindow::UpdateSearchAnimation()
@@ -178,8 +223,19 @@ void MainWindow::UpdateSearchAnimation()
 
 void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 {
-    /*QString cacheSelectedSnippetFilename = a_item->text(3);
-    this->apiFuncs->ConnectToApi(cacheSelectedSnippetFilename, "http://tmpn.se/api/snippets?id=" + cacheSelectedSnippetFilename);
+    QString cacheSelectedSnippetFilename = a_item->text(3);
+    QVariant apiUrl;
+    bool testConn = true;
+    QSettings settings("ProjectX", "Snippt");
+
+    settings.beginGroup("SnipptSettings");
+
+    apiUrl = settings.value("apiurl");
+    QString apiUrlConv = apiUrl.toString();
+
+    this->apiFuncs->ConnectToApi(cacheSelectedSnippetFilename, apiUrlConv.toUtf8() + "/search/" + cacheSelectedSnippetFilename, testConn, "");
+
+    settings.endGroup();
 
     QByteArray jsonCacheData = this->cacheFuncs->GetCacheFileData(cacheSelectedSnippetFilename);
     QVariantList jsonObject = this->jsonFuncs->GetJsonObject(jsonCacheData);
@@ -194,34 +250,8 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
         ui->copySnippet->setEnabled(false);
     }
 
-    ui->selectedSnippet->setText(snippetCode);*/
-
-    //disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
+    ui->selectedSnippet->setText(snippetCode);
 }
-
-//void MainWindow::on_pushButton_clicked()
-//{
-/*QTreeWidgetItemIterator it(ui->treeWidget);
-    while (*it)
-    {
-        if ((*it)->text(1) == ui->lineEdit->text())
-        {
-            (*it)->setSelected(true);
-            ui->treeWidget->scrollToItem(*it);
-        }
-        ++it;
-    }*/
-
-/* ui->lineEdit->clear();
-
-    QList<QTreeWidgetItem*> items = ui->treeWidget->findItems(ui->lineEdit->text(), Qt::MatchContains, 0);
-
-    if(items.count())
-    {
-        items.first()->setSelected(true);
-        ui->treeWidget->scrollToItem(items.first());
-    }*/
-//}
 
 void MainWindow::on_copySnippet_clicked()
 {

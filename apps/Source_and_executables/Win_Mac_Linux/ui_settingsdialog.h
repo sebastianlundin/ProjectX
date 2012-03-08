@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settingsdialog.ui'
 **
-** Created: Wed Mar 7 09:51:37 2012
+** Created: Thu Mar 8 02:04:32 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -38,8 +38,6 @@ public:
     QCheckBox *enableDisableGlobalShortcuts;
     QLabel *keyboardShortcutActiveLabel;
     QLineEdit *activeShortcutField;
-    QLabel *keyboardShortcutCopyLabel;
-    QLineEdit *copyShortcutField;
     QLabel *apiAddressLabel;
     QPushButton *saveButton;
     QPushButton *closeButton;
@@ -49,14 +47,14 @@ public:
         if (SettingsDialog->objectName().isEmpty())
             SettingsDialog->setObjectName(QString::fromUtf8("SettingsDialog"));
         SettingsDialog->setWindowModality(Qt::NonModal);
-        SettingsDialog->resize(500, 316);
+        SettingsDialog->resize(500, 250);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(SettingsDialog->sizePolicy().hasHeightForWidth());
         SettingsDialog->setSizePolicy(sizePolicy);
-        SettingsDialog->setMinimumSize(QSize(500, 316));
-        SettingsDialog->setMaximumSize(QSize(500, 316));
+        SettingsDialog->setMinimumSize(QSize(500, 250));
+        SettingsDialog->setMaximumSize(QSize(500, 250));
         QFont font;
         font.setPointSize(11);
         SettingsDialog->setFont(font);
@@ -106,20 +104,6 @@ public:
 
         gridLayout_3->addWidget(activeShortcutField, 2, 0, 1, 1);
 
-        keyboardShortcutCopyLabel = new QLabel(frame);
-        keyboardShortcutCopyLabel->setObjectName(QString::fromUtf8("keyboardShortcutCopyLabel"));
-        keyboardShortcutCopyLabel->setFont(font);
-        keyboardShortcutCopyLabel->setLineWidth(2);
-        keyboardShortcutCopyLabel->setWordWrap(true);
-
-        gridLayout_3->addWidget(keyboardShortcutCopyLabel, 3, 0, 1, 1);
-
-        copyShortcutField = new QLineEdit(frame);
-        copyShortcutField->setObjectName(QString::fromUtf8("copyShortcutField"));
-        copyShortcutField->setFont(font);
-
-        gridLayout_3->addWidget(copyShortcutField, 4, 0, 1, 1);
-
 
         gridLayout_2->addWidget(frame, 3, 0, 1, 1);
 
@@ -163,8 +147,6 @@ public:
         enableDisableGlobalShortcuts->setText(QApplication::translate("SettingsDialog", "Enable global shortcuts", 0, QApplication::UnicodeUTF8));
         keyboardShortcutActiveLabel->setText(QApplication::translate("SettingsDialog", "Choose a keyboard shortcut for make the app active \n"
 "(for example: Ctrl+l):", 0, QApplication::UnicodeUTF8));
-        keyboardShortcutCopyLabel->setText(QApplication::translate("SettingsDialog", "Choose a keyboard shortcut for copy a selected \n"
-"snippet to clipboard:", 0, QApplication::UnicodeUTF8));
         apiAddressLabel->setText(QApplication::translate("SettingsDialog", "Api address (for example http://tmpn.se/api):", 0, QApplication::UnicodeUTF8));
         saveButton->setText(QApplication::translate("SettingsDialog", "Save changes and close this window", 0, QApplication::UnicodeUTF8));
         closeButton->setText(QApplication::translate("SettingsDialog", "Close without saving", 0, QApplication::UnicodeUTF8));

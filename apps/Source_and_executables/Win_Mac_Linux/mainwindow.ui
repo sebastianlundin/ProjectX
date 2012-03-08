@@ -81,11 +81,14 @@
      </widget>
     </item>
     <item row="8" column="0" colspan="2">
-     <widget class="QTreeWidget" name="listSnippets">
+     <widget class="CustomTreeWidget" name="listSnippets">
       <property name="font">
        <font>
         <pointsize>11</pointsize>
        </font>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::SelectedClicked</set>
       </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
@@ -251,6 +254,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CustomTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>customtreewidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

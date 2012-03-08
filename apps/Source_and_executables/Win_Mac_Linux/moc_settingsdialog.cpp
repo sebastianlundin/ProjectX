@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'settingsdialog.h'
 **
-** Created: Tue Mar 6 00:39:54 2012
+** Created: Wed Mar 7 18:38:09 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,22 +23,26 @@ static const uint qt_meta_data_SettingsDialog[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      16,   15,   15,   15, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      16,   15,   15,   15, 0x08,
-      40,   15,   15,   15, 0x08,
+      42,   15,   15,   15, 0x08,
+      66,   15,   15,   15, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SettingsDialog[] = {
-    "SettingsDialog\0\0on_saveButton_clicked()\0"
+    "SettingsDialog\0\0UpdateKeyboardShortcuts()\0"
+    "on_saveButton_clicked()\0"
     "on_closeButton_clicked()\0"
 };
 
@@ -48,8 +52,9 @@ void SettingsDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         Q_ASSERT(staticMetaObject.cast(_o));
         SettingsDialog *_t = static_cast<SettingsDialog *>(_o);
         switch (_id) {
-        case 0: _t->on_saveButton_clicked(); break;
-        case 1: _t->on_closeButton_clicked(); break;
+        case 0: _t->UpdateKeyboardShortcuts(); break;
+        case 1: _t->on_saveButton_clicked(); break;
+        case 2: _t->on_closeButton_clicked(); break;
         default: ;
         }
     }
@@ -88,10 +93,16 @@ int SettingsDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
+}
+
+// SIGNAL 0
+void SettingsDialog::UpdateKeyboardShortcuts()
+{
+    QMetaObject::activate(this, &staticMetaObject, 0, 0);
 }
 QT_END_MOC_NAMESPACE

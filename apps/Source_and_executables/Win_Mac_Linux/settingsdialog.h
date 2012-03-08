@@ -22,6 +22,9 @@ private slots:
 
 private:
     Ui::SettingsDialog *ui2;
+
+signals:
+    void UpdateKeyboardShortcuts();
 };
 
 #endif // SETTINGSDIALOG_H

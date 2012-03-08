@@ -2,6 +2,7 @@
 #include "ui_settingsdialog.h"
 #include <QSettings>
 #include <QMessageBox>
+#include "mainwindow.h"
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::SettingsDialog)
 {
@@ -14,7 +15,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::S
     flags |= Qt::WindowTitleHint;
     setWindowFlags(flags);
 
-    QVariant apiUrl, activeGlobalShortcuts, activeShortcut, copyShortcut;
+    QVariant apiUrl, activeGlobalShortcuts, activeShortcut;
     QSettings settings("ProjectX", "Snippt");
 
     settings.beginGroup("SnipptSettings");
@@ -38,10 +39,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::S
     activeShortcut = settings.value("activeshortcut");
     QString activeShortcutConv = activeShortcut.toString();
     ui2->activeShortcutField->setText(activeShortcutConv.toUtf8());
-
-    copyShortcut = settings.value("copyshortcut");
-    QString copyShortcutConv = copyShortcut.toString();
-    ui2->copyShortcutField->setText(copyShortcutConv.toUtf8());
 
     settings.endGroup();
 }
@@ -67,15 +64,14 @@ void SettingsDialog::on_saveButton_clicked()
     }
 
     settings.setValue("activeshortcut", ui2->activeShortcutField->text());
-    settings.setValue("copyshortcut", ui2->copyShortcutField->text());
     settings.endGroup();
     settings.sync();
 
-    QMessageBox::information(this, "Settings", "Settings have been saved!");
-    this->hide();
+    QMessageBox::information(this, "Settings", "Settings have been saved!\n\nRestart the application to use the new settings with the app!");
+    this->close();
 }
 
 void SettingsDialog::on_closeButton_clicked()
 {
-    this->hide();
+    this->close();
 }

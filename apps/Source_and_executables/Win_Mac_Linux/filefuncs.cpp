@@ -38,7 +38,7 @@ QString FileFuncs::GetUnixTime(int a_time)
     return dateToString;
 }
 
-bool FileFuncs::SaveFile(QString a_filename, QByteArray a_data)
+bool FileFuncs::SaveFile(QString a_filename, QByteArray a_data, QString a_search)
 {
     if (this->CheckIfCacheDirExists() == false)
     {
@@ -55,9 +55,10 @@ bool FileFuncs::SaveFile(QString a_filename, QByteArray a_data)
 
     out << "";
 
-    QString dateToString = this->GetUnixTime(20);
+    QString dateToString = this->GetUnixTime(3600); // Add one hour into the future
 
-    out << dateToString + "\n\n";
+    out << dateToString + "\n";
+    out << a_search + "\n";
     out << a_data;
 
     file.close();

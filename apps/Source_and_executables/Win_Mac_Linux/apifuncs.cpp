@@ -13,7 +13,7 @@ ApiFuncs::ApiFuncs(QObject *parent) : QObject(parent)
     this->jsonFuncs = new JsonFuncs();
 }
 
-void ApiFuncs::ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest)
+void ApiFuncs::ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest, QString a_search)
 {
     if (this->fileFuncs->CheckIfFileExists(a_filename) == false || this->fileFuncs->CheckIfFileIsTheLatest(a_filename) == false)
     {
@@ -33,19 +33,19 @@ void ApiFuncs::ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest
         }
         else if (networkReply->isFinished())
         {
-            this->LoadApiData(a_filename, networkReply->readAll());
+            this->LoadApiData(a_filename, networkReply->readAll(), a_search);
             disconnect(networkReply, SIGNAL(finished()), &loop, SLOT(quit()));
             loop.quit();
         }
     }
 }
 
-void ApiFuncs::LoadApiData(QString a_filename, QByteArray a_data)
+void ApiFuncs::LoadApiData(QString a_filename, QByteArray a_data, QString a_search)
 {
     QVariantList jsonData = this->jsonFuncs->GetJsonObject(a_data);
 
     if (jsonData.count() > 0)
     {
-        this->fileFuncs->SaveFile(a_filename, a_data);
+        this->fileFuncs->SaveFile(a_filename, a_data, a_search);
     }
 }

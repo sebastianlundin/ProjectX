@@ -3,8 +3,8 @@ QT       += core gui network sql
 TARGET = Snippt
 TEMPLATE = app
 
-#CONFIG += qxt
-#QXT += core gui
+CONFIG  += qxt
+QXT     += core gui
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -13,7 +13,8 @@ SOURCES += main.cpp\
     apifuncs.cpp \
     cachefuncs.cpp \
     settingsfuncs.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    customtreewidget.cpp
 
 HEADERS  += mainwindow.h \
     jsonfuncs.h \
@@ -21,7 +22,8 @@ HEADERS  += mainwindow.h \
     apifuncs.h \
     cachefuncs.h \
     settingsfuncs.h \
-    settingsdialog.h
+    settingsdialog.h \
+    customtreewidget.h
 
 FORMS    += \
     mainwindow.ui \

@@ -11,7 +11,7 @@ public:
     bool CheckIfFileExists(QString a_filename);
     bool CheckIfCacheDirExists();
     QString GetUnixTime(int a_time);
-    bool SaveFile(QString a_filename, QByteArray a_data);
+    bool SaveFile(QString a_filename, QByteArray a_data, QString a_search);
     bool CheckIfFileIsTheLatest(QString a_filename);
     QByteArray LoadFile(QString a_filename);
 };

@@ -19,8 +19,8 @@ private:
 
 public:
     explicit ApiFuncs(QObject *parent = 0);
-    void ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest);
-    void LoadApiData(QString a_filename, QByteArray a_data);
+    void ConnectToApi(QString a_filename, QString a_url, bool &a_errorTest, QString a_search);
+    void LoadApiData(QString a_filename, QByteArray a_data, QString a_search);
 };
 
 #endif // APIFUNCS_H

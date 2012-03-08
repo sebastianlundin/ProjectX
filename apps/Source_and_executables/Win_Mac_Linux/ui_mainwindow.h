@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Mar 7 09:51:35 2012
+** Created: Thu Mar 8 02:04:34 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -24,8 +24,8 @@
 #include <QtGui/QMenuBar>
 #include <QtGui/QPushButton>
 #include <QtGui/QTextEdit>
-#include <QtGui/QTreeWidget>
 #include <QtGui/QWidget>
+#include "customtreewidget.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -41,7 +41,7 @@ public:
     QLabel *previousSearchesLabel;
     QComboBox *comboBox;
     QLabel *listSnippetsLabel;
-    QTreeWidget *listSnippets;
+    CustomTreeWidget *listSnippets;
     QLabel *selectedSnippetLabel;
     QTextEdit *selectedSnippet;
     QPushButton *copySnippet;
@@ -102,12 +102,13 @@ public:
 
         gridLayout->addWidget(listSnippetsLabel, 7, 0, 1, 1);
 
-        listSnippets = new QTreeWidget(guiGrid);
+        listSnippets = new CustomTreeWidget(guiGrid);
         QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
         __qtreewidgetitem->setText(0, QString::fromUtf8("1"));
         listSnippets->setHeaderItem(__qtreewidgetitem);
         listSnippets->setObjectName(QString::fromUtf8("listSnippets"));
         listSnippets->setFont(font);
+        listSnippets->setEditTriggers(QAbstractItemView::AnyKeyPressed|QAbstractItemView::SelectedClicked);
         listSnippets->setAlternatingRowColors(true);
         listSnippets->setSelectionMode(QAbstractItemView::SingleSelection);
         listSnippets->setSortingEnabled(true);
