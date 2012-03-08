@@ -106,10 +106,10 @@ QByteArray FileFuncs::LoadFile(QString a_filename)
 QString FileFuncs::GetSearchString(QString a_filename)
 {
     QString searchString;
-    QFile file(a_filename);
+    QFile file(this->GetUserDir() + a_filename);
     file.open(QIODevice::ReadOnly);
 
-    if (this->CheckIfFileExists(a_filename) == true)
+    if (this->CheckIfFileExists(this->GetUserDir() + a_filename) == false)
     {
         file.readLine();
         searchString = file.readLine();

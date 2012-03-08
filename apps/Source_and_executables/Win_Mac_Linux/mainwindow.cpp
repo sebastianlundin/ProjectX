@@ -173,7 +173,7 @@ void MainWindow::ListSearchFiles()
         {
             //snippetsSearchResult.append();
             //titleComboBox->addItem(bookTitle, isbn13String);
-            ui->previousSearchesList->addItem(this->fileFuncs->GetUserDir() + listFilesFromCacheDirectory.fileName());
+            ui->previousSearchesList->addItem(this->fileFuncs->GetSearchString(listFilesFromCacheDirectory.fileName()), this->fileFuncs->GetUserDir() + listFilesFromCacheDirectory.fileName());
         }
     }
 }
