@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Mar 8 16:33:54 2012
+** Created: Thu Mar 8 19:46:33 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -14,7 +14,6 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
-#include <QtGui/QComboBox>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
@@ -25,6 +24,7 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QTextEdit>
 #include <QtGui/QWidget>
+#include "customcombobox.h"
 #include "customtreewidget.h"
 
 QT_BEGIN_NAMESPACE
@@ -39,7 +39,7 @@ public:
     QLineEdit *searchField;
     QPushButton *searchSnippet;
     QLabel *previousSearchesLabel;
-    QComboBox *previousSearchesList;
+    CustomComboBox *previousSearchesList;
     QLabel *listSnippetsLabel;
     CustomTreeWidget *listSnippets;
     QLabel *selectedSnippetLabel;
@@ -90,7 +90,7 @@ public:
 
         gridLayout->addWidget(previousSearchesLabel, 3, 0, 1, 2);
 
-        previousSearchesList = new QComboBox(guiGrid);
+        previousSearchesList = new CustomComboBox(guiGrid);
         previousSearchesList->setObjectName(QString::fromUtf8("previousSearchesList"));
         previousSearchesList->setFont(font);
 

@@ -14,7 +14,8 @@ SOURCES += main.cpp\
     cachefuncs.cpp \
     settingsfuncs.cpp \
     settingsdialog.cpp \
-    customtreewidget.cpp
+    customtreewidget.cpp \
+    customcombobox.cpp
 
 HEADERS  += mainwindow.h \
     jsonfuncs.h \
@@ -23,7 +24,8 @@ HEADERS  += mainwindow.h \
     cachefuncs.h \
     settingsfuncs.h \
     settingsdialog.h \
-    customtreewidget.h
+    customtreewidget.h \
+    customcombobox.h
 
 FORMS    += \
     mainwindow.ui \
