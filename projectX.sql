@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Värd: localhost
--- Skapad: 12 februari 2012 kl 19:34
+-- Skapad: 06 mars 2012 kl 12:33
 -- Serverversion: 5.5.9
 -- PHP-version: 5.3.6
 
@@ -18,6 +18,26 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 -- Databas: `projectX`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Struktur för tabell `blogg`
+--
+
+CREATE TABLE `blogg` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(250) NOT NULL,
+  `content` varchar(1000) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Data i tabell `blogg`
+--
+
 
 -- --------------------------------------------------------
 
@@ -95,7 +115,7 @@ CREATE TABLE `snippet` (
   FULLTEXT KEY `description` (`description`),
   FULLTEXT KEY `language` (`language`),
   FULLTEXT KEY `title` (`title`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=78 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=79 ;
 
 --
 -- Data i tabell `snippet`
@@ -114,6 +134,7 @@ INSERT INTO `snippet` VALUES(49, 6, 'whaaaaaat', 'phåp', 'daz description', '2'
 INSERT INTO `snippet` VALUES(54, 18, 'cshark', 'php igen', 'en desc', '2', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `snippet` VALUES(55, 24, 'asdasd', 'afasd', 'asdasd', '2', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
 INSERT INTO `snippet` VALUES(56, 25, '<?php\r\necho ''live account'';\r\n?>', 'hotmail snippet', 'testar på live account', '1', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `snippet` VALUES(78, 18, 'asdasdasd', 'asd', 'lkj', '1', '2012-02-14 14:17:55', '2012-02-14 14:17:55');
 
 -- --------------------------------------------------------
 
@@ -145,7 +166,7 @@ CREATE TABLE `user` (
   `name` varchar(1500) NOT NULL,
   `username` varchar(50) NOT NULL,
   `api_key` varchar(50) NOT NULL,
-  `role` enum('member','admin','moderator') NOT NULL DEFAULT 'member',
+  `role_id` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `api` (`api_key`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
@@ -154,9 +175,9 @@ CREATE TABLE `user` (
 -- Data i tabell `user`
 --
 
-INSERT INTO `user` VALUES(18, 'Kim Åström', 'kim.astrom@gmail.com', '9ddf2313a867ba4e8b8ce35fee7a4042e24f3267', 'admin');
-INSERT INTO `user` VALUES(24, 'Kim Åström', 'null', '37ecdacf51376c425cb216d87b7f43c2409132c8', 'member');
-INSERT INTO `user` VALUES(25, 'Kim Åström', 'kim.90@hotmail.com', 'dddd', 'member');
+INSERT INTO `user` VALUES(18, 'Kim Åström', 'kim.astrom@gmail.com', '47aa5b43dbe963f4953aab6506370c33c2af73e1', 2);
+INSERT INTO `user` VALUES(24, 'Kim Åström', 'null', 'b395f9aa932ee9a3e39b71eca3926138c75e464f', 1);
+INSERT INTO `user` VALUES(25, 'Kim Åström', 'kim.90@hotmail.com', 'bafb4965aecff1f38b5bad68b1119cf1c3c21635', 3);
 
 -- --------------------------------------------------------
 
@@ -183,3 +204,23 @@ CREATE TABLE `user_auth` (
 INSERT INTO `user_auth` VALUES(12, 'kim.astrom@gmail.com', 'Google', 'https://www.google.com/profiles/114454620248657786834', 18);
 INSERT INTO `user_auth` VALUES(18, 'null', 'Twitter', 'http://twitter.com/account/profile?user_id=226693886', 24);
 INSERT INTO `user_auth` VALUES(19, 'kim.90@hotmail.com', 'Windows Live', 'http://cid-aa4ae54b5aca67c3.spaces.live.com/', 25);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur för tabell `user_role`
+--
+
+CREATE TABLE `user_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role` varchar(25) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Data i tabell `user_role`
+--
+
+INSERT INTO `user_role` VALUES(1, 'member');
+INSERT INTO `user_role` VALUES(2, 'admin');
+INSERT INTO `user_role` VALUES(3, 'moderator');
