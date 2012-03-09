@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'customcombobox.h'
 **
-** Created: Fri Mar 9 10:13:59 2012
+** Created: Fri Mar 9 11:34:24 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,34 +23,26 @@ static const uint qt_meta_data_CustomComboBox[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       0,    0, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
-
- // signals: signature, parameters, type, tag, flags
-      27,   16,   15,   15, 0x05,
+       0,       // signalCount
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_CustomComboBox[] = {
-    "CustomComboBox\0\0a_filename\0"
-    "fillWithSearches(QString)\0"
+    "CustomComboBox\0"
 };
 
 void CustomComboBox::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        CustomComboBox *_t = static_cast<CustomComboBox *>(_o);
-        switch (_id) {
-        case 0: _t->fillWithSearches((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        default: ;
-        }
-    }
+    Q_UNUSED(_o);
+    Q_UNUSED(_id);
+    Q_UNUSED(_c);
+    Q_UNUSED(_a);
 }
 
 const QMetaObjectExtraData CustomComboBox::staticMetaObjectExtraData = {
@@ -84,18 +76,6 @@ int CustomComboBox::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QComboBox::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
-            qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
-    }
     return _id;
-}
-
-// SIGNAL 0
-void CustomComboBox::fillWithSearches(QString _t1)
-{
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
-    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE

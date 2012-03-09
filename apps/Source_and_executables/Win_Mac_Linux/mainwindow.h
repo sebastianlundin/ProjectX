@@ -50,12 +50,11 @@ private slots:
     void SearchSnippet();
     void UpdateSearchAnimation();
     void ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column);
+    void FillListWithPrevSearches(int a_index);
     void on_copySnippet_clicked();
     void on_actionPreferences_triggered();
     void on_searchSnippet_clicked();
-
-public slots:
-    void FillListWithPrevSearches(QString a_filename);
+    void on_deleteSelectedPrevSearch_clicked();
 };
 
 #endif // MAINWINDOW_H

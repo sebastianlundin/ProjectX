@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Fri Mar 9 09:03:14 2012
+** Created: Fri Mar 9 11:34:22 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -37,10 +37,11 @@ static const uint qt_meta_data_MainWindow[] = {
       89,   11,   11,   11, 0x08,
      105,   11,   11,   11, 0x08,
      145,  129,   11,   11, 0x08,
-     187,   11,   11,   11, 0x08,
-     212,   11,   11,   11, 0x08,
-     245,   11,   11,   11, 0x08,
-     283,  272,   11,   11, 0x0a,
+     195,  187,   11,   11, 0x08,
+     225,   11,   11,   11, 0x08,
+     250,   11,   11,   11, 0x08,
+     283,   11,   11,   11, 0x08,
+     310,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -51,10 +52,11 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "SearchSnippet()\0UpdateSearchAnimation()\0"
     "a_item,a_column\0"
     "ShowSelectedSnippet(QTreeWidgetItem*,int)\0"
+    "a_index\0FillListWithPrevSearches(int)\0"
     "on_copySnippet_clicked()\0"
     "on_actionPreferences_triggered()\0"
-    "on_searchSnippet_clicked()\0a_filename\0"
-    "FillListWithPrevSearches(QString)\0"
+    "on_searchSnippet_clicked()\0"
+    "on_deleteSelectedPrevSearch_clicked()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -69,10 +71,11 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 3: _t->SearchSnippet(); break;
         case 4: _t->UpdateSearchAnimation(); break;
         case 5: _t->ShowSelectedSnippet((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 6: _t->on_copySnippet_clicked(); break;
-        case 7: _t->on_actionPreferences_triggered(); break;
-        case 8: _t->on_searchSnippet_clicked(); break;
-        case 9: _t->FillListWithPrevSearches((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 6: _t->FillListWithPrevSearches((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 7: _t->on_copySnippet_clicked(); break;
+        case 8: _t->on_actionPreferences_triggered(); break;
+        case 9: _t->on_searchSnippet_clicked(); break;
+        case 10: _t->on_deleteSelectedPrevSearch_clicked(); break;
         default: ;
         }
     }
@@ -110,9 +113,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 11;
     }
     return _id;
 }

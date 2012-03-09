@@ -119,3 +119,21 @@ QString FileFuncs::GetSearchString(QString a_filename)
 
     return searchString;
 }
+
+bool FileFuncs::DeleteFile(QString a_filename)
+{
+    QFile file(this->GetUserDir() + a_filename);
+    file.open(QIODevice::ReadWrite);
+
+    if (this->CheckIfFileExists(this->GetUserDir() + a_filename) == false)
+    {
+        if (file.remove() == true)
+        {
+            file.close();
+            return true;
+        }
+    }
+
+    file.close();
+    return false;
+}

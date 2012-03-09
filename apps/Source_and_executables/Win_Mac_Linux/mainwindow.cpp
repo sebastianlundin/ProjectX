@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->ListSearchFiles();
 
     connect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
-    connect(ui->previousSearchesList, SIGNAL(fillWithSearches(QString)), this, SLOT(FillListWithPrevSearches(QString)));
+    connect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -165,6 +165,8 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
 
 void MainWindow::ListSearchFiles()
 {
+    ui->previousSearchesList->addItem("", "");
+
     QDirIterator listFilesFromCacheDirectory(this->fileFuncs->GetUserDir(), QDir::Files);
 
     while (listFilesFromCacheDirectory.hasNext())
@@ -184,7 +186,7 @@ MainWindow::~MainWindow()
     disconnect(this->keyboardShortcuts, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
     disconnect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
     disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
-    disconnect(ui->previousSearchesList, SIGNAL(fillWithSearches(QString)), this, SLOT(FillListWithPrevSearches(QString)));
+    disconnect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
     delete ui;
 }
 
@@ -277,14 +279,17 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
     ui->selectedSnippet->setText(snippetCode);
 }
 
-void MainWindow::FillListWithPrevSearches(QString a_filename)
+void MainWindow::FillListWithPrevSearches(int a_index)
 {
+    QString itemSearchString = ui->previousSearchesList->itemText(a_index).toUtf8();
+    QString itemSearchFile = ui->previousSearchesList->itemData(a_index).toString();
+
     ui->listSnippets->clear();
     ui->searchField->clear();
 
     QVariantList jsonData = this->jsonFuncs->GetJsonObject
     (
-        this->cacheFuncs->GetCacheFileData(a_filename)
+        this->cacheFuncs->GetCacheFileData(itemSearchFile)
     );
 
     if (jsonData.count() > 0)
@@ -293,9 +298,18 @@ void MainWindow::FillListWithPrevSearches(QString a_filename)
         (
             this->jsonFuncs->GetJsonObject
             (
-                this->cacheFuncs->GetCacheFileData(a_filename)
+                this->cacheFuncs->GetCacheFileData(itemSearchFile)
             )
         );
+    }
+
+    if (!itemSearchString.isEmpty())
+    {
+        ui->deleteSelectedPrevSearch->setEnabled(true);
+    }
+    else
+    {
+        ui->deleteSelectedPrevSearch->setEnabled(false);
     }
 }
 
@@ -308,4 +322,18 @@ void MainWindow::on_copySnippet_clicked()
 void MainWindow::on_searchSnippet_clicked()
 {
     this->SearchSnippet();
+}
+
+void MainWindow::on_deleteSelectedPrevSearch_clicked()
+{
+    int selectedItemIndex = ui->previousSearchesList->currentIndex();
+    QString itemSearchString = ui->previousSearchesList->itemText(selectedItemIndex).toUtf8();
+    QString itemSearchFile = ui->previousSearchesList->itemData(selectedItemIndex).toString();
+
+    if (this->fileFuncs->DeleteFile(itemSearchFile))
+    {
+        this->ListSearchFiles();
+        ui->deleteSelectedPrevSearch->setEnabled(false);
+        QMessageBox::information(this, "File has been deleted!", "The file with item of "  + itemSearchString + " has been deleted!");
+    }
 }

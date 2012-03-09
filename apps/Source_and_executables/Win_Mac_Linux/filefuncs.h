@@ -15,6 +15,7 @@ public:
     bool CheckIfFileIsTheLatest(QString a_filename);
     QByteArray LoadFile(QString a_filename);
     QString GetSearchString(QString a_filename);
+    bool DeleteFile(QString a_filename);
 };
 
 #endif // FILEFUNCS_H

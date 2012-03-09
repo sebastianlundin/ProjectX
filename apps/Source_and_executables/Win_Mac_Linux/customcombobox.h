@@ -12,11 +12,8 @@ class CustomComboBox : public QComboBox
 
 public:
     CustomComboBox(QWidget *a_parent);
-    void mousePressEvent(QMouseEvent *a_event);
+    void mouseReleaseEvent(QMouseEvent *a_event);
     void keyPressEvent(QKeyEvent *a_event);
-
-signals:
-    void fillWithSearches(QString a_filename);
 };
 
 #endif // CUSTOMCOMBOBOX_H
