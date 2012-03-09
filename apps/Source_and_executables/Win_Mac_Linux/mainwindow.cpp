@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->fileFuncs = new FileFuncs();
     this->animationTimer = new QTimer(this);
     this->keyboardShortcuts = new QxtGlobalShortcut(this);
+    this->settingsDialog = new SettingsDialog();
 
     QStringList snippetListHeaders;
     snippetListHeaders << "Languages" << "Language id" << "Title" << "Id"
@@ -50,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     connect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
     connect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
+    connect(this->settingsDialog, SIGNAL(UpdateKeyboardSettings()), this, SLOT(KeyboardActions()));
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -187,6 +189,14 @@ MainWindow::~MainWindow()
     disconnect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
     disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
     disconnect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
+    delete this->apiFuncs;
+    delete this->jsonFuncs;
+    delete this->cacheFuncs;
+    delete this->settingsFuncs;
+    delete this->fileFuncs;
+    delete this->animationTimer;
+    delete this->keyboardShortcuts;
+    delete this->settingsDialog;
     delete ui;
 }
 
@@ -199,8 +209,7 @@ void MainWindow::on_aboutSnippt_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-    SettingsDialog *settingsDialog = new SettingsDialog();
-    settingsDialog->show();
+    this->settingsDialog->show();
 }
 
 void MainWindow::KeyboardActions()

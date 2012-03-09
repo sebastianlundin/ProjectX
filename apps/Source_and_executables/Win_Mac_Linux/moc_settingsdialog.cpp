@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'settingsdialog.h'
 **
-** Created: Wed Mar 7 18:38:09 2012
+** Created: Fri Mar 9 12:10:51 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -34,14 +34,14 @@ static const uint qt_meta_data_SettingsDialog[] = {
       16,   15,   15,   15, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      42,   15,   15,   15, 0x08,
-      66,   15,   15,   15, 0x08,
+      41,   15,   15,   15, 0x08,
+      65,   15,   15,   15, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SettingsDialog[] = {
-    "SettingsDialog\0\0UpdateKeyboardShortcuts()\0"
+    "SettingsDialog\0\0UpdateKeyboardSettings()\0"
     "on_saveButton_clicked()\0"
     "on_closeButton_clicked()\0"
 };
@@ -52,7 +52,7 @@ void SettingsDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         Q_ASSERT(staticMetaObject.cast(_o));
         SettingsDialog *_t = static_cast<SettingsDialog *>(_o);
         switch (_id) {
-        case 0: _t->UpdateKeyboardShortcuts(); break;
+        case 0: _t->UpdateKeyboardSettings(); break;
         case 1: _t->on_saveButton_clicked(); break;
         case 2: _t->on_closeButton_clicked(); break;
         default: ;
@@ -101,7 +101,7 @@ int SettingsDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void SettingsDialog::UpdateKeyboardShortcuts()
+void SettingsDialog::UpdateKeyboardSettings()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, 0);
 }

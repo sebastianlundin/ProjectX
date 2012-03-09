@@ -24,7 +24,7 @@ private:
     Ui::SettingsDialog *ui2;
 
 signals:
-    void UpdateKeyboardShortcuts();
+    void UpdateKeyboardSettings();
 };
 
 #endif // SETTINGSDIALOG_H

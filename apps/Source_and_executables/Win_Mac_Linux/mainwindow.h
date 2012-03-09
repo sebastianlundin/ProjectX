@@ -33,6 +33,7 @@ private:
     FileFuncs *fileFuncs;
     QTimer *animationTimer;
     QxtGlobalShortcut *keyboardShortcuts;
+    SettingsDialog *settingsDialog;
     QTreeWidgetItem *group;
 
 public:

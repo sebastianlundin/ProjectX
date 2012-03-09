@@ -90,7 +90,8 @@ void SettingsDialog::on_saveButton_clicked()
         settings.endGroup();
         settings.sync();
 
-        QMessageBox::information(this, "Preferences", "Preferences has been saved!\n\nRestart the application to use the new settings with the app!");
+        QMessageBox::information(this, "Preferences", "Preferences has been saved!");
+        emit UpdateKeyboardSettings();
         this->close();
     }
     else if (isAddressValid == false)

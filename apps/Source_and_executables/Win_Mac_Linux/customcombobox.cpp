@@ -8,8 +8,3 @@ void CustomComboBox::mouseReleaseEvent(QMouseEvent *a_event)
 {
     this->showPopup();
 }
-
-void CustomComboBox::keyPressEvent(QKeyEvent *a_event)
-{
-
-}
