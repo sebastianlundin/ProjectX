@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settingsdialog.ui'
 **
-** Created: Fri Mar 9 19:27:03 2012
+** Created: Fri Mar 9 22:03:25 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -76,6 +76,7 @@ public:
         apiAddressField = new QLineEdit(settingsFrame);
         apiAddressField->setObjectName(QString::fromUtf8("apiAddressField"));
         apiAddressField->setFont(font);
+        apiAddressField->setInputMethodHints(Qt::ImhUrlCharactersOnly);
 
         gridLayout_2->addWidget(apiAddressField, 2, 0, 1, 1);
 
