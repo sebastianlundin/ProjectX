@@ -10,13 +10,13 @@ class CustomComboBox : public QComboBox
 {
     Q_OBJECT
 
-private:
-    QWidget *mainWindow;
-
 public:
     CustomComboBox(QWidget *a_parent);
     void mousePressEvent(QMouseEvent *a_event);
     void keyPressEvent(QKeyEvent *a_event);
+
+signals:
+    void fillWithSearches(QString a_filename);
 };
 
 #endif // CUSTOMCOMBOBOX_H

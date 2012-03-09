@@ -14,6 +14,7 @@
 #include <QTimer>
 #include <QSettings>
 #include <QDirIterator>
+#include "customcombobox.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -48,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->ListSearchFiles();
 
     connect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
+    connect(ui->previousSearchesList, SIGNAL(fillWithSearches(QString)), this, SLOT(FillListWithPrevSearches(QString)));
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -182,6 +184,7 @@ MainWindow::~MainWindow()
     disconnect(this->keyboardShortcuts, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
     disconnect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
     disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
+    disconnect(ui->previousSearchesList, SIGNAL(fillWithSearches(QString)), this, SLOT(FillListWithPrevSearches(QString)));
     delete ui;
 }
 
@@ -276,29 +279,24 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 
 void MainWindow::FillListWithPrevSearches(QString a_filename)
 {
-    //ui->listSnippets->clear();
-    //ui->searchField->clear();
+    ui->listSnippets->clear();
+    ui->searchField->clear();
 
-    //char filename[255];
-    //strcpy(filename, a_filename.toUtf8());
+    QVariantList jsonData = this->jsonFuncs->GetJsonObject
+    (
+        this->cacheFuncs->GetCacheFileData(a_filename)
+    );
 
-    //QVariantList jsonData = this->jsonFuncs->GetJsonObject
-    //(
-        //this->cacheFuncs->GetCacheFileData(filename)
-    //);
-
-    /*if (jsonData.count() > 0)
+    if (jsonData.count() > 0)
     {
         this->FillListWithSnippets
         (
             this->jsonFuncs->GetJsonObject
             (
-                this->cacheFuncs->GetCacheFileData(filename)
+                this->cacheFuncs->GetCacheFileData(a_filename)
             )
         );
-    }*/
-
-    qDebug ("hej");
+    }
 }
 
 void MainWindow::on_copySnippet_clicked()

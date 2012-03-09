@@ -4,14 +4,14 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
 
-MainWindow *mainWindow;
+Q_GLOBAL_STATIC (MainWindow, GetMainWindow)
 
 // The method that make the magic happen
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    mainWindow = new MainWindow();
-    mainWindow->show();
+    MainWindow w;
+    w.show();
     
     return a.exec();
 }
