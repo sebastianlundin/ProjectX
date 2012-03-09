@@ -159,11 +159,17 @@
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
       </property>
+      <property name="rootIsDecorated">
+       <bool>true</bool>
+      </property>
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>
       <property name="animated">
        <bool>true</bool>
+      </property>
+      <property name="columnCount">
+       <number>1</number>
       </property>
       <attribute name="headerCascadingSectionResizes">
        <bool>true</bool>
@@ -270,7 +276,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Search for a snippet (use for example: word + word or just search for one single word):</string>
+       <string>Search for a snippet (use for example: word+word or just search for one single word):</string>
       </property>
      </widget>
     </item>

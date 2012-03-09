@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settingsdialog.ui'
 **
-** Created: Fri Mar 9 22:03:25 2012
+** Created: Fri Mar 9 23:18:36 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -59,10 +59,11 @@ public:
         font.setPointSize(11);
         SettingsDialog->setFont(font);
         SettingsDialog->setFocusPolicy(Qt::TabFocus);
+        SettingsDialog->setSizeGripEnabled(false);
         SettingsDialog->setModal(true);
         gridLayout = new QGridLayout(SettingsDialog);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        gridLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
+        gridLayout->setSizeConstraint(QLayout::SetFixedSize);
         settingsFrame = new QGroupBox(SettingsDialog);
         settingsFrame->setObjectName(QString::fromUtf8("settingsFrame"));
         QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Expanding);

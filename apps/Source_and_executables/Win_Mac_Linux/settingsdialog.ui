@@ -42,12 +42,15 @@
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="sizeConstraint">
-    <enum>QLayout::SetDefaultConstraint</enum>
+    <enum>QLayout::SetFixedSize</enum>
    </property>
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="settingsFrame">

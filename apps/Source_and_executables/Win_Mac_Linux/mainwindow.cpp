@@ -51,10 +51,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
     this->KeyboardActions();
 
-    for(int i = 0; i < 8; i++)
-    {
-        ui->listSnippets->resizeColumnToContents(i);
-    }
     ui->listSnippets->setSortingEnabled(true);
 
     this->ListSearchFiles();
@@ -236,6 +232,11 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
         {
             this->group = new QTreeWidgetItem(ui->listSnippets);
             this->group->setText(0, language);
+            this->group->setText(1, title);
+            this->group->setText(2, description);
+            this->group->setText(3, username);
+            this->group->setText(4, date);
+            this->group->setText(5, rating);
         }
         else
         {
@@ -251,6 +252,12 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
         QVariant idData(id);
         child->setData(1, Qt::UserRole,idData);
     }
+
+    for(int i = 0; i < 6; i++)
+    {
+        ui->listSnippets->resizeColumnToContents(i);
+    }
+    ui->listSnippets->setColumnWidth(2, 150);
 }
 
 void MainWindow::ListSearchFiles()
@@ -467,6 +474,8 @@ void MainWindow::on_deleteSelectedPrevSearch_clicked()
         ui->deleteSelectedPrevSearch->setEnabled(false);
         ui->listSnippets->clear();
         ui->selectedSnippet->clear();
+        ui->foundNumberOfSnippets->setText("");
+        ui->foundNumberOfSnippets->setHidden(true);
 
         if (ui->previousSearchesList->count() == 1)
         {

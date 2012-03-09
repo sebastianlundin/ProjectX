@@ -11,13 +11,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::S
 {
     ui2->setupUi(this);
 
-    Qt::WindowFlags flags = 0;
-    flags = Qt::Dialog;
-    flags |= Qt::WindowStaysOnTopHint;
-    flags |= Qt::WindowCloseButtonHint;
-    flags |= Qt::WindowTitleHint;
-    setWindowFlags(flags);
-
     QRect windowGeometry = frameGeometry();
     windowGeometry.moveCenter(QDesktopWidget().availableGeometry().center());
 
