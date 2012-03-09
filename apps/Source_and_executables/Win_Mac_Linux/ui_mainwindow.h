@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Mar 9 16:28:10 2012
+** Created: Fri Mar 9 18:24:45 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -200,6 +200,11 @@ public:
         menuHelp = new QMenu(menubar);
         menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         MainWindow->setMenuBar(menubar);
+        QWidget::setTabOrder(searchField, searchSnippet);
+        QWidget::setTabOrder(searchSnippet, deleteSelectedPrevSearch);
+        QWidget::setTabOrder(deleteSelectedPrevSearch, listSnippets);
+        QWidget::setTabOrder(listSnippets, selectedSnippet);
+        QWidget::setTabOrder(selectedSnippet, copySnippet);
 
         menubar->addAction(menuHelp->menuAction());
         menuHelp->addAction(actionPreferences);

@@ -310,6 +310,14 @@
    <header>customcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>searchField</tabstop>
+  <tabstop>searchSnippet</tabstop>
+  <tabstop>deleteSelectedPrevSearch</tabstop>
+  <tabstop>listSnippets</tabstop>
+  <tabstop>selectedSnippet</tabstop>
+  <tabstop>copySnippet</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

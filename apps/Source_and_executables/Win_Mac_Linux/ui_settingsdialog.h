@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settingsdialog.ui'
 **
-** Created: Fri Mar 9 16:28:08 2012
+** Created: Fri Mar 9 18:24:47 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -134,6 +134,10 @@ public:
 
         gridLayout->addWidget(closeButton, 1, 1, 1, 1);
 
+        QWidget::setTabOrder(apiAddressField, enableDisableGlobalShortcuts);
+        QWidget::setTabOrder(enableDisableGlobalShortcuts, activeShortcutField);
+        QWidget::setTabOrder(activeShortcutField, saveButton);
+        QWidget::setTabOrder(saveButton, closeButton);
 
         retranslateUi(SettingsDialog);
 

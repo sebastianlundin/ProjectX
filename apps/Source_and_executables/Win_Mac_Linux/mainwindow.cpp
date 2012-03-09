@@ -129,6 +129,28 @@ bool MainWindow::eventFilter(QObject *a_object, QEvent *a_event)
     {
         this->ShowAndHideElementsWithNewSearch();
     }
+    else if (a_event->type() == QEvent::KeyPress && Qt::Key_Tab)
+    {
+        if (ui->listSnippets->isHidden())
+        {
+            if (ui->deleteSelectedPrevSearch->hasFocus())
+            {
+                ui->searchField->setFocus();
+            }
+            else if (ui->searchField->hasFocus())
+            {
+                ui->searchSnippet->setFocus();
+            }
+            else if (ui->searchSnippet->hasFocus())
+            {
+                ui->previousSearchesList->setFocus();
+            }
+            else if (ui->previousSearchesList->hasFocus())
+            {
+                ui->deleteSelectedPrevSearch->setFocus();
+            }
+        }
+    }*
     return true;
 }
 

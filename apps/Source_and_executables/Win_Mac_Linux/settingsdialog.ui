@@ -175,6 +175,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>apiAddressField</tabstop>
+  <tabstop>enableDisableGlobalShortcuts</tabstop>
+  <tabstop>activeShortcutField</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>closeButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
