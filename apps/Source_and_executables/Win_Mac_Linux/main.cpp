@@ -4,12 +4,14 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
 
+MainWindow *mainWindow;
+
 // The method that make the magic happen
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    mainWindow = new MainWindow();
+    mainWindow->show();
     
     return a.exec();
 }
