@@ -4,6 +4,8 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QRegExpValidator>
+#include <QRect>
+#include <QDesktopWidget>
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::SettingsDialog)
 {
@@ -15,6 +17,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::S
     flags |= Qt::WindowCloseButtonHint;
     flags |= Qt::WindowTitleHint;
     setWindowFlags(flags);
+
+    QRect windowGeometry = frameGeometry();
+    windowGeometry.moveCenter(QDesktopWidget().availableGeometry().center());
 
     QVariant apiUrl, activeGlobalShortcuts, activeShortcut;
     QSettings settings("ProjectX", "Snippt");

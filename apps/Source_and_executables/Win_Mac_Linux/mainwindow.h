@@ -37,6 +37,7 @@ private:
     QTreeWidgetItem *group;
 
 public:
+    void CenterWindow();
     explicit MainWindow(QWidget *parent = 0);
     void RenderClass();
     void ShowPossiblyErrorAboutConnection();
@@ -48,6 +49,8 @@ private slots:
     void on_aboutSnippt_triggered();
     void KeyboardActions();
     void ShowWindowAndFocusSearchField();
+    void ShowAllElements();
+    void ShowAndHideElementsWithNewSearch();
     bool eventFilter(QObject *a_object, QEvent *a_event);
     void SearchSnippet();
     void UpdateSearchAnimation();

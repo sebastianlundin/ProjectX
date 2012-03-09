@@ -15,10 +15,19 @@
 #include <QSettings>
 #include <QDirIterator>
 #include "customcombobox.h"
+#include <QDesktopWidget>
+
+void MainWindow::CenterWindow()
+{
+    QRect windowGeometry = frameGeometry();
+    windowGeometry.moveCenter(QDesktopWidget().availableGeometry().center());
+}
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    this->CenterWindow();
 
     this->apiFuncs = new ApiFuncs();
     this->jsonFuncs = new JsonFuncs();
@@ -53,6 +62,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
     connect(this->settingsDialog, SIGNAL(UpdateKeyboardSettings()), this, SLOT(KeyboardActions()));
     this->installEventFilter(this);
+
+    this->ShowAndHideElementsWithNewSearch();
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -69,11 +80,55 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
     }
 }
 
+void MainWindow::ShowAllElements()
+{
+    ui->searchLabel->show();
+    ui->searchSnippet->show();
+    ui->previousSearchesLabel->show();
+    ui->previousSearchesList->show();
+    ui->deleteSelectedPrevSearch->show();
+
+    ui->listSnippetsLabel->show();
+    ui->listSnippets->show();
+    ui->foundNumberOfSnippets->show();
+    ui->selectedSnippetLabel->show();
+    ui->selectedSnippet->show();
+    ui->copySnippet->show();
+
+    this->resize(909, 470);
+    this->CenterWindow();
+}
+
+void MainWindow::ShowAndHideElementsWithNewSearch()
+{
+    this->CenterWindow();
+
+    ui->previousSearchesList->setCurrentIndex(0);
+
+    ui->searchLabel->show();
+    ui->searchSnippet->show();
+    ui->previousSearchesLabel->show();
+    ui->previousSearchesList->show();
+    ui->deleteSelectedPrevSearch->show();
+
+    ui->listSnippets->clear();
+    ui->selectedSnippet->clear();
+
+    ui->listSnippetsLabel->hide();
+    ui->listSnippets->hide();
+    ui->foundNumberOfSnippets->hide();
+    ui->selectedSnippetLabel->hide();
+    ui->selectedSnippet->hide();
+    ui->copySnippet->hide();
+
+    this->resize(1, 1);
+}
+
 bool MainWindow::eventFilter(QObject *a_object, QEvent *a_event)
 {
     if(a_event->type() == QEvent::WindowStateChange && isMinimized())
     {
-
+        this->ShowAndHideElementsWithNewSearch();
     }
     return true;
 }
@@ -104,6 +159,8 @@ void MainWindow::SearchSnippet()
 
         if (jsonData.count() > 0)
         {
+            this->ShowAllElements();
+
             this->FillListWithSnippets
             (
                 jsonFuncs->GetJsonObject
@@ -250,6 +307,7 @@ void MainWindow::ShowWindowAndFocusSearchField()
     this->activateWindow();
     ui->searchField->setFocus();
     ui->searchField->setText("");
+    this->ShowAndHideElementsWithNewSearch();
 }
 
 void MainWindow::UpdateSearchAnimation()
@@ -300,7 +358,6 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 
 void MainWindow::ClearFields()
 {
-    //ui->listSnippets->clear();
     ui->searchField->clear();
     ui->selectedSnippet->clear();
     ui->copySnippet->setEnabled(false);
@@ -309,6 +366,7 @@ void MainWindow::ClearFields()
 void MainWindow::FillListWithPrevSearches(int a_index)
 {
     this->ClearFields();
+    this->ShowAllElements();
 
     QString itemSearchString = ui->previousSearchesList->itemText(a_index).toUtf8();
     QString itemSearchFile = ui->previousSearchesList->itemData(a_index).toString();
@@ -328,6 +386,9 @@ void MainWindow::FillListWithPrevSearches(int a_index)
             )
         );
         ui->listSnippets->setFocus();
+        QTreeWidgetItemIterator item (ui->listSnippets);
+        ui->listSnippets->setCurrentItem(*item);
+        ui->listSnippets->expandAll();
     }
 
     if (!itemSearchString.isEmpty())

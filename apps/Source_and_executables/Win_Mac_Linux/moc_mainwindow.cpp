@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Fri Mar 9 14:16:13 2012
+** Created: Fri Mar 9 15:07:25 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
+      15,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -34,16 +34,18 @@ static const uint qt_meta_data_MainWindow[] = {
       12,   11,   11,   11, 0x08,
       39,   11,   11,   11, 0x08,
       57,   11,   11,   11, 0x08,
-     111,   94,   89,   11, 0x08,
-     141,   11,   11,   11, 0x08,
-     157,   11,   11,   11, 0x08,
-     197,  181,   11,   11, 0x08,
-     239,   11,   11,   11, 0x08,
-     261,  253,   11,   11, 0x08,
-     291,   11,   11,   11, 0x08,
-     316,   11,   11,   11, 0x08,
-     349,   11,   11,   11, 0x08,
-     376,   11,   11,   11, 0x08,
+      89,   11,   11,   11, 0x08,
+     107,   11,   11,   11, 0x08,
+     164,  147,  142,   11, 0x08,
+     194,   11,   11,   11, 0x08,
+     210,   11,   11,   11, 0x08,
+     250,  234,   11,   11, 0x08,
+     292,   11,   11,   11, 0x08,
+     314,  306,   11,   11, 0x08,
+     344,   11,   11,   11, 0x08,
+     369,   11,   11,   11, 0x08,
+     402,   11,   11,   11, 0x08,
+     429,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -51,6 +53,7 @@ static const uint qt_meta_data_MainWindow[] = {
 static const char qt_meta_stringdata_MainWindow[] = {
     "MainWindow\0\0on_aboutSnippt_triggered()\0"
     "KeyboardActions()\0ShowWindowAndFocusSearchField()\0"
+    "ShowAllElements()\0ShowAndHideElementsWithNewSearch()\0"
     "bool\0a_object,a_event\0"
     "eventFilter(QObject*,QEvent*)\0"
     "SearchSnippet()\0UpdateSearchAnimation()\0"
@@ -73,17 +76,19 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 0: _t->on_aboutSnippt_triggered(); break;
         case 1: _t->KeyboardActions(); break;
         case 2: _t->ShowWindowAndFocusSearchField(); break;
-        case 3: { bool _r = _t->eventFilter((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< QEvent*(*)>(_a[2])));
+        case 3: _t->ShowAllElements(); break;
+        case 4: _t->ShowAndHideElementsWithNewSearch(); break;
+        case 5: { bool _r = _t->eventFilter((*reinterpret_cast< QObject*(*)>(_a[1])),(*reinterpret_cast< QEvent*(*)>(_a[2])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 4: _t->SearchSnippet(); break;
-        case 5: _t->UpdateSearchAnimation(); break;
-        case 6: _t->ShowSelectedSnippet((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
-        case 7: _t->ClearFields(); break;
-        case 8: _t->FillListWithPrevSearches((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 9: _t->on_copySnippet_clicked(); break;
-        case 10: _t->on_actionPreferences_triggered(); break;
-        case 11: _t->on_searchSnippet_clicked(); break;
-        case 12: _t->on_deleteSelectedPrevSearch_clicked(); break;
+        case 6: _t->SearchSnippet(); break;
+        case 7: _t->UpdateSearchAnimation(); break;
+        case 8: _t->ShowSelectedSnippet((*reinterpret_cast< QTreeWidgetItem*(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 9: _t->ClearFields(); break;
+        case 10: _t->FillListWithPrevSearches((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 11: _t->on_copySnippet_clicked(); break;
+        case 12: _t->on_actionPreferences_triggered(); break;
+        case 13: _t->on_searchSnippet_clicked(); break;
+        case 14: _t->on_deleteSelectedPrevSearch_clicked(); break;
         default: ;
         }
     }
@@ -121,9 +126,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 15;
     }
     return _id;
 }
