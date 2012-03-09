@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
     connect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
     connect(this->settingsDialog, SIGNAL(UpdateKeyboardSettings()), this, SLOT(KeyboardActions()));
+    this->installEventFilter(this);
 }
 
 void MainWindow::ShowPossiblyErrorAboutConnection()
@@ -66,6 +67,15 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
         QMessageBox::information(this, "Can't connect!", "Can't connect to the API!\nAdd the right URL under Preferences"
                                  " in the Help/Application menu!\n\nIf its not working directly - try to restart the app a few times!");
     }
+}
+
+bool MainWindow::eventFilter(QObject *a_object, QEvent *a_event)
+{
+    if(a_event->type() == QEvent::WindowStateChange && isMinimized())
+    {
+
+    }
+    return true;
 }
 
 void MainWindow::SearchSnippet()
@@ -288,13 +298,20 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
     ui->selectedSnippet->setText(snippetCode);
 }
 
+void MainWindow::ClearFields()
+{
+    //ui->listSnippets->clear();
+    ui->searchField->clear();
+    ui->selectedSnippet->clear();
+    ui->copySnippet->setEnabled(false);
+}
+
 void MainWindow::FillListWithPrevSearches(int a_index)
 {
+    this->ClearFields();
+
     QString itemSearchString = ui->previousSearchesList->itemText(a_index).toUtf8();
     QString itemSearchFile = ui->previousSearchesList->itemData(a_index).toString();
-
-    ui->listSnippets->clear();
-    ui->searchField->clear();
 
     QVariantList jsonData = this->jsonFuncs->GetJsonObject
     (
@@ -310,6 +327,7 @@ void MainWindow::FillListWithPrevSearches(int a_index)
                 this->cacheFuncs->GetCacheFileData(itemSearchFile)
             )
         );
+        ui->listSnippets->setFocus();
     }
 
     if (!itemSearchString.isEmpty())

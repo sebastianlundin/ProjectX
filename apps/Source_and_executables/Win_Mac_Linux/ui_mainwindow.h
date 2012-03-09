@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Mar 9 12:16:28 2012
+** Created: Fri Mar 9 14:16:07 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -56,7 +56,7 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(909, 537);
-        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
@@ -65,6 +65,8 @@ public:
         QFont font;
         font.setPointSize(11);
         MainWindow->setFont(font);
+        MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
+        MainWindow->setAcceptDrops(false);
         aboutSnippt = new QAction(MainWindow);
         aboutSnippt->setObjectName(QString::fromUtf8("aboutSnippt"));
         actionPreferences = new QAction(MainWindow);
@@ -92,7 +94,31 @@ public:
 
         previousSearchesList = new CustomComboBox(guiGrid);
         previousSearchesList->setObjectName(QString::fromUtf8("previousSearchesList"));
-        previousSearchesList->setFont(font);
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(previousSearchesList->sizePolicy().hasHeightForWidth());
+        previousSearchesList->setSizePolicy(sizePolicy1);
+        previousSearchesList->setMinimumSize(QSize(0, 0));
+        QFont font1;
+        font1.setPointSize(11);
+        font1.setBold(true);
+        font1.setWeight(75);
+        previousSearchesList->setFont(font1);
+        previousSearchesList->setFocusPolicy(Qt::NoFocus);
+        previousSearchesList->setStyleSheet(QString::fromUtf8("QComboBox\n"
+"{\n"
+"	padding-top: 8px;\n"
+"	padding-left: 5px;\n"
+"	padding-bottom: 0px;\n"
+"	height: 16px;\n"
+"}\n"
+"\n"
+"\n"
+""));
+        previousSearchesList->setMaxVisibleItems(10);
+        previousSearchesList->setDuplicatesEnabled(true);
+        previousSearchesList->setFrame(true);
 
         gridLayout->addWidget(previousSearchesList, 5, 0, 1, 1);
 

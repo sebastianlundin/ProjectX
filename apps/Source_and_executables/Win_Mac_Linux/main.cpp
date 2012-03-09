@@ -2,9 +2,7 @@
 // application to life thru one method
 
 #include <QtGui/QApplication>
-#include "mainwindow.h"
-
-Q_GLOBAL_STATIC (MainWindow, GetMainWindow)
+#include "mainwindow.h";
 
 // The method that make the magic happen
 int main(int argc, char *argv[])

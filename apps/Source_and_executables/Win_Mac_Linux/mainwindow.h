@@ -48,9 +48,11 @@ private slots:
     void on_aboutSnippt_triggered();
     void KeyboardActions();
     void ShowWindowAndFocusSearchField();
+    bool eventFilter(QObject *a_object, QEvent *a_event);
     void SearchSnippet();
     void UpdateSearchAnimation();
     void ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column);
+    void ClearFields();
     void FillListWithPrevSearches(int a_index);
     void on_copySnippet_clicked();
     void on_actionPreferences_triggered();
