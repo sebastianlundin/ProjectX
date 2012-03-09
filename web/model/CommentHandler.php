@@ -42,12 +42,13 @@ class CommentHandler
                 return $json;
             }
         }
+        Log::apiError('could not get content ' , $httpCode);
         return false;
     }
 
     public function getComments($id) {
-        $url = $this->_api->GetURL().'comments?snippetid='.$id;  
-        if($json = $this->getJson('asd')) {
+        $url = $this->_api->GetURL().'comments?snippetid='.$id; 
+        if($json = $this->getJson($url)) {
             $comments = array();
             foreach($json as $j) {
                 $comments[] = new Comment($j->snippetId, $j->commentId, $j->userId, $j->comment, $j->comment_created_date);
