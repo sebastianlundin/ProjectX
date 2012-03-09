@@ -18,16 +18,19 @@ class CommentController
         $commentView = new CommentView();
 
         if (AuthHandler::isLoggedIn()) {
+            //add Comment
             if ($commentView->triedToSubmitComment()) {
                 $text = $commentView->getCommentText();
                 $author = AuthHandler::getUser()->getId();
                 $id = $commentView->whichSnippetToComment();
 
                 if ($commentView->getCaptchaAnswer() == $_SESSION['security_number']) {
-                    $commentHandler->addComment($id, $author, $text, AuthHandler::getApiKey());
+                    $result = $commentHandler->addComment($id, $author, $text, AuthHandler::getApiKey());
+                    if($result !== true) {
+                        echo print_r($result);
+                    }
                 }
             }
-
             //Delete Comments
             if ($commentView->triesToRemoveComment()) {
                 $comment = $commentHandler->getCommentByID($commentView->whichCommentToDelete());
@@ -48,7 +51,6 @@ class CommentController
                     }
                 }
             }
-
             //Get content of comment and present it in the form
             if ($commentView->triesToEditComment()) {
                 $html .= $commentView->editComment($commentHandler->getCommentByID($commentView->WhichCommentToEdit()));
@@ -56,11 +58,15 @@ class CommentController
                 $html .= $commentView->doCommentForm();
             }
 
+
             $id = AuthHandler::getUser()->getId();
-            $comments = $commentHandler->getAllCommentsForSnippet($commentView->whichSnippetToComment());
+            $comments = $commentHandler->getComments($commentView->whichSnippetToComment());
             $html .= $commentView->showAllCommentsForSnippet($comments, $id);
+            
         } else {
-            $html .= $commentView->showAllCommentsForSnippet($commentHandler->getAllCommentsForSnippet($commentView->whichSnippetToComment()));
+            //Show comments for a snippet
+            $comments = $commentHandler->getComments($commentView->whichSnippetToComment());
+            $html .= $commentView->showAllCommentsForSnippet($comments);
         }
         return $html;
     }

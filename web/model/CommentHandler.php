@@ -32,6 +32,32 @@ class CommentHandler
     }
 
     /**
+     * Check response and content
+     * @param string URL, url to API
+     * @return json content on succsess or FALSE failiure
+     */
+    private function getJson($url) {
+        if($content = @file_get_contents($url)) {
+            if($json = json_decode($content)) {
+                return $json;
+            }
+        }
+        return false;
+    }
+
+    public function getComments($id) {
+        $url = $this->_api->GetURL().'comments?snippetid='.$id;  
+        if($json = $this->getJson('asd')) {
+            $comments = array();
+            foreach($json as $j) {
+                $comments[] = new Comment($j->snippetId, $j->commentId, $j->userId, $j->comment, $j->comment_created_date);
+            }
+            return $comments;
+        }
+        return false;
+    }
+
+    /**
      * CommentHandler::addComment()
      *
      * @return true if successful
@@ -50,9 +76,12 @@ class CommentHandler
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        if(!$result) Log::apiError('could not create comment on snippet: ' . $snippetID, $url);
+        if($httpCode == 200) return true;
+
+        Log::apiError('could not create comment on snippet: ' . $snippetID, $httpCode);
         return $result;
     }
     /**
@@ -86,7 +115,7 @@ class CommentHandler
      * @return an array with all comments for one snippet
      * together with data of the User object
      */
-    public function getAllCommentsForSnippet($snippetId)
+    public function getAllCommentsForSnippetDEPRICATED($snippetId)
     {
 
         $commentsArray = array();

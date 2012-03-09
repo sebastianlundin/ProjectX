@@ -23,11 +23,9 @@ class SnippetHandler
      * @return json content on succsess or FALSE failiure
      */
     private function getJson($url) {
-        if($this->_api->checkApiUrl($url)) {
-            if($content = file_get_contents($url)) {
-                if($json = json_decode($content)) {
-                    return $json;
-                }
+        if($content = @file_get_contents($url)) {
+            if($json = json_decode($content)) {
+                return $json;
             }
         }
         return false;
