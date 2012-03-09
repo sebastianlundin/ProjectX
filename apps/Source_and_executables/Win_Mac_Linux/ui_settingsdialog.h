@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settingsdialog.ui'
 **
-** Created: Fri Mar 9 18:24:47 2012
+** Created: Fri Mar 9 19:27:03 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -58,6 +58,7 @@ public:
         QFont font;
         font.setPointSize(11);
         SettingsDialog->setFont(font);
+        SettingsDialog->setFocusPolicy(Qt::TabFocus);
         SettingsDialog->setModal(true);
         gridLayout = new QGridLayout(SettingsDialog);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
@@ -87,6 +88,7 @@ public:
         enableDisableGlobalShortcuts = new QCheckBox(frame);
         enableDisableGlobalShortcuts->setObjectName(QString::fromUtf8("enableDisableGlobalShortcuts"));
         enableDisableGlobalShortcuts->setFont(font);
+        enableDisableGlobalShortcuts->setFocusPolicy(Qt::StrongFocus);
 
         gridLayout_3->addWidget(enableDisableGlobalShortcuts, 0, 0, 1, 1);
 
@@ -125,12 +127,14 @@ public:
         saveButton = new QPushButton(SettingsDialog);
         saveButton->setObjectName(QString::fromUtf8("saveButton"));
         saveButton->setFont(font);
+        saveButton->setFocusPolicy(Qt::StrongFocus);
 
         gridLayout->addWidget(saveButton, 1, 0, 1, 1);
 
         closeButton = new QPushButton(SettingsDialog);
         closeButton->setObjectName(QString::fromUtf8("closeButton"));
         closeButton->setFont(font);
+        closeButton->setFocusPolicy(Qt::StrongFocus);
 
         gridLayout->addWidget(closeButton, 1, 1, 1, 1);
 

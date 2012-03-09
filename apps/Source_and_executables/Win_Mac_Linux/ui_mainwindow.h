@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Mar 9 18:24:45 2012
+** Created: Fri Mar 9 19:27:04 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -65,6 +65,7 @@ public:
         QFont font;
         font.setPointSize(11);
         MainWindow->setFont(font);
+        MainWindow->setFocusPolicy(Qt::TabFocus);
         MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
         MainWindow->setAcceptDrops(false);
         aboutSnippt = new QAction(MainWindow);
@@ -77,12 +78,14 @@ public:
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         searchField = new QLineEdit(guiGrid);
         searchField->setObjectName(QString::fromUtf8("searchField"));
+        searchField->setFocusPolicy(Qt::StrongFocus);
 
         gridLayout->addWidget(searchField, 1, 0, 2, 1);
 
         searchSnippet = new QPushButton(guiGrid);
         searchSnippet->setObjectName(QString::fromUtf8("searchSnippet"));
         searchSnippet->setFont(font);
+        searchSnippet->setFocusPolicy(Qt::StrongFocus);
 
         gridLayout->addWidget(searchSnippet, 1, 1, 2, 1);
 
@@ -105,7 +108,7 @@ public:
         font1.setBold(true);
         font1.setWeight(75);
         previousSearchesList->setFont(font1);
-        previousSearchesList->setFocusPolicy(Qt::NoFocus);
+        previousSearchesList->setFocusPolicy(Qt::StrongFocus);
         previousSearchesList->setStyleSheet(QString::fromUtf8("QComboBox\n"
 "{\n"
 "	padding-top: 8px;\n"
@@ -134,6 +137,7 @@ public:
         listSnippets->setHeaderItem(__qtreewidgetitem);
         listSnippets->setObjectName(QString::fromUtf8("listSnippets"));
         listSnippets->setFont(font);
+        listSnippets->setFocusPolicy(Qt::StrongFocus);
         listSnippets->setEditTriggers(QAbstractItemView::AnyKeyPressed|QAbstractItemView::SelectedClicked);
         listSnippets->setAlternatingRowColors(true);
         listSnippets->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -153,6 +157,7 @@ public:
         selectedSnippet = new QTextEdit(guiGrid);
         selectedSnippet->setObjectName(QString::fromUtf8("selectedSnippet"));
         selectedSnippet->setFont(font);
+        selectedSnippet->setFocusPolicy(Qt::StrongFocus);
         selectedSnippet->setAcceptDrops(false);
         selectedSnippet->setFrameShape(QFrame::StyledPanel);
         selectedSnippet->setFrameShadow(QFrame::Sunken);
@@ -165,6 +170,7 @@ public:
         copySnippet->setObjectName(QString::fromUtf8("copySnippet"));
         copySnippet->setEnabled(false);
         copySnippet->setFont(font);
+        copySnippet->setFocusPolicy(Qt::StrongFocus);
         copySnippet->setAutoDefault(false);
         copySnippet->setDefault(false);
         copySnippet->setFlat(false);
@@ -175,6 +181,7 @@ public:
         deleteSelectedPrevSearch->setObjectName(QString::fromUtf8("deleteSelectedPrevSearch"));
         deleteSelectedPrevSearch->setEnabled(false);
         deleteSelectedPrevSearch->setFont(font);
+        deleteSelectedPrevSearch->setFocusPolicy(Qt::StrongFocus);
 
         gridLayout->addWidget(deleteSelectedPrevSearch, 5, 1, 1, 1);
 
@@ -201,7 +208,8 @@ public:
         menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         MainWindow->setMenuBar(menubar);
         QWidget::setTabOrder(searchField, searchSnippet);
-        QWidget::setTabOrder(searchSnippet, deleteSelectedPrevSearch);
+        QWidget::setTabOrder(searchSnippet, previousSearchesList);
+        QWidget::setTabOrder(previousSearchesList, deleteSelectedPrevSearch);
         QWidget::setTabOrder(deleteSelectedPrevSearch, listSnippets);
         QWidget::setTabOrder(listSnippets, selectedSnippet);
         QWidget::setTabOrder(selectedSnippet, copySnippet);

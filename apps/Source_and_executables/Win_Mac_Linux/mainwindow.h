@@ -33,6 +33,8 @@ private:
     FileFuncs *fileFuncs;
     QTimer *animationTimer;
     QxtGlobalShortcut *keyboardShortcuts;
+    QxtGlobalShortcut *keyboardShortcutActiveKey;
+    QxtGlobalShortcut *keyboardShortcutCopyKey;
     SettingsDialog *settingsDialog;
     QTreeWidgetItem *group;
 
@@ -57,6 +59,7 @@ private slots:
     void ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column);
     void ClearFields();
     void FillListWithPrevSearches(int a_index);
+    void CopySelectedSnippet();
     void on_copySnippet_clicked();
     void on_actionPreferences_triggered();
     void on_searchSnippet_clicked();

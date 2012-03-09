@@ -35,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->settingsFuncs = new SettingsFuncs();
     this->fileFuncs = new FileFuncs();
     this->animationTimer = new QTimer(this);
-    this->keyboardShortcuts = new QxtGlobalShortcut(this);
+    this->keyboardShortcutActiveKey = new QxtGlobalShortcut(this);
+    this->keyboardShortcutCopyKey = new QxtGlobalShortcut(this);
     this->settingsDialog = new SettingsDialog();
 
     QStringList snippetListHeaders;
@@ -45,7 +46,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->ShowPossiblyErrorAboutConnection();
 
     ui->foundNumberOfSnippets->setHidden(true);
-    connect(this->keyboardShortcuts, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
+    connect(this->keyboardShortcutActiveKey, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
+    connect(this->keyboardShortcutCopyKey, SIGNAL(activated()), this, SLOT(CopySelectedSnippet()));
     connect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
     this->KeyboardActions();
 
@@ -129,28 +131,6 @@ bool MainWindow::eventFilter(QObject *a_object, QEvent *a_event)
     {
         this->ShowAndHideElementsWithNewSearch();
     }
-    else if (a_event->type() == QEvent::KeyPress && Qt::Key_Tab)
-    {
-        if (ui->listSnippets->isHidden())
-        {
-            if (ui->deleteSelectedPrevSearch->hasFocus())
-            {
-                ui->searchField->setFocus();
-            }
-            else if (ui->searchField->hasFocus())
-            {
-                ui->searchSnippet->setFocus();
-            }
-            else if (ui->searchSnippet->hasFocus())
-            {
-                ui->previousSearchesList->setFocus();
-            }
-            else if (ui->previousSearchesList->hasFocus())
-            {
-                ui->deleteSelectedPrevSearch->setFocus();
-            }
-        }
-    }*
     return true;
 }
 
@@ -281,7 +261,8 @@ void MainWindow::ListSearchFiles()
 
 MainWindow::~MainWindow()
 {
-    disconnect(this->keyboardShortcuts, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
+    disconnect(this->keyboardShortcutActiveKey, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
+    disconnect(this->keyboardShortcutCopyKey, SIGNAL(activated()), this, SLOT(CopySelectedSnippet()));
     disconnect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
     disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
     disconnect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
@@ -291,7 +272,8 @@ MainWindow::~MainWindow()
     delete this->settingsFuncs;
     delete this->fileFuncs;
     delete this->animationTimer;
-    delete this->keyboardShortcuts;
+    delete this->keyboardShortcutActiveKey;
+    delete this->keyboardShortcutCopyKey;
     delete this->settingsDialog;
     delete ui;
 }
@@ -323,12 +305,16 @@ void MainWindow::KeyboardActions()
 
     if (activeGlobalShortcutsConv == "activated")
     {
-        this->keyboardShortcuts->setEnabled(true);
-        this->keyboardShortcuts->setShortcut(QKeySequence(activeShortcutConv));
+        this->keyboardShortcutActiveKey->setEnabled(true);
+        this->keyboardShortcutCopyKey->setEnabled(true);
+
+        this->keyboardShortcutActiveKey->setShortcut(QKeySequence(activeShortcutConv));
+        this->keyboardShortcutCopyKey->setShortcut(QKeySequence("ctrl+alt+c"));
     }
     else
     {
-        this->keyboardShortcuts->setDisabled(true);
+        this->keyboardShortcutActiveKey->setDisabled(true);
+        this->keyboardShortcutCopyKey->setDisabled(true);
     }
 
     settings.endGroup();
@@ -360,7 +346,8 @@ void MainWindow::UpdateSearchAnimation()
 
 void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 {
-    QString cacheSelectedSnippetFilename = a_item->text(3);
+    QString cacheSelectedSnippetFilename = a_item->data(1, Qt::UserRole).toString();
+
     QVariant apiUrl;
     bool testConn = true;
     QSettings settings("ProjectX", "Snippt");
@@ -435,10 +422,15 @@ void MainWindow::FillListWithPrevSearches(int a_index)
     }
 }
 
-void MainWindow::on_copySnippet_clicked()
+void MainWindow::CopySelectedSnippet()
 {
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(ui->selectedSnippet->toPlainText());
+}
+
+void MainWindow::on_copySnippet_clicked()
+{
+    this->CopySelectedSnippet();
 }
 
 void MainWindow::on_searchSnippet_clicked()
