@@ -39,8 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->settingsDialog = new SettingsDialog();
 
     QStringList snippetListHeaders;
-    snippetListHeaders << "Languages" << "Language id" << "Title" << "Id"
-                       << "Description" << "By user" << "Added/Changed" << "Rating";
+    snippetListHeaders << "Languages" << "Title" << "Description" << "By user" << "Added/Changed" << "Rating";
     ui->listSnippets->setHeaderLabels(snippetListHeaders);
 
     this->ShowPossiblyErrorAboutConnection();
@@ -180,6 +179,15 @@ void MainWindow::SearchSnippet()
             ui->previousSearchesList->clear();
             this->ListSearchFiles();
         }
+        else if (!jsonData.startsWith("[") && !jsonData.startsWith("]"))
+        {
+            this->animationTimer->stop();
+            ui->searchLabel->setText("Search for a snippet (use for example: word + word or just search for one single word):");
+            ui->foundNumberOfSnippets->setHidden(true);
+            QMessageBox::warning(this, "Api errors!", "Seems to be some errors with the API!\n\nTry again later or switch to another API-URL in settings!\n\nAnd try again!");
+            ui->searchField->clear();
+            ui->searchField->setFocus();
+        }
         else
         {
             this->animationTimer->stop();
@@ -201,7 +209,6 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
     {
         QVariantMap map = record.toMap();
         QString language = map.value("language").toString();
-        QString languageid = map.value("languageid").toString();
         QString title = map.value("title").toString();
         QString id = map.value("id").toString();
         QString description = map.value("description").toString();
@@ -222,13 +229,13 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
         }
 
         QTreeWidgetItem *child = new QTreeWidgetItem(this->group);
-        child->setText(1, languageid);
-        child->setText(2, title);
-        child->setText(3, id);
-        child->setText(4, description);
-        child->setText(5, username);
-        child->setText(6, date);
-        child->setText(37, rating);
+        child->setText(1, title);
+        child->setText(2, description);
+        child->setText(3, username);
+        child->setText(4, date);
+        child->setText(5, rating);
+        QVariant idData(id);
+        child->setData(1, Qt::UserRole,idData);
     }
 }
 
@@ -294,7 +301,12 @@ void MainWindow::KeyboardActions()
 
     if (activeGlobalShortcutsConv == "activated")
     {
+        this->keyboardShortcuts->setEnabled(true);
         this->keyboardShortcuts->setShortcut(QKeySequence(activeShortcutConv));
+    }
+    else
+    {
+        this->keyboardShortcuts->setDisabled(true);
     }
 
     settings.endGroup();
@@ -420,8 +432,15 @@ void MainWindow::on_deleteSelectedPrevSearch_clicked()
 
     if (this->fileFuncs->DeleteFile(itemSearchFile))
     {
-        this->ListSearchFiles();
+        ui->previousSearchesList->removeItem(selectedItemIndex);
+        ui->previousSearchesList->setCurrentIndex(0);
         ui->deleteSelectedPrevSearch->setEnabled(false);
-        QMessageBox::information(this, "File has been deleted!", "The file with item of "  + itemSearchString + " has been deleted!");
+        ui->listSnippets->clear();
+        ui->selectedSnippet->clear();
+
+        if (ui->previousSearchesList->count() == 1)
+        {
+            this->ShowAndHideElementsWithNewSearch();
+        }
     }
 }
