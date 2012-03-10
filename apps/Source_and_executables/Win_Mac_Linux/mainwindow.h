@@ -27,24 +27,23 @@ class MainWindow;
 }
 
 // Beginning of the class
-class MainWindow : public QMainWindow // Subclass of the qwindow, so that we can add extra functionality to the element
+class MainWindow : public QMainWindow // Subclass of the qwindow, so that we can add extra functionality to the window
 {
     Q_OBJECT // A macro for making magic happen, when it comes to calling other classes from a class
 
 // Member variables of the class
 private:
-    Ui::MainWindow *ui;
-    ApiFuncs *apiFuncs;
-    JsonFuncs *jsonFuncs;
-    CacheFuncs *cacheFuncs;
-    SettingsFuncs *settingsFuncs;
-    FileFuncs *fileFuncs;
-    QTimer *animationTimer;
-    QxtGlobalShortcut *keyboardShortcuts;
-    QxtGlobalShortcut *keyboardShortcutActiveKey;
-    QxtGlobalShortcut *keyboardShortcutCopyKey;
-    SettingsDialog *settingsDialog;
-    QTreeWidgetItem *group;
+    Ui::MainWindow *ui; // Pointer to the interface-file (mainwindow)
+    ApiFuncs *apiFuncs; // Pointer to the ApiFuncs-class
+    JsonFuncs *jsonFuncs; // Pointer to the JsonFuncs-class
+    CacheFuncs *cacheFuncs; // Pointer to the CacheFuncs-class
+    SettingsFuncs *settingsFuncs; // Pointer to the SettingsFuncs-class
+    FileFuncs *fileFuncs; // Pointer to the FileFuncs-class
+    QTimer *animationTimer; // Pointer to QTimer-class
+    QxtGlobalShortcut *keyboardShortcutActiveKey; // Pointer to the QxtGlobalShortcut-class (for set the window as active)
+    QxtGlobalShortcut *keyboardShortcutCopyKey; // Pointer to the QxtGlobalShortcut-class (for copy a selected snippet to clipboard)
+    SettingsDialog *settingsDialog; // Pointer to the SettingsDialog-class
+    QTreeWidgetItem *group; // Pointer for grouping snippets in the treeview
 
 // Methods for the class
 public:

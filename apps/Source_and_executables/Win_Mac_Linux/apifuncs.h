@@ -21,8 +21,8 @@ class ApiFuncs : public QObject // Inheritance of the most used class (QObject)
 
 // Member variables of the class
 private:
-    FileFuncs *fileFuncs;
-    JsonFuncs *jsonFuncs;
+    FileFuncs *fileFuncs; // Pointer to the FileFuncs-class
+    JsonFuncs *jsonFuncs; // Pointer to the JsonFuncs-class
 
 // Methods for the class
 public:
