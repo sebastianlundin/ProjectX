@@ -50,27 +50,53 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     snippetListHeaders << "Languages" << "Title" << "Description" << "By user" << "Added/Changed" << "Rating";
     ui->listSnippets->setHeaderLabels(snippetListHeaders);
 
-    // Test the connection to the api (thru another method in another class), and show a possible if its an error with it
+    // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
     this->ShowPossiblyErrorAboutConnection();
 
     ui->foundNumberOfSnippets->setHidden(true);
+
+    // Setup some sort of eventlisteners with signal and slots
+
+    // Listen for the key to activate the window (and later on, made a search)
     connect(this->keyboardShortcutActiveKey, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
+
+    // Listen for the ctrl+alt+c key to copy a selected snippet to clipboard
     connect(this->keyboardShortcutCopyKey, SIGNAL(activated()), this, SLOT(CopySelectedSnippet()));
+
+    // Listen for the enter-key, when placed in searchfield, so the user can do a search with the enter-key
+    // instead of pushing the graphical button
     connect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
+
+    // Read the settings about keyboard-commands and so on, from the saved settings
+    // so it can be used in the application
     this->KeyboardActions();
 
+    // Enable sorting in the treeview for snippets (so the user can click with the mouse on the headers, and sort the tree)
     ui->listSnippets->setSortingEnabled(true);
 
+    // Populate the list with previous searches, with exactly what it is - old searches
     this->ListSearchFiles();
 
+    // Setup some sort of eventlisteners with signal and slots
+
+    // When the user click on a snippet, show it in the field where the code have its home
     connect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
+
+    // When the user chooses an old search, show its stored snippets in the treeview
     connect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
+
+    // When the preferences dialog saves its settings for storing it, update the settings in realtime
+    // so the application can use directly
     connect(this->settingsDialog, SIGNAL(UpdateKeyboardSettings()), this, SLOT(KeyboardActions()));
+
+    // Listen for events regarding the mainwindow (not globally)
     this->installEventFilter(this);
 
+    // Show just a few elements (like searchfield, searchbutton, previous searches and deletebutton) in the window
     this->ShowAndHideElementsWithNewSearch();
 }
 
+// Test the connection to the api (thru another method in another class), and show a message, if its an error with it
 void MainWindow::ShowPossiblyErrorAboutConnection()
 {
     bool testConnection = true;
@@ -85,6 +111,7 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
     }
 }
 
+// Show all elements in the window
 void MainWindow::ShowAllElements()
 {
     this->CenterWindow();
@@ -106,10 +133,12 @@ void MainWindow::ShowAllElements()
     this->resize(909, 470);
     this->CenterWindow();
     this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    // Show the title, closebutton, minimizebutton and maximizebutton for the window
     this->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint | Qt::CustomizeWindowHint);
     this->show();
 }
 
+// Show just a few elements (like searchfield, searchbutton, previous searches and deletebutton) in the window
 void MainWindow::ShowAndHideElementsWithNewSearch()
 {
     this->CenterWindow();
@@ -135,10 +164,13 @@ void MainWindow::ShowAndHideElementsWithNewSearch()
     this->setMinimumHeight(160);
     this->resize(1, 1);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    // Show the title, closebutton and the minimizebutton only
     this->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::CustomizeWindowHint);
     this->show();
 }
 
+// Listen to events in the window. This one listen to when the window minimizes
+// and hide all elements in window, except: searchfield, searchbutton, previous searches and deletebutton
 bool MainWindow::eventFilter(QObject *a_object, QEvent *a_event)
 {
     if(a_event->type() == QEvent::WindowStateChange && isMinimized())
@@ -148,36 +180,47 @@ bool MainWindow::eventFilter(QObject *a_object, QEvent *a_event)
     return true;
 }
 
+// Search for a snippet, update fields, listing the snippets, show alerts and so on
 void MainWindow::SearchSnippet()
 {
     ui->listSnippets->clear();
     ui->selectedSnippet->clear();
 
+    // If there wasn't a match for the searchstring in the old searches, move on
     if (ui->previousSearchesList->findText(ui->searchField->text().trimmed()) == -1)
     {
+        // If the search had more than 0 characters, move on
         if (ui->searchField->text().count() != 0)
         {
+            // Start the animationtimer, which shows the user an animation (so he/she knows there is a search going on)
             connect(this->animationTimer, SIGNAL(timeout()), this, SLOT(UpdateSearchAnimation()));
             ui->searchLabel->setText("Searching");
-            animationTimer->start(500);
+            animationTimer->start(500); // Update the timer every half second
 
+            // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
             this->ShowPossiblyErrorAboutConnection();
+
+            // A dummy variable that don't do so much in this case
             bool testConn = true;
 
-            QString apiUrl = settingsFuncs->GetApiUrl().toUtf8();
-            QString theDateAndTime = this->fileFuncs->GetUnixTime(0).toUtf8();
+            QString apiUrl = settingsFuncs->GetApiUrl().toUtf8(); // Get the api-adress
+            QString theDateAndTime = this->fileFuncs->GetUnixTime(0).toUtf8(); // Get the current date and time in unixtime
 
+            // Do a search against the API, and if its a new search -> save the file with json-data
             apiFuncs->ConnectToApi("search" + theDateAndTime + ".search", apiUrl + "/search/" + ui->searchField->text(), testConn, ui->searchField->text());
 
+            // Parse the latest cached json-data thru the parser,
             QVariantList jsonData = this->jsonFuncs->GetJsonObject
             (
                 cacheFuncs->GetCacheFileData("search" + theDateAndTime + ".search")
             );
 
+            // If there is some stored json-data in the search, move on
             if (jsonData.count() > 0)
             {
                 this->ShowAllElements();
 
+                // Fill the tree with all snippets who got catched by the searchstring
                 this->FillListWithSnippets
                 (
                     jsonFuncs->GetJsonObject
@@ -191,12 +234,18 @@ void MainWindow::SearchSnippet()
                 snippetNumber.setNum(jsonData.count());
                 ui->foundNumberOfSnippets->setText(snippetNumber.toUtf8() + " snippets found!");
                 ui->listSnippets->setFocus();
+
+                // Select the first item in the tree
                 QTreeWidgetItemIterator item (ui->listSnippets);
                 ui->listSnippets->setCurrentItem(*item);
+
+                // Expand all categories
                 ui->listSnippets->expandAll();
+
                 ui->previousSearchesList->clear();
                 this->ListSearchFiles();
             }
+            // If there wasn't a match with the searchstring, show a message and clear some fields etc
             else if (jsonData.count() <= 0)
             {
                 this->animationTimer->stop();
@@ -208,6 +257,7 @@ void MainWindow::SearchSnippet()
                 ui->searchField->clear();
                 this->ShowAndHideElementsWithNewSearch();
             }
+            // If there was an error with the api (about the json-data, not the connection), show a message about it and clear some fields etc
             else if (!jsonData.startsWith("["))
             {
                 this->animationTimer->stop();
@@ -219,10 +269,12 @@ void MainWindow::SearchSnippet()
             }
         }
     }
+    // If the user haven't type something into the searchfield, show a message about it
     else if (ui->searchField->text().count() == 0)
     {
         QMessageBox::warning(this, "Empty field!", "You can't search for nothing. \n\n(hint: empty field)\n\nTry again!");
     }
+    // If the searchstring has been used earlier in an old search, show a message about it and clear some fields etc
     else
     {
         QMessageBox::warning(this, "There is an old searchitem!", "There is already a searchitem with that searchstring in the old searches!\n\nUse that one, or try again!");
@@ -231,6 +283,7 @@ void MainWindow::SearchSnippet()
         ui->foundNumberOfSnippets->setText("");
     }
 }
+
 
 void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
 {

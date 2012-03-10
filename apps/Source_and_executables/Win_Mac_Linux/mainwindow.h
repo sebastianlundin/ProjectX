@@ -54,7 +54,7 @@ public:
     // Constructor
     explicit MainWindow(QWidget *parent = 0);
 
-    // Test the connection to the api (thru another method in another class), and show a message
+    // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
     void ShowPossiblyErrorAboutConnection();
 
     // Fill the tree with snippets
