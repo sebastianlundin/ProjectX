@@ -79,6 +79,8 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
 
 void MainWindow::ShowAllElements()
 {
+    this->CenterWindow();
+
     ui->searchLabel->show();
     ui->searchSnippet->show();
     ui->previousSearchesLabel->show();
@@ -92,8 +94,12 @@ void MainWindow::ShowAllElements()
     ui->selectedSnippet->show();
     ui->copySnippet->show();
 
+    this->setMinimumHeight(470);
     this->resize(909, 470);
     this->CenterWindow();
+    this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    this->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint | Qt::CustomizeWindowHint);
+    this->show();
 }
 
 void MainWindow::ShowAndHideElementsWithNewSearch()
@@ -118,7 +124,11 @@ void MainWindow::ShowAndHideElementsWithNewSearch()
     ui->selectedSnippet->hide();
     ui->copySnippet->hide();
 
+    this->setMinimumHeight(160);
     this->resize(1, 1);
+    this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    this->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::CustomizeWindowHint);
+    this->show();
 }
 
 bool MainWindow::eventFilter(QObject *a_object, QEvent *a_event)
@@ -200,16 +210,17 @@ void MainWindow::SearchSnippet()
                 ui->searchField->setFocus();
             }
         }
-        else
-        {
-            QMessageBox::warning(this, "Empty field!", "You can't search for nothing. \n\n(hint: empty field)\n\nTry again!");
-        }
+    }
+    else if (ui->searchField->text().count() == 0)
+    {
+        QMessageBox::warning(this, "Empty field!", "You can't search for nothing. \n\n(hint: empty field)\n\nTry again!");
     }
     else
     {
         QMessageBox::warning(this, "There is an old searchitem!", "There is already a searchitem with that searchstring in the old searches!\n\nUse that one, or try again!");
         ui->searchField->clear();
         ui->previousSearchesList->setFocus();
+        ui->foundNumberOfSnippets->setText("");
     }
 }
 

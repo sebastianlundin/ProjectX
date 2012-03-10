@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Mar 9 23:28:41 2012
+** Created: Sat Mar 10 13:44:32 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -61,7 +61,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
-        MainWindow->setMinimumSize(QSize(909, 160));
+        MainWindow->setMinimumSize(QSize(909, 470));
         QFont font;
         font.setPointSize(11);
         MainWindow->setFont(font);
@@ -142,6 +142,7 @@ public:
         listSnippets->setEditTriggers(QAbstractItemView::AnyKeyPressed|QAbstractItemView::SelectedClicked);
         listSnippets->setAlternatingRowColors(true);
         listSnippets->setSelectionMode(QAbstractItemView::SingleSelection);
+        listSnippets->setSelectionBehavior(QAbstractItemView::SelectRows);
         listSnippets->setRootIsDecorated(true);
         listSnippets->setSortingEnabled(true);
         listSnippets->setAnimated(true);
