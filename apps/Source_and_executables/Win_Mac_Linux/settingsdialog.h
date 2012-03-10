@@ -7,6 +7,8 @@
 // Includes all the importen libs (in qt)
 // that we need to use for this class to work
 #include <QDialog>
+#include <QObject>
+#include <QEvent>
 
 // Namespace for the class
 namespace Ui {
@@ -35,6 +37,9 @@ private slots:
 
     // Close the window
     void on_closeButton_clicked();
+
+    // Enables/disables the keyboard shortcut field
+    void on_enableDisableGlobalShortcuts_clicked();
 
 // Member variables of the class
 private:
