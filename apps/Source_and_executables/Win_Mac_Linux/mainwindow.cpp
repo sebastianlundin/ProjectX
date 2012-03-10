@@ -1,3 +1,7 @@
+// Class for working with the main user interface (where you can search snippets etc)
+
+// Includes all the importen libs (in qt)
+// that we need to use for this class to work
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
@@ -17,32 +21,36 @@
 #include "customcombobox.h"
 #include <QDesktopWidget>
 
+// Move the window to the center of the screen
 void MainWindow::CenterWindow()
 {
     QRect windowGeometry = frameGeometry();
     windowGeometry.moveCenter(QDesktopWidget().availableGeometry().center());
 }
 
+// Constructor
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    ui->setupUi(this); // Pointer to the interface-file (mainwindow.ui)
 
     this->CenterWindow();
 
-    this->apiFuncs = new ApiFuncs();
-    this->jsonFuncs = new JsonFuncs();
-    this->cacheFuncs = new CacheFuncs();
-    this->settingsFuncs = new SettingsFuncs();
-    this->fileFuncs = new FileFuncs();
-    this->animationTimer = new QTimer(this);
-    this->keyboardShortcutActiveKey = new QxtGlobalShortcut(this);
-    this->keyboardShortcutCopyKey = new QxtGlobalShortcut(this);
-    this->settingsDialog = new SettingsDialog();
+    this->apiFuncs = new ApiFuncs(); // Instance of the ApiFuncs-class
+    this->jsonFuncs = new JsonFuncs(); // Instance of the JsonFuncs-class
+    this->cacheFuncs = new CacheFuncs(); // Instance of the CacheFuncs-class
+    this->settingsFuncs = new SettingsFuncs(); // Instance of the SettingsFuncs-class
+    this->fileFuncs = new FileFuncs(); // Instance of the FileFuncs-class
+    this->animationTimer = new QTimer(this); // Instance of the QTimer-class
+    this->keyboardShortcutActiveKey = new QxtGlobalShortcut(this); // Instance of the QxtGlobalShortcut-class
+    this->keyboardShortcutCopyKey = new QxtGlobalShortcut(this); // Instance of the QxtGlobalShortcut-class
+    this->settingsDialog = new SettingsDialog(); // Instance of the SettingsDialog-class
 
+    // Set the headers for the treeview, who holds the snippets and its categories
     QStringList snippetListHeaders;
     snippetListHeaders << "Languages" << "Title" << "Description" << "By user" << "Added/Changed" << "Rating";
     ui->listSnippets->setHeaderLabels(snippetListHeaders);
 
+    // Test the connection to the api (thru another method in another class), and show a possible if its an error with it
     this->ShowPossiblyErrorAboutConnection();
 
     ui->foundNumberOfSnippets->setHidden(true);
