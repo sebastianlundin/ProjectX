@@ -284,22 +284,24 @@ void MainWindow::SearchSnippet()
     }
 }
 
-
+// Fill the tree with snippets
 void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
 {
     foreach(QVariant record, a_jsonObject)
     {
         QVariantMap map = record.toMap();
-        QString language = map.value("language").toString();
-        QString title = map.value("title").toString();
-        QString id = map.value("id").toString();
-        QString description = map.value("description").toString();
-        QString username = map.value("username").toString();
-        QString date = map.value("date").toString();
-        QString rating = map.value("rating").toString();
+        QString language = map.value("language").toString(); // Language category for the snippets
+        QString title = map.value("title").toString(); // Title for the snippet
+        QString id = map.value("id").toString(); // Id for the snippet
+        QString description = map.value("description").toString(); // Description for the snippet
+        QString username = map.value("username").toString(); // Username for the snippet
+        QString date = map.value("date").toString(); // Date and time for the snippet
+        QString rating = map.value("rating").toString(); // Rating for the snippet
 
+        // Point to the items in tree
         QList<QTreeWidgetItem*> items = ui->listSnippets->findItems(language, Qt::MatchExactly, 0);
 
+        // Fix stuff about the sorting etc
         if (items.count() == 0)
         {
             this->group = new QTreeWidgetItem(ui->listSnippets);
@@ -310,11 +312,13 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
             this->group->setText(4, date);
             this->group->setText(5, rating);
         }
+        // Group snippets under its specific language category
         else
         {
             group = items.at(0);
         }
 
+        // Put the right info in the right column
         QTreeWidgetItem *child = new QTreeWidgetItem(this->group);
         child->setText(1, title);
         child->setText(2, description);
@@ -322,9 +326,10 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
         child->setText(4, date);
         child->setText(5, rating);
         QVariant idData(id);
-        child->setData(1, Qt::UserRole,idData);
+        child->setData(1, Qt::UserRole,idData); // Set the id of every snippet to its own title (hidden data)
     }
 
+    // Set witdh of columns
     for(int i = 0; i < 6; i++)
     {
         ui->listSnippets->resizeColumnToContents(i);
@@ -332,16 +337,21 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
     ui->listSnippets->setColumnWidth(2, 150);
 }
 
+// List files of cached searches
 void MainWindow::ListSearchFiles()
 {
+    // Add an empty item to the top of previous searches
     ui->previousSearchesList->addItem("", "");
 
+    // Get the directory with old searches
     QDirIterator listFilesFromCacheDirectory(this->fileFuncs->GetUserDir(), QDir::Files);
 
+    // Fill the list with searches
     while (listFilesFromCacheDirectory.hasNext())
     {
         listFilesFromCacheDirectory.next();
 
+        // Look for files with the .search-prefix
         if (listFilesFromCacheDirectory.fileInfo().completeSuffix() == "search")
         {
             ui->previousSearchesList->addItem(this->fileFuncs->GetSearchString(listFilesFromCacheDirectory.fileName()).trimmed(),
@@ -350,6 +360,7 @@ void MainWindow::ListSearchFiles()
     }
 }
 
+// Destructor, who destroy some inital eventlisteners and deletes some inital class-instances
 MainWindow::~MainWindow()
 {
     disconnect(this->keyboardShortcutActiveKey, SIGNAL(activated()), this, SLOT(ShowWindowAndFocusSearchField()));
@@ -369,6 +380,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// Open the about box
 void MainWindow::on_aboutSnippt_triggered()
 {
     QMessageBox::about(this, "About Snippt", "Snippt is a platform for searching snippets of code thru "
@@ -376,11 +388,13 @@ void MainWindow::on_aboutSnippt_triggered()
                        "This is the client for Windows/Mac OS X/Linux");
 }
 
+// Open preferences dialog
 void MainWindow::on_actionPreferences_triggered()
 {
     this->settingsDialog->show();
 }
 
+// Load the global keyboard shortcuts from settings
 void MainWindow::KeyboardActions()
 {
     QVariant activeGlobalShortcuts, activeShortcut;
@@ -388,19 +402,22 @@ void MainWindow::KeyboardActions()
     QSettings settings("ProjectX", "Snippt");
     settings.beginGroup("SnipptSettings");
 
+    // See if the keyboard shortcuts is active for using
     activeGlobalShortcuts = settings.value("activeglobalshortcuts");
     QString activeGlobalShortcutsConv = activeGlobalShortcuts.toString();
 
+    // Get the keyboard shortcut for bringing the window to an active state
     activeShortcut = settings.value("activeshortcut");
     QString activeShortcutConv = activeShortcut.toString();
 
+    // See if the keyboard shortcuts is active for using
     if (activeGlobalShortcutsConv == "activated")
     {
         this->keyboardShortcutActiveKey->setEnabled(true);
         this->keyboardShortcutCopyKey->setEnabled(true);
 
-        this->keyboardShortcutActiveKey->setShortcut(QKeySequence(activeShortcutConv));
-        this->keyboardShortcutCopyKey->setShortcut(QKeySequence("ctrl+alt+c"));
+        this->keyboardShortcutActiveKey->setShortcut(QKeySequence(activeShortcutConv)); // Shortcut for activating the window
+        this->keyboardShortcutCopyKey->setShortcut(QKeySequence("ctrl+alt+c")); // Shortcut for copy a selected snippet with Ctrl+Alt+C
     }
     else
     {
@@ -411,6 +428,7 @@ void MainWindow::KeyboardActions()
     settings.endGroup();
 }
 
+// Raise the window (if its minimized) and clear searchfields etc
 void MainWindow::ShowWindowAndFocusSearchField()
 {
     this->showNormal();
@@ -421,6 +439,8 @@ void MainWindow::ShowWindowAndFocusSearchField()
     this->ShowAndHideElementsWithNewSearch();
 }
 
+// Update the search animation with dots and stop the timer if the api
+// find something to put inside the tree with snippets
 void MainWindow::UpdateSearchAnimation()
 {
     QString oldText = ui->searchLabel->text();
