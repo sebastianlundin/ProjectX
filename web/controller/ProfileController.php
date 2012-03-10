@@ -40,6 +40,7 @@ class ProfileController
 
             //Submenu controll for profile pages
             if ($page = $this->_profileView->getPage()) {
+
                 //Show created snippets by user
                 if ($page == 'created') {
                     $this->showCreatedSnippets($id);

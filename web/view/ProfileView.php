@@ -16,6 +16,8 @@ class ProfileView
                     <p>Total likes: " . count($data['likes']) . "</p>
                     <p>Total dislikes: " . count($data['dislikes']) . "</p>
                     <p>User role: " . $user->getRoleName() . "</p>
+                    <p>Api-key: " . $user->getApiKey() . "</p>
+                    <p>UserID: " . $user->getId() . "</p>
                 </div>
                 <br />
                 <div id='userActivity'>";
@@ -53,8 +55,12 @@ class ProfileView
     {
         $html = "<h3>Created snippets</h3>
                     <ul>";
-        foreach ($createdSnippets as $snippet) {
-            $html .= "<li><a href='?page=listsnippets&amp;snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+        if($createdSnippets) {
+            foreach ($createdSnippets as $snippet) {
+                $html .= "<li><a href='?page=listsnippets&amp;snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+            }
+        } else {
+            $html .= 'You have no created snippets';
         }
         $html .= "</ul>";
         return $html;
@@ -73,17 +79,17 @@ class ProfileView
     
     public function doProfileMenu($isAdmin, $isOwner, $email) {
         $html = "    
-                <ul>
-                <li><a href='?username=" . $email . "&amp;p=created'>Created snippets</a></li>
-                <li><a href='?username=" . $email . "&amp;p=commented'>Commented Snippets</a></li>
-                <li><a href='?username=" . $email . "&amp;p=liked'>Liked snippets</a></li>
-                <li><a href='?username=" . $email . "&amp;p=disliked'>DislikedSnippets</a></li>";
+                <ul id='profile-menu'>
+                <li><a href='/?page=profile&amp;p=created&amp;username=" . $email . "'>Created snippets</a></li>
+                <li><a href='/?page=profile&amp;p=commented&amp;username=" . $email . "'>Commented snippets</a></li>
+                <li><a href='/?page=profile&amp;p=liked&amp;username=" . $email . "'>Liked snippets</a></li>
+                <li><a href='/?page=profile&amp;p=disliked&amp;username=" . $email . "'>Disliked snippets</a></li>";
                 if($isOwner || $isAdmin) {
-                    $html .= "<li><a href='?username=" . $email . "&p=settings'>Settings</a></li>";
+                    $html .= "<li><a href='/?page=profile&amp;p=settings&amp;username=" . $email . "'>Settings</a></li>";
                 }
                 
                 if($isAdmin) {
-                    $html .= "<li><a href='?username=" . $email . "&p=search'>Search for users</a></li>";
+                    $html .= "<li><a href='/?page=profile&amp;p=search&amp;username=" . $email . "'>Search for users</a></li>";
                 }
                 $html .= "</ul>";
         return $html;
