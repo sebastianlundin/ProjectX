@@ -42,7 +42,7 @@ class CommentHandler
                 return $json;
             }
         }
-        Log::apiError('could not get content ' , $httpCode);
+        Log::apiError('could not get content ' , $url);
         return false;
     }
 

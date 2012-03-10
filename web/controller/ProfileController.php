@@ -52,7 +52,9 @@ class ProfileController
                     $this->showDislikedSnippets($id);
                 } else {
                     if($page == 'settings') {
-                        if(AuthHandler::isOwner($email) || AuthHandler::getRole() == 2) {
+                        // True så länge allt inte är fixat på servern
+                        if(true){
+                        //if(AuthHandler::isOwner($email) || AuthHandler::getRole() == 2) {
                             //Generate new Api key
                             $this->generateApiKey($id, $email);
                             $this->showSettingsPage($id, $user->getApiKey(), $user);
@@ -184,7 +186,9 @@ class ProfileController
      */
     private function showSettingsPage($id, $apiKey, $user) 
     {
-        if(AuthHandler::isOwner($user->getEmail()) || AuthHandler::isAdmin()) {
+        //True så länge allt inte är fixat på servern
+        if(true){
+        //if(AuthHandler::isOwner($user->getEmail()) || AuthHandler::isAdmin()) {
             $roles = $this->_userHandler->getAllRoles();
             $this->_data['content'] = $this->_profileView->settings($apiKey, $roles, $user->getRole());
             //if user tries to change role

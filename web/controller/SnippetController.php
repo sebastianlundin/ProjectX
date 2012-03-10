@@ -33,7 +33,9 @@ class SnippetController
             if (isset($_GET['snippet'])) {
                 //Check if snippet exist
                 if($snippet = $this->_snippetHandler->getSnippetByID($_GET['snippet'])) {
-                    $this->_html .= $this->_snippetView->singleView($snippet);
+                    //Check if user is admin or owner of snippet
+                    $isOwner = AuthHandler::isOwnerByID($snippet->getAuthorId());
+                    $this->_html .= $this->_snippetView->singleView($snippet, $isOwner);
                     if(AuthHandler::isLoggedIn()) {
                         $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], AuthHandler::getUser()->getId(), $this->_snippetHandler->getSnippetRating($_GET['snippet']));  
                     }
