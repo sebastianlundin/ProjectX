@@ -17,8 +17,12 @@ class CacheFuncs : public QObject // Inheritance of the most used class (QObject
 
 // Methods for the class
 public:
-    explicit CacheFuncs(QObject *parent = 0); // Constructor
-    QByteArray GetCacheFileData(QString a_filename); // Load json-data from a selected cache-file in (~/snippt_cache_files/)
+
+    // Constructor
+    explicit CacheFuncs(QObject *parent = 0);
+
+    // Load json-data from a selected cache-file in (~/snippt_cache_files/)
+    QByteArray GetCacheFileData(QString a_filename);
     
 };
 // Ending of the class
