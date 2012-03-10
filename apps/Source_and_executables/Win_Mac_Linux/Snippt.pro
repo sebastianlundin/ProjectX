@@ -1,11 +1,15 @@
-QT       += core gui network sql
+# File who contains all the other files in the project, plus
+# some extra settings for libs like libqxt and qjson
 
-TARGET = Snippt
-TEMPLATE = app
+QT       += core gui network # Selects which parts of Qt we want to use
 
-CONFIG  += qxt
-QXT     += core gui
+TARGET = Snippt # The name of the app
+TEMPLATE = app # Which kind of thing this is (in this case an app)
 
+CONFIG  += qxt # libqxt lib for global shortcuts
+QXT     += core gui # Selects which parts of libqxt we want to use
+
+# Includes all cpp-files (files with real code)
 SOURCES += main.cpp\
         mainwindow.cpp \
     jsonfuncs.cpp \
@@ -17,6 +21,7 @@ SOURCES += main.cpp\
     customtreewidget.cpp \
     customcombobox.cpp
 
+# Includes all h-files (files with header code)
 HEADERS  += mainwindow.h \
     jsonfuncs.h \
     filefuncs.h \
@@ -27,10 +32,12 @@ HEADERS  += mainwindow.h \
     customtreewidget.h \
     customcombobox.h
 
+# Includes all ui-files (files with gui-elements)
 FORMS    += \
     mainwindow.ui \
     settingsdialog.ui
 
+# Includes the qjson-lib for Mac OS X
 macx: LIBS += -L$$PWD/libs/executables/macosx -lqjson
 macx: INCLUDEPATH += $$PWD/libs/executables/macosx
 macx: DEPENDPATH += $$PWD/libs/executables/macosx
