@@ -11,7 +11,7 @@
 #include <QMouseEvent>
 
 // Beginning of the class
-class CustomComboBox : public QComboBox
+class CustomComboBox : public QComboBox // Subclass of the qcombobox, so that we can add extra functionality to the element
 {
     Q_OBJECT // A macro for making magic happen, when it comes to calling other classes from a class
 
