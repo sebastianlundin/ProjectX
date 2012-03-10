@@ -455,8 +455,11 @@ void MainWindow::UpdateSearchAnimation()
     }
 }
 
+// Show the selected snippet
 void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 {
+    // Get the hidden id about the snippet (from the title)
+    // so the loaded snippet code can have its own uniq name
     QString cacheSelectedSnippetFilename = a_item->data(1, Qt::UserRole).toString();
 
     QVariant apiUrl;
@@ -465,17 +468,20 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 
     settings.beginGroup("SnipptSettings");
 
-    apiUrl = settings.value("apiurl");
+    apiUrl = settings.value("apiurl"); // Get the api-address
     QString apiUrlConv = apiUrl.toString();
 
+    // Connect to the api and its cache-files, and get the selected snippetcode
     this->apiFuncs->ConnectToApi(cacheSelectedSnippetFilename, apiUrlConv.toUtf8() + "/search/" + cacheSelectedSnippetFilename, testConn, "");
 
     settings.endGroup();
 
-    QByteArray jsonCacheData = this->cacheFuncs->GetCacheFileData(cacheSelectedSnippetFilename);
-    QVariantList jsonObject = this->jsonFuncs->GetJsonObject(jsonCacheData);
-    QString snippetCode = this->jsonFuncs->GetSnippetCode(jsonObject);
+    QByteArray jsonCacheData = this->cacheFuncs->GetCacheFileData(cacheSelectedSnippetFilename); // Load cached json-data
+    QVariantList jsonObject = this->jsonFuncs->GetJsonObject(jsonCacheData); // Parse to json
+    QString snippetCode = this->jsonFuncs->GetSnippetCode(jsonObject); // Get the code behind the snippet
 
+    // If there is some code behind the snippet, enable the field for showing the snippet,
+    // or hide if there wasn't any code
     if (cacheSelectedSnippetFilename != 0)
     {
         ui->copySnippet->setEnabled(true);
@@ -488,6 +494,7 @@ void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
     ui->selectedSnippet->setText(snippetCode);
 }
 
+// Clear all fields for the searchstring, selected snippet, listed snippets and so on
 void MainWindow::ClearFields()
 {
     ui->searchField->clear();
@@ -495,19 +502,22 @@ void MainWindow::ClearFields()
     ui->copySnippet->setEnabled(false);
 }
 
+// Fill the list with previous searches with cached searches
 void MainWindow::FillListWithPrevSearches(int a_index)
 {
     this->ClearFields();
     this->ShowAllElements();
 
-    QString itemSearchString = ui->previousSearchesList->itemText(a_index).toUtf8();
-    QString itemSearchFile = ui->previousSearchesList->itemData(a_index).toString();
+    QString itemSearchString = ui->previousSearchesList->itemText(a_index).toUtf8(); // Searchstring
+    QString itemSearchFile = ui->previousSearchesList->itemData(a_index).toString(); // File with json-data in it
 
+    // Parse the latest cached json-data thru the parser,
     QVariantList jsonData = this->jsonFuncs->GetJsonObject
     (
         this->cacheFuncs->GetCacheFileData(itemSearchFile)
     );
 
+    // If there is some stored json-data in the search, move on
     if (jsonData.count() > 0)
     {
         ui->listSnippets->clear();
@@ -520,13 +530,20 @@ void MainWindow::FillListWithPrevSearches(int a_index)
         );
         ui->listSnippets->setFocus();
         QTreeWidgetItemIterator item (ui->listSnippets);
+
+        // Select the first item in the treeview with snippets
         ui->listSnippets->setCurrentItem(*item);
+
+        // Expand all categories with snippets, in the tree
         ui->listSnippets->expandAll();
+
         QString snippetNumber;
         snippetNumber.setNum(jsonData.count());
         ui->foundNumberOfSnippets->setText(snippetNumber.toUtf8() + " snippets found!");
     }
 
+    // If there is some code behind the snippet, enable the field for showing the snippet,
+    // or hide if there wasn't any code
     if (!itemSearchString.isEmpty())
     {
         ui->deleteSelectedPrevSearch->setEnabled(true);
@@ -537,28 +554,33 @@ void MainWindow::FillListWithPrevSearches(int a_index)
     }
 }
 
+// Copy the selected snippet to clipboard
 void MainWindow::CopySelectedSnippet()
 {
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(ui->selectedSnippet->toPlainText());
 }
 
+// Button for copy the selected snippet to clipboard
 void MainWindow::on_copySnippet_clicked()
 {
     this->CopySelectedSnippet();
 }
 
+// Button for searching a snippet from a given searchstring
 void MainWindow::on_searchSnippet_clicked()
 {
     this->SearchSnippet();
 }
 
+// Delete a selected previous search
 void MainWindow::on_deleteSelectedPrevSearch_clicked()
 {
-    int selectedItemIndex = ui->previousSearchesList->currentIndex();
-    QString itemSearchString = ui->previousSearchesList->itemText(selectedItemIndex).toUtf8();
-    QString itemSearchFile = ui->previousSearchesList->itemData(selectedItemIndex).toString();
+    int selectedItemIndex = ui->previousSearchesList->currentIndex(); // Get current selected search in previous searches
+    QString itemSearchString = ui->previousSearchesList->itemText(selectedItemIndex).toUtf8(); // Searchstring
+    QString itemSearchFile = ui->previousSearchesList->itemData(selectedItemIndex).toString(); // File with json-data in it
 
+    // Delete the file and celar some fields
     if (this->fileFuncs->DeleteFile(itemSearchFile))
     {
         ui->previousSearchesList->removeItem(selectedItemIndex);
@@ -569,6 +591,7 @@ void MainWindow::on_deleteSelectedPrevSearch_clicked()
         ui->foundNumberOfSnippets->setText("");
         ui->foundNumberOfSnippets->setHidden(true);
 
+        // Show just a few elements (like searchfield, searchbutton, previous searches and deletebutton) in the window
         if (ui->previousSearchesList->count() == 1)
         {
             this->ShowAndHideElementsWithNewSearch();
