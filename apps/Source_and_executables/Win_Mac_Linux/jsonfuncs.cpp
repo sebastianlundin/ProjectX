@@ -1,13 +1,15 @@
-// Header-file for the class with the responsibility
-// of parsing JSON-data and returning an object
+// Class for parsing json-data
 
+// Includes all the importen libs (in qt)
+// that we need to use for this class to work
 #include "jsonfuncs.h"
 #include <QVariantList>
 #include <QVariant>
 #include <QString>
 #include <libs/code/qjson/parser.h>
 
-// The method that make the magic happen
+// Parse given data with the json-parser, and return
+// an object with parsed json-data
 QVariantList JsonFuncs::GetJsonObject(QByteArray a_jsonData)
 {
     QJson::Parser parser;
@@ -15,6 +17,7 @@ QVariantList JsonFuncs::GetJsonObject(QByteArray a_jsonData)
     return jsonObjectResult;
 }
 
+// Get json-data with code for a specific snippet
 QString JsonFuncs::GetSnippetCode(QVariantList a_jsonObject)
 {
     QString codeData;
