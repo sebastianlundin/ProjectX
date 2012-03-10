@@ -119,5 +119,6 @@ private slots:
     // Delete a selected previous search
     void on_deleteSelectedPrevSearch_clicked();
 };
+// Ending of the class
 
 #endif // MAINWINDOW_H
