@@ -20,6 +20,9 @@ $_html = $_mc->doControll();
             <div class="content">
                 <?php echo $_html;?>
             </div>
+            <footer>
+            	ALL RIGHTS RESERVED &#149; SNIPPT 2012 
+            </footer>
         </div>
     </body>
 </html>
