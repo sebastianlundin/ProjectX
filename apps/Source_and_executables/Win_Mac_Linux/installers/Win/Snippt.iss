@@ -20,9 +20,18 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
+[Files]
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\Snippt.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\qjson0.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QtCore4.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QtGui4.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QtNetwork4.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QxtCore.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QxtGui.dll"; DestDir: "{app}"; Flags: ignoreversion
+
 [Icons]
 Name: "{group}\Snippt"; Filename: "{app}\Snippt.exe"
-Name: "{group}\{cm:UninstallProgram,Limpa2k}"; Filename: "{uninstallexe}"
+Name: "{group}\{cm:UninstallProgram,Snippt}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\Snippt"; Filename: "{app}\Snippt.exe"; Tasks: desktopicon
 
 [Run]

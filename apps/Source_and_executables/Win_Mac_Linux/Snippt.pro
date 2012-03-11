@@ -42,9 +42,20 @@ macx: LIBS += -L$$PWD/libs/executables/macosx -lqjson
 macx: INCLUDEPATH += $$PWD/libs/executables/macosx
 macx: DEPENDPATH += $$PWD/libs/executables/macosx
 
+# Includes the qjson-lib for Windows
+win32: LIBS += -L$$PWD/libs/executables/windows -lqjson
+
+# Includes the libqxt-libs for Windows
+win32: LIBS += -L$$PWD/libs/executables/windows -lQxtCore
+win32: LIBS += -L$$PWD/libs/executables/windows -lQxtGui
+
 # Includes resource for the Windows icon
 OTHER_FILES += \
     Win32Icon.rc
 
 # Include resource for the Windows icon
 win32:RC_FILE += Win32Icon.rc
+
+# Link against the lib-directory for windows-files
+win32: INCLUDEPATH += $$PWD/libs/executables/windows
+win32: DEPENDPATH += $$PWD/libs/executables/windows
