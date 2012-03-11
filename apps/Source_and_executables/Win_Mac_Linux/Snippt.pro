@@ -41,3 +41,10 @@ FORMS    += \
 macx: LIBS += -L$$PWD/libs/executables/macosx -lqjson
 macx: INCLUDEPATH += $$PWD/libs/executables/macosx
 macx: DEPENDPATH += $$PWD/libs/executables/macosx
+
+# Includes resource for the Windows icon
+OTHER_FILES += \
+    Win32Icon.rc
+
+# Include resource for the Windows icon
+win32:RC_FILE += Win32Icon.rc

@@ -107,7 +107,8 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
     if (testConnection == false)
     {
         QMessageBox::information(this, "Can't connect!", "Can't connect to the API!\nAdd the right URL under Preferences"
-                                 " in the Help/Application menu!\n\nIf its not working directly - try to restart the app a few times!");
+                                 " in the Help/Application menu!\n\nIf its not working directly - try to restart the app a few times!\n\n"
+                                 "Remember: You can always use the cached searches and snippetscode if there is any!");
     }
 }
 
