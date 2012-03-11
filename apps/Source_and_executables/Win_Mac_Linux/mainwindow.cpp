@@ -89,6 +89,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // so the application can use directly
     connect(this->settingsDialog, SIGNAL(UpdateKeyboardSettings()), this, SLOT(KeyboardActions()));
 
+    // When the user clicks a header, sort the list of snippets by that selected column
+    connect(ui->listSnippets->header(), SIGNAL(sectionClicked(int)), this, SLOT(SortSnippetsByColumn(int)));
+
     // Listen for events regarding the mainwindow (not globally)
     this->installEventFilter(this);
 
@@ -371,6 +374,7 @@ MainWindow::~MainWindow()
     disconnect(ui->searchField, SIGNAL(returnPressed()), this, SLOT(SearchSnippet()));
     disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
     disconnect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
+    disconnect(ui->listSnippets->header(), SIGNAL(sectionClicked(int)), this, SLOT(SortSnippetsByColumn(int)));
     delete this->apiFuncs;
     delete this->jsonFuncs;
     delete this->cacheFuncs;
@@ -562,6 +566,30 @@ void MainWindow::CopySelectedSnippet()
 {
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(ui->selectedSnippet->toPlainText());
+}
+
+// Sort the list of snippets by column, when the user
+// presses one of the headers in the treeview
+void MainWindow::SortSnippetsByColumn(int a_column)
+{
+    // Sort snippets by ascending order
+    if (ui->listSnippets->header()->sortIndicatorOrder() == Qt::AscendingOrder)
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            ui->listSnippets->sortItems(i, Qt::AscendingOrder);
+        }
+        ui->listSnippets->sortItems(a_column, Qt::AscendingOrder);
+    }
+    // Sort snippets by descending order
+    else
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            ui->listSnippets->sortItems(i, Qt::DescendingOrder);
+        }
+        ui->listSnippets->sortItems(a_column, Qt::DescendingOrder);
+    }
 }
 
 // Button for copy the selected snippet to clipboard

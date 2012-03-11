@@ -107,6 +107,10 @@ private slots:
     // Copy the selected snippet to clipboard
     void CopySelectedSnippet();
 
+    // Sort the list of snippets by column, when the user
+    // presses one of the headers in the treeview
+    void SortSnippetsByColumn(int a_column);
+
     // Button for copy the selected snippet to clipboard
     void on_copySnippet_clicked();
 
