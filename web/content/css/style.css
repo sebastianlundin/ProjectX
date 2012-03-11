@@ -99,7 +99,7 @@ input, textarea, select  {
     margin: 0 auto;
     background-image:url('../image/paper.png');
 	background-repeat:no-repeat;
-	min-height:94%;
+	min-height:90%;
 }
 
 a {
@@ -262,16 +262,6 @@ textarea {
 .comments .text {
     word-wrap: break-word;
     margin-top: 10px;
-}
-footer{
-	position:fixed;
-	bottom:0px;
-	text-align:center;
-	left:25%;
-	background:black;
-	color:white;
-	width:950px;
-	padding:5px;
 }
 #result img {
 	position:relative;
