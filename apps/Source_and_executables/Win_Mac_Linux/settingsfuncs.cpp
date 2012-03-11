@@ -8,9 +8,6 @@
 #include <QVariant>
 
 // Get the api-adress from settings.
-// If there isn't any adress in the
-// settings. Use a default-adress of
-// http://tmpn.se/api instead
 QString SettingsFuncs::GetApiUrl()
 {    
     QVariant apiUrl;
@@ -19,11 +16,6 @@ QString SettingsFuncs::GetApiUrl()
     apiUrl = settings.value("apiurl");
     QString apiUrlConv = apiUrl.toString();
     settings.endGroup();
-
-    if (apiUrlConv == "")
-    {
-        apiUrlConv = "http://tmpn.se/api";
-    }
 
     return apiUrlConv;
 }

@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->listSnippets->setHeaderLabels(snippetListHeaders);
 
     // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
-    this->ShowPossiblyErrorAboutConnection();
+    bool testConnection = this->ShowPossiblyErrorAboutConnection();
 
     ui->foundNumberOfSnippets->setHidden(true);
 
@@ -97,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
-void MainWindow::ShowPossiblyErrorAboutConnection()
+bool MainWindow::ShowPossiblyErrorAboutConnection()
 {
     bool testConnection = true;
     QString apiUrl = this->settingsFuncs->GetApiUrl();
@@ -109,7 +109,9 @@ void MainWindow::ShowPossiblyErrorAboutConnection()
         QMessageBox::information(this, "Can't connect!", "Can't connect to the API!\nAdd the right URL under Preferences"
                                  " in the Help/Application menu!\n\nIf its not working directly - try to restart the app a few times!\n\n"
                                  "Remember: You can always use the cached searches and snippetscode if there is any!");
+        return false;
     }
+    return true;
 }
 
 // Show all elements in the window
@@ -187,101 +189,105 @@ void MainWindow::SearchSnippet()
     ui->listSnippets->clear();
     ui->selectedSnippet->clear();
 
-    // If there wasn't a match for the searchstring in the old searches, move on
-    if (ui->previousSearchesList->findText(ui->searchField->text().trimmed()) == -1)
+    // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
+    bool testConnection = this->ShowPossiblyErrorAboutConnection();
+
+    // If there wasn't an error with the api, move on
+    if (testConnection == true)
     {
-        // If the search had more than 0 characters, move on
-        if (ui->searchField->text().count() != 0)
+        // If there wasn't a match for the searchstring in the old searches, move on
+        if (ui->previousSearchesList->findText(ui->searchField->text().trimmed()) == -1)
         {
-            // Start the animationtimer, which shows the user an animation (so he/she knows there is a search going on)
-            connect(this->animationTimer, SIGNAL(timeout()), this, SLOT(UpdateSearchAnimation()));
-            ui->searchLabel->setText("Searching");
-            animationTimer->start(500); // Update the timer every half second
-
-            // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
-            this->ShowPossiblyErrorAboutConnection();
-
-            // A dummy variable that don't do so much in this case
-            bool testConn = true;
-
-            QString apiUrl = settingsFuncs->GetApiUrl().toUtf8(); // Get the api-adress
-            QString theDateAndTime = this->fileFuncs->GetUnixTime(0).toUtf8(); // Get the current date and time in unixtime
-
-            // Do a search against the API, and if its a new search -> save the file with json-data
-            apiFuncs->ConnectToApi("search" + theDateAndTime + ".search", apiUrl + "/search/" + ui->searchField->text(), testConn, ui->searchField->text());
-
-            // Parse the latest cached json-data thru the parser,
-            QVariantList jsonData = this->jsonFuncs->GetJsonObject
-            (
-                cacheFuncs->GetCacheFileData("search" + theDateAndTime + ".search")
-            );
-
-            // If there is some stored json-data in the search, move on
-            if (jsonData.count() > 0)
+            // If the search had more than 0 characters, move on
+            if (ui->searchField->text().count() != 0)
             {
-                this->ShowAllElements();
+                // Start the animationtimer, which shows the user an animation (so he/she knows there is a search going on)
+                connect(this->animationTimer, SIGNAL(timeout()), this, SLOT(UpdateSearchAnimation()));
+                ui->searchLabel->setText("Searching");
+                animationTimer->start(500); // Update the timer every half second
 
-                // Fill the tree with all snippets who got catched by the searchstring
-                this->FillListWithSnippets
+                // A dummy variable that don't do so much in this case
+                bool testConn = true;
+
+                QString apiUrl = settingsFuncs->GetApiUrl().toUtf8(); // Get the api-adress
+                QString theDateAndTime = this->fileFuncs->GetUnixTime(0).toUtf8(); // Get the current date and time in unixtime
+
+                // Do a search against the API, and if its a new search -> save the file with json-data
+                apiFuncs->ConnectToApi("search" + theDateAndTime + ".search", apiUrl + "/search/" + ui->searchField->text(), testConn, ui->searchField->text());
+
+                // Parse the latest cached json-data thru the parser,
+                QVariantList jsonData = this->jsonFuncs->GetJsonObject
                 (
-                    jsonFuncs->GetJsonObject
-                    (
-                        cacheFuncs->GetCacheFileData("search" + theDateAndTime + ".search")
-                    )
+                    cacheFuncs->GetCacheFileData("search" + theDateAndTime + ".search")
                 );
 
-                ui->foundNumberOfSnippets->setHidden(false);
-                QString snippetNumber;
-                snippetNumber.setNum(jsonData.count());
-                ui->foundNumberOfSnippets->setText(snippetNumber.toUtf8() + " snippets found!");
-                ui->listSnippets->setFocus();
+                // If there is some stored json-data in the search, move on
+                if (jsonData.count() > 0)
+                {
+                    this->ShowAllElements();
 
-                // Select the first item in the tree
-                QTreeWidgetItemIterator item (ui->listSnippets);
-                ui->listSnippets->setCurrentItem(*item);
+                    // Fill the tree with all snippets who got catched by the searchstring
+                    this->FillListWithSnippets
+                    (
+                        jsonFuncs->GetJsonObject
+                        (
+                            cacheFuncs->GetCacheFileData("search" + theDateAndTime + ".search")
+                        )
+                    );
 
-                // Expand all categories
-                ui->listSnippets->expandAll();
+                    ui->foundNumberOfSnippets->setHidden(false);
+                    QString snippetNumber;
+                    snippetNumber.setNum(jsonData.count());
+                    ui->foundNumberOfSnippets->setText(snippetNumber.toUtf8() + " snippets found!");
+                    ui->listSnippets->setFocus();
 
-                ui->previousSearchesList->clear();
-                this->ListSearchFiles();
-            }
-            // If there wasn't a match with the searchstring, show a message and clear some fields etc
-            else if (jsonData.count() <= 0)
-            {
-                this->animationTimer->stop();
-                ui->searchLabel->setText("Search for a snippet (use for example: word + word or just search for one single word):");
-                ui->foundNumberOfSnippets->setHidden(false);
-                ui->foundNumberOfSnippets->setText("0 snippets found!");
-                QMessageBox::warning(this, "No snippets found", "Couldn't find any snippets that matches with your search.\n\nTry again!");
-                ui->previousSearchesList->setCurrentIndex(0);
-                ui->searchField->clear();
-                this->ShowAndHideElementsWithNewSearch();
-            }
-            // If there was an error with the api (about the json-data, not the connection), show a message about it and clear some fields etc
-            else if (!jsonData.startsWith("["))
-            {
-                this->animationTimer->stop();
-                ui->searchLabel->setText("Search for a snippet (use for example: word + word or just search for one single word):");
-                ui->foundNumberOfSnippets->setHidden(true);
-                QMessageBox::warning(this, "Api errors!", "Seems to be some errors with the API!\n\nTry again later or switch to another API-URL in settings!\n\nAnd try again!");
-                ui->searchField->clear();
-                ui->searchField->setFocus();
+                    // Select the first item in the tree
+                    QTreeWidgetItemIterator item (ui->listSnippets);
+                    ui->listSnippets->setCurrentItem(*item);
+
+                    // Expand all categories
+                    ui->listSnippets->expandAll();
+
+                    ui->previousSearchesList->clear();
+                    this->ListSearchFiles();
+                }
+                // If there wasn't a match with the searchstring, show a message and clear some fields etc
+                else if (jsonData.count() <= 0)
+                {
+                    this->animationTimer->stop();
+                    ui->searchLabel->setText("Search for a snippet (use for example: word + word or just search for one single word):");
+                    ui->foundNumberOfSnippets->setHidden(false);
+                    ui->foundNumberOfSnippets->setText("0 snippets found!");
+                    QMessageBox::warning(this, "No snippets found", "Couldn't find any snippets that matches with your search.\n\nTry again!");
+                    ui->previousSearchesList->setCurrentIndex(0);
+                    ui->searchField->clear();
+                    this->ShowAndHideElementsWithNewSearch();
+                }
+                // If there was an error with the api (about the json-data, not the connection), show a message about it and clear some fields etc
+                else if (!jsonData.startsWith("["))
+                {
+                    this->animationTimer->stop();
+                    ui->searchLabel->setText("Search for a snippet (use for example: word + word or just search for one single word):");
+                    ui->foundNumberOfSnippets->setHidden(true);
+                    QMessageBox::warning(this, "Api errors!", "Seems to be some errors with the API!\n\nTry again later or switch to another API-URL in settings!\n\nAnd try again!");
+                    ui->searchField->clear();
+                    ui->searchField->setFocus();
+                }
             }
         }
-    }
-    // If the user haven't type something into the searchfield, show a message about it
-    else if (ui->searchField->text().count() == 0)
-    {
-        QMessageBox::warning(this, "Empty field!", "You can't search for nothing. \n\n(hint: empty field)\n\nTry again!");
-    }
-    // If the searchstring has been used earlier in an old search, show a message about it and clear some fields etc
-    else
-    {
-        QMessageBox::warning(this, "There is an old searchitem!", "There is already a searchitem with that searchstring in the old searches!\n\nUse that one, or try again!");
-        ui->searchField->clear();
-        ui->previousSearchesList->setFocus();
-        ui->foundNumberOfSnippets->setText("");
+        // If the user haven't type something into the searchfield, show a message about it
+        else if (ui->searchField->text().count() == 0)
+        {
+            QMessageBox::warning(this, "Empty field!", "You can't search for nothing. \n\n(hint: empty field)\n\nTry again!");
+        }
+        // If the searchstring has been used earlier in an old search, show a message about it and clear some fields etc
+        else
+        {
+            QMessageBox::warning(this, "There is an old searchitem!", "There is already a searchitem with that searchstring in the old searches!\n\nUse that one, or try again!");
+            ui->searchField->clear();
+            ui->previousSearchesList->setFocus();
+            ui->foundNumberOfSnippets->setText("");
+        }
     }
 }
 
@@ -307,11 +313,6 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
         {
             this->group = new QTreeWidgetItem(ui->listSnippets);
             this->group->setText(0, language);
-            this->group->setText(1, title);
-            this->group->setText(2, description);
-            this->group->setText(3, username);
-            this->group->setText(4, date);
-            this->group->setText(5, rating);
         }
         // Group snippets under its specific language category
         else
@@ -335,6 +336,7 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
     {
         ui->listSnippets->resizeColumnToContents(i);
     }
+    ui->listSnippets->setColumnWidth(1, 200);
     ui->listSnippets->setColumnWidth(2, 150);
 }
 

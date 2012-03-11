@@ -16,9 +16,6 @@ class SettingsFuncs
 public:
 
     // Get the api-adress from settings.
-    // If there isn't any adress in the
-    // settings. Use a default-adress of
-    // http://tmpn.se/api instead
     QString GetApiUrl();
 };
 // Ending of the class

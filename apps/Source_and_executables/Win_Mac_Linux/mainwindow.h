@@ -55,7 +55,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
 
     // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
-    void ShowPossiblyErrorAboutConnection();
+    bool ShowPossiblyErrorAboutConnection();
 
     // Fill the tree with snippets
     void FillListWithSnippets(QVariantList a_jsonObject);
