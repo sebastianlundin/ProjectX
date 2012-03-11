@@ -33,7 +33,7 @@ class ProfileController
             
             //Get data from user 
             $email = $user->getEmail();
-            $id = $user->getID();
+            $userId = $user->getID();
             $this->_data['isAdmin'] = AuthHandler::isAdmin();
             $this->_data['isOwner'] = AuthHandler::isOwner($email);
             $this->_data['email'] = $email;
@@ -43,27 +43,27 @@ class ProfileController
 
                 //Show created snippets by user
                 if ($page == 'created') {
-                    $this->showCreatedSnippets($id);
+                    $this->showCreatedSnippets($userId);
                 } else if ($page == 'commented') {
-                    $this->showCommentedSnippets($id);
+                    $this->showCommentedSnippets($userId);
                 } else if ($page == 'liked') {
-                    $this->showLikedSnippets($id);
+                    $this->showLikedSnippets($userId);
                 } else if ($page == 'disliked') {
-                    $this->showDislikedSnippets($id);
+                    $this->showDislikedSnippets($userId);
                 } else {
                     if($page == 'settings') {
                         // True så länge allt inte är fixat på servern
                         if(true){
                         //if(AuthHandler::isOwner($email) || AuthHandler::getRole() == 2) {
                             //Generate new Api key
-                            $this->generateApiKey($id, $email);
-                            $this->showSettingsPage($id, $user->getApiKey(), $user);
+                            $this->generateApiKey($userId, $email);
+                            $this->showSettingsPage($userId, $user->getApiKey(), $user);
                         } else {
                             $this->_data['content'] = 'You must be the owner of to do this.';
                         }
                     } else if($page == 'search') {
                         if($user->isAdmin()) {
-                            $this->showUserSearch($id);
+                            $this->showUserSearch($userId);
                         } else {
                             $this->_data['content'] = 'You must be an admin to do this.';
                         }
@@ -77,7 +77,7 @@ class ProfileController
             }
 
             //set stats of userActivities
-            $this->setStats($id);
+            $this->setStats($userId);
             //Get avatar for user
             $avatar = $this->_gravatarHandler->getProfileGravatar($email);
             $name = $user->getName();

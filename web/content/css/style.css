@@ -277,3 +277,18 @@ textarea {
  #profile-menu li:hover {
     background-color: gray;
  }
+
+ #user-activity {
+    float: left;
+    margin-left: 50px;
+ }
+
+ #profile-stats {
+    float: left;
+    width: 250px;
+    border-right: 1px solid black;
+ }
+
+ .clear {
+    clear: both;
+ }

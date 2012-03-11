@@ -8,23 +8,22 @@ class ProfileView
         $html = $this->doProfileMenu($data['isAdmin'], $data['isOwner'], $data['email']);
 
         $html .= "
-                <h3>Hi there " . $name . "</h3><br>
-                <img src='" . $avatar . "' alt='User' />
-                <div id='stats'>
-                    <p>Created snippets:" . count($data['snippets']) . "</p>
-                    <p>Commented snippets: " . count($data['comments']) . "</p>
-                    <p>Total likes: " . count($data['likes']) . "</p>
-                    <p>Total dislikes: " . count($data['dislikes']) . "</p>
-                    <p>User role: " . $user->getRoleName() . "</p>
-                    <p>Api-key: " . $user->getApiKey() . "</p>
-                    <p>UserID: " . $user->getId() . "</p>
+                <div id='profile-stats'>
+                    <h3>Hi there " . $name . "</h3><br>
+                    <img src='" . $avatar . "' alt='User' /> <br><br>
+                        <p>Created snippets:" . count($data['snippets']) . "</p>
+                        <p>Commented snippets: " . count($data['comments']) . "</p>
+                        <p>Total likes: " . count($data['likes']) . "</p>
+                        <p>Total dislikes: " . count($data['dislikes']) . "</p>
+                        <p>User role: " . $user->getRoleName() . "</p>
+                        <p>Api-key: " . $user->getApiKey() . "</p>
+                        <p>UserID: " . $user->getId() . "</p>
                 </div>
-                <br />
-                <div id='userActivity'>";
+                <div id='user-activity'>";
 
         $html .= $data['content'];
 
-        $html .= '</div>';
+        $html .= "</div><div class='clear'>";
         return $html;
     }
 
@@ -118,8 +117,11 @@ class ProfileView
     
     public function settings($apiKey, $roles = null, $currentRole = null) {
         $username = $this->getUser();
-        $html = '<span>api key ' . $apiKey . ' - </span>';
+        $html = '<h3>Settings</h3>';
+        $html .= '<h4>This is your api-key</h4>';
+        $html .= '<span>' . $apiKey . ' - </span>';
         $html .= "<a href='/profile?username=" . $username . "&p=settings&amp;api_key=generate'>Generate new</a>";
+        $html .= '<h4>This is your user role - change it if you want..</h4>';
         if($roles != null) {
             $html .= "<form action='#' method='POST' >
                         <select name='role'>";
@@ -131,8 +133,11 @@ class ProfileView
                                 }
                             }
             $html .= "</select>
-                        <input type='submit' name='changerole' />
+                        <input type='submit' value='save changes' name='changerole' />
                     </form>";
+
+            $html .= '<h4>These accounts arr connected to your login</h4>';
+            $html .= '<h4>Delete your account and remove all your connected accounts/h4>';
         }
         return $html;
     }
