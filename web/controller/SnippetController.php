@@ -6,7 +6,6 @@ require_once dirname(__FILE__) . '/../model/DbHandler.php';
 require_once dirname(__FILE__) . '/../controller/CommentController.php';
 require_once dirname(__FILE__) . '/../model/CommentHandler.php';
 require_once dirname(__FILE__) . '/../view/CommentView.php';
-require_once dirname(__FILE__) . '/../model/PagingHandler.php';
 require_once dirname(__FILE__) . '/../model/AuthHandler.php';
 
 class SnippetController
@@ -29,10 +28,10 @@ class SnippetController
 
     public function doControll($page)
     {
-        if ($page == 'list' || $page == 'search') {
+        if ($page == 'list') {
             // Show single snippet
             if (isset($_GET['snippet'])) {
-                //Check if snipept exist
+                //Check if snippet exist
                 if($snippet = $this->_snippetHandler->getSnippetByID($_GET['snippet'])) {
                     $this->_html .= $this->_snippetView->singleView($snippet);
                     if(AuthHandler::isLoggedIn()) {
@@ -40,30 +39,8 @@ class SnippetController
                     }
                     $this->_html .= $this->_commentController->doControll();
                 } else {
-                    echo 'sidan saknas';
+                    return false;
                 }
-            } else {
-                // Show list of snippets
-                if($snippets = $this->_snippetHandler->getAllSnippets()) {
-                    $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
-                    if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
-                         $_GET['pagenumber'] = 1;
-                     } else {
-                         $this->_pagingHandler->setPage($_GET['pagenumber']);
-                     }
-                     
-                     $this->_pagingHandler->setOffset($_GET['pagenumber']);
-                     
-                     if ($_GET['pagenumber'] - 1 == 0) {
-                         $this->_html .= $this->_snippetView->listView($this->_pagingHandler->fetchSnippets(), 1,$this->_pagingHandler->getLinks(), $this->_pagingHandler->getBeforeLinks(), $this->_pagingHandler->getAfterLinks(),  $this->_pagingHandler->getNext(), false, true);
-                     } else if ($_GET['pagenumber'] == $this->_pagingHandler->getTotal()) {
-                         $this->_html .= $this->_snippetView->listView($this->_pagingHandler->fetchSnippets(), $this->_pagingHandler->getPrevious(),$this->_pagingHandler->getLinks(), $this->_pagingHandler->getBeforeLinks(), $this->_pagingHandler->getAfterLinks(), $this->_pagingHandler->getTotal(), true, false);    
-                     } else {
-                         $this->_html .= $this->_snippetView->listView($this->_pagingHandler->fetchSnippets(), $this->_pagingHandler->getPrevious(),$this->_pagingHandler->getLinks(), $this->_pagingHandler->getBeforeLinks(), $this->_pagingHandler->getAfterLinks(), $this->_pagingHandler->getNext(), true, true);    
-                     }
-                 } else {
-                    echo 'url till api är fel, http_code != 200 eller fel content type';
-                 }
             }
         } else if ($page == 'add') {
             if (AuthHandler::isLoggedIn()) {
@@ -77,7 +54,7 @@ class SnippetController
                         header("Location: " . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $id);
                         exit();
                     } else {
-                        echo 'ett oväntat fel uppstod';
+                        return false;
                     }
                 }
             } else {

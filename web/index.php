@@ -1,6 +1,5 @@
 <?php
 require_once 'controller/MasterController.php';
-
 $_mc = new MasterController();
 $_html = $_mc->doControll();
 ?>
