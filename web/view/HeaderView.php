@@ -35,7 +35,7 @@ class HeaderView
                         <li>
                             <a id='about' href='#'>About</a>
                         </li>
-                        <li class ='right' id='logout-topbar'>
+                        <li class='right' id='logout-topbar'>
                             <a href='?logout=true'>Sign out</a>
                         </li>
 

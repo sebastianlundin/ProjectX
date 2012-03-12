@@ -9,8 +9,8 @@ class ProfileView
 
         $html .= "
                 <div id='profile-stats'>
-                    <h3>Hi there " . $name . "</h3><br>
-                    <img src='" . $avatar . "' alt='User' /> <br><br>
+                    <h3>Hi there " . $name . "</h3><br />
+                    <img src='" . $avatar . "' alt='User' /> <br /><br />
                         <p>Created snippets:" . count($data['snippets']) . "</p>
                         <p>Commented snippets: " . count($data['comments']) . "</p>
                         <p>Total likes: " . count($data['likes']) . "</p>
@@ -23,7 +23,7 @@ class ProfileView
 
         $html .= $data['content'];
 
-        $html .= "</div><div class='clear'>";
+        $html .= "</div><div class='clear'></div>";
         return $html;
     }
 
@@ -180,5 +180,5 @@ class ProfileView
         }
         return false;
     }
-
 }
+
