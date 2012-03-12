@@ -17,9 +17,6 @@ class HeaderView
                             <a href='index.php'>Home</a> |
                         </li>
                         <li>
-                            <a href='?page=listsnippets'>Browse</a> |
-                        </li>
-                        <li>
                             <a href='?page=addsnippet'>Add snippet</a> |
                         </li>
                         <li>
@@ -43,10 +40,10 @@ class HeaderView
                         </li>
 
                         <li class='right'>
-                            <a href='/profile'>$name</a>
+                            <a href='?page=profile'>" . $name . "</a>
                         </li>
                         <li class='right'>
-                            <img id='topAvatar' src='$userPic' alt='as' />
+                            <img id='topAvatar' src='" . $userPic . "' alt='as' />
                         </li>
                     </ul>
                 </div>
@@ -66,16 +63,13 @@ class HeaderView
                 <div class='topbar-inner'>
                     <ul class='nav'>
                         <li>
-                            <a href='index.php'>Home</a> /
-                        </li>
-                        <li>
-                            <a href='?page=listsnippets'>Snippets</a> /
+                            <a href='index.php'>Home</a> |
                         </li>
                         <li>
                             <a href='?page=listblogposts'>Blog</a> /
                         </li>
                         <li>
-                            <a href='#'>Downloads</a> /
+                            <a href='#'>Downloads</a> |
                         </li>
                         <li>
                             <a href='#'>About</a>
@@ -90,5 +84,4 @@ class HeaderView
 
         return $html;
     }
-
 }

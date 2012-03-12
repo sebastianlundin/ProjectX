@@ -18,6 +18,13 @@ class AuthHandler
         return null;
     }
 
+    public static function getApiKey() {
+        if(self::isLoggedIn()) {
+            return self::getUser()->getApiKey();
+        }
+        return false;
+    }
+
     public static function getUser()
     {
         if (isset($_SESSION['user'])) {
@@ -44,7 +51,7 @@ class AuthHandler
 
     public static function isOwner($email)
     {
-        if (isset($_SESSION['user'])) {
+        if (self::isLoggedIn()) {
             if ($_SESSION['user']->getEmail() == $email) {
                 return true;
             }

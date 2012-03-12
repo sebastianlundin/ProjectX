@@ -21,13 +21,10 @@ class SnippetView
 		</div>
 		<div class='snippet-author'>
 			<span>Posted by " . $snippet->getAuthor();
-        
-        var_dump($snippet);
-        
-		if (AuthHandler::isLoggedIn() && $snippet->getAuthorID() === 2) {
+        if (AuthHandler::isLoggedIn() && $snippet->getAuthorID() === AuthHandler::getUser()->getId()) {
 		    $html .= "<a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
 		    <a href='?page=updatesnippet&snippet=" . $snippet->getID() . "'>Update</a>";
-        }
+	    }
 		
 		$html .= "</span>
 	          </div>";
@@ -40,7 +37,7 @@ class SnippetView
      * @param array $aSnippets is an array of snippets
      * @return string
      */
-    public function listView($snippets, $previousLink, $links, $beforeLinks, $afterLinks, $nextLink, $showPrevious, $showNext)
+    public function listView($snippets)
     {
         $html = '<h1>Snippets</h1>';
 
@@ -55,41 +52,6 @@ class SnippetView
                     </div>
                 </div>
             ';
-        }
-
-        if ($showPrevious == true) {
-            if($_GET['pagenumber'] != 2) {
-                $html .= ' | <a href="?page=listsnippets&pagenumber=1">First</a> ';    
-            }
-            
-            $html .= ' | <a href="?page=listsnippets&pagenumber=' . $previousLink . '"><</a> | ';
-        }
-        if (isset($_GET['pagenumber'])) {
-            foreach ($beforeLinks as $i) {
-                if ($i > 0) {
-                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '">' . $i . '</a> ';    
-                }
-            }
-
-            foreach ($links as $i) {
-                if ($i == $_GET['pagenumber']) {
-                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '"><span id="activePage">' . $i . '</span></a> ';
-                }
-            }
-
-            foreach ($afterLinks as $i) {
-                if ($i < (count($links) + 1 )) {
-                    $html .= '<a href="?page=listsnippets&pagenumber=' . $i . '">' . $i . '</a> ';    
-                }
-            }
-        }
-        
-        if ($showNext == true) {
-            $html .= ' | <a href="?page=listsnippets&pagenumber=' . $nextLink . '">></a> ';
-            
-            if ($_GET['pagenumber'] != (count($links) - 1)) {
-                $html .= ' | <a href="?page=listsnippets&pagenumber=' . count($links). '">Last</a> | ';
-            }    
         }
         
         return $html;
@@ -137,19 +99,23 @@ class SnippetView
      * @param int $snippet_id, array $rating with total, likes and dislikes
      * @return string
      */
-    public function rateSnippet($snippet_id, $user_id,$rating) {
+    public function rateSnippet($snippet_id, $user_id, $rating) {
         $html = '<div id="rating">
                     <button name="like" type="button" id="like"><img src="content/image/like.png" title="Like!" /></button>
                     <button name="dislike" type="button" id="dislike"><img src="content/image/dislike.png" title="Dislike!" /></button>
                 
                     <div id="ratingbars">
-                        <div class="likes" style="width: ' . ($rating['total'] != 0 ? round($rating['likes'] / $rating['total'] * 100) : 0) . '%"></div>
-                        <div class="dislikes" style="width: ' . ($rating['total'] != 0 ? round($rating['dislikes'] / $rating['total'] * 100) : 0) . '%"></div>
+                        <div id="likes" style="width: ' . ($rating['total'] != 0 ? round($rating['likes'] / $rating['total'] * 100) : 0) . '%"></div>
+                        <div id="dislikes" style="width: ' . ($rating['total'] != 0 ? round($rating['dislikes'] / $rating['total'] * 100) : 0) . '%"></div>
                     </div>
-                    <p>' . $rating['likes'] . ' likes, ' . $rating['dislikes'] . ' dislikes</p>
+                    <p id="test">' . $rating['likes'] . ' likes, ' . $rating['dislikes'] . ' dislikes</p>
                     <div id="message"></div>
                 </div>';
         $html .= "<script>
+                    var likes = " . $rating['likes'] . ";
+                    var dislikes = " . $rating['dislikes'] . ";
+                    var total = " . $rating['total'] . ";
+
                     $('#like').click(function(){
                          $.ajax({ type: 'POST',
                             url: 'model/RateSnippet.php',
@@ -160,7 +126,13 @@ class SnippetView
                             },
                             dataType: 'html',
                             success: function(data) {
-                                $('#message').html(data);
+                                if (data === '1') {
+                                    $('#test').html((likes + 1) + ' likes, ' + dislikes + ' dislikes');
+                                    $('#likes').css('width', ((total + 1) != 0 ? Math.round(((likes + 1) / (total + 1)) * 100) : 0) + '%');
+                                    $('#message').html('<p>Thank you for voting!</p>');
+                                } else if (data === '0') {
+                                    $('#message').html('<p>You have already voted on this snippet</p>');
+                                }
                             }
                         });
                     });
@@ -174,7 +146,13 @@ class SnippetView
                             },
                             dataType: 'html',
                             success: function(data) {
-                                $('#message').html(data);
+                                if (data === '1') {
+                                    $('#test').html(likes + ' likes, ' + (dislikes + 1) + ' dislikes');
+                                    $('#dislikes').css('width', ((total + 1) != 0 ? Math.round(((dislikes + 1) / (total + 1)) * 100) : 0) + '%');
+                                    $('#message').html('<p>Thank you for voting!</p>');
+                                } else if (data === '0') {
+                                    $('#message').html('<p>You have already voted on this snippet</p>');
+                                }
                             }
                         });
                     });
