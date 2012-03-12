@@ -73,7 +73,7 @@ class ProfileController
 
                 }
             } else {
-                $this->_data['content'] = '';
+                $this->showCreatedSnippets($userId);
             }
 
             //set stats of userActivities
