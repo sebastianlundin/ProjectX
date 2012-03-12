@@ -23,9 +23,16 @@ class HeaderView
                             <a href='?page=addsnippet'>Add snippet</a> |
                         </li>
                         <li>
-                            <a href='#'>News</a> |
-                        </li>
-                        <li>
+                            <a href='?page=listblogposts'>Blog</a> |
+                        </li>";
+                        
+                        if (Authhandler::isAdmin()) {
+                            $html .= "<li>
+                                <a href='?page=addblogpost'>Add blogpost</a> |
+                            </li>";    
+                        }
+                        
+                        $html .= "<li>
                             <a href='#'>Downloads</a> |
                         </li>
                         <li>
@@ -65,7 +72,7 @@ class HeaderView
                             <a href='?page=listsnippets'>Snippets</a> /
                         </li>
                         <li>
-                            <a href='#'>News</a> /
+                            <a href='?page=listblogposts'>Blog</a> /
                         </li>
                         <li>
                             <a href='#'>Downloads</a> /

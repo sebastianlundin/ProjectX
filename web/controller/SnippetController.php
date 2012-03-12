@@ -38,7 +38,7 @@ class SnippetController
                 }
                 $this->_html .= $this->_commentController->doControll();
             } else {
-               $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 3);
+               $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getAllSnippets(), 1, 10);
                if (isset($_GET['pagenumber']) == false || $_GET['pagenumber'] < 1) {        
                     $_GET['pagenumber'] = 1;
                 } else {
