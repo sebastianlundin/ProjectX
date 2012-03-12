@@ -118,7 +118,7 @@ class ProfileView
     public function settings($apiKey, $roles = null, $currentRole = null) {
         $username = $this->getUser();
         $html = '<h3>Settings</h3>';
-        $html .= '<h4>This is your api-key</h4>';
+        $html .= "<h4>This is your api-key <img class='info' data-info='Use the api-key to verify yourself' src='/content/image/info.png' height='15px' width='15px' alt='info'/></h4>";
         $html .= '<span>' . $apiKey . ' - </span>';
         $html .= "<a href='/profile?username=" . $username . "&p=settings&amp;api_key=generate'>Generate new</a>";
         $html .= '<h4>This is your user role - change it if you want..</h4>';

@@ -289,6 +289,42 @@ textarea {
     border-right: 1px solid black;
  }
 
+ #info-popup-bg {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: black;
+    z-index: 10;
+ }
+
+ #info-popup {
+    position: absolute;
+    padding: 1px 5px 5px 5px;
+    width: 250px;
+    min-height: 50px;
+    background-color: white;
+    z-index: 20;
+ }
+
+ #info-popup h4 {
+    margin: 0px;
+    width: 100%;
+    padding: 4px 0px 0px 0;
+    text-align: center;
+    background-color: #4671D5;
+ }
+
+ #info-popup p {
+    padding-top: 10px;
+    text-align: center;
+ }
+
+ #info-popup img {
+    position: absolute;
+    right: -20px;
+    top: -15px;
+ }
+
  .clear {
     clear: both;
  }
