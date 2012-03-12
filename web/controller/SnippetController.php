@@ -51,13 +51,13 @@ class SnippetController
     
                 if ($this->_snippetView->triedToCreateSnippet()) {
                     $authID = AuthHandler::getUser()->getID();
-                    $snippet = new Snippet(2, $authID, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate());
+                    $authName = AuthHandler::getUser()->getName();
+                    $snippet = new Snippet($authID, $authName, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate(), 'ett språk');
                     if($id = $this->_snippetHandler->createSnippet($snippet)){
                         header("Location: " . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $id);
                         exit();
-                    } else {
-                        return false;
                     }
+                    $this->_html .= "<h1>Ett fel uppstod men din snippet kan ha skapats</h1> snygg felhantering...";
                 }
             } else {
                 $this->_html = "<p>You must sign in to add a snippet.</p>";

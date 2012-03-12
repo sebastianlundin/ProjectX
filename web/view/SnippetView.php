@@ -40,8 +40,8 @@ class SnippetView
                     <input type="text" name="snippetTitle" placeholder="Title" />
                     <input type="text" name="snippetDescription" placeholder="Description" />
                     <select name="snippetLanguage">
-                        <option>Choose language</option>';
-        foreach ($languages as &$languages) {
+                        <option >Choose language</option>';
+        foreach ($languages as $languages) {
             $html .= '<option value="' . $languages['id'] . '">' . $languages['name'] . '</option>';
         }
         $html .= '</select>

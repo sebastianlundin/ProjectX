@@ -166,6 +166,7 @@ class SnippetHandler
             return false;
         }
 
+        if(!is_numeric($result->id)) return false;
         return $result->id;
     }
 
