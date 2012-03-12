@@ -15,7 +15,7 @@ class Snippet
     private $_updated;
     private $_language;
 
-    public function __construct($authorID, $author, $code, $title, $desc, $languageID, $created, $updated, $id = null, $language)
+    public function __construct($authorID, $author, $code, $title, $desc, $languageID, $created, $updated, $language, $id = null)
     {
         if ($id != null) {
             $this->_id = $id;

@@ -88,7 +88,7 @@ class SnippetHandler
             $stmt->execute();
             $stmt->bind_result($id, $title, $description, $lang);
             while ($stmt->fetch()) {
-                $snippet = new Snippet(null, null, $title, $description, $lang, null, null, $id);
+                $snippet = new Snippet(null, null, $title, $description, $lang, null, null, null, $id);
                 array_push($snippetArr, $snippet);
             }
             $stmt->close();
