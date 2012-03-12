@@ -311,11 +311,12 @@ textarea {
     width: 100%;
     padding: 4px 0px 0px 0;
     text-align: center;
-    background-color: #4671D5;
+    background-color: green;
  }
 
  #info-popup p {
     padding-top: 10px;
+    padding-bottom: 5px;
     text-align: center;
  }
 

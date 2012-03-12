@@ -118,7 +118,7 @@ class ProfileView
     public function settings($apiKey, $roles = null, $currentRole = null) {
         $username = $this->getUser();
         $html = '<h3>Settings</h3>';
-        $html .= "<h4>This is your api-key <img class='info' data-info='Use the api-key to verify yourself' src='/content/image/info.png' height='15px' width='15px' alt='info'/></h4>";
+        $html .= "<h4>This is your api-key <img class='info' data-info='Use the api-key to verify yourself in the desktop app' src='/content/image/info.png' alt='info'/></h4>";
         $html .= '<span>' . $apiKey . ' - </span>';
         $html .= "<a href='/profile?username=" . $username . "&p=settings&amp;api_key=generate'>Generate new</a>";
         $html .= '<h4>This is your user role - change it if you want..</h4>';
@@ -136,8 +136,8 @@ class ProfileView
                         <input type='submit' value='save changes' name='changerole' />
                     </form>";
 
-            $html .= '<h4>These accounts arr connected to your login</h4>';
-            $html .= '<h4>Delete your account and remove all your connected accounts/h4>';
+            $html .= '<h4>These accounts are connected to your login</h4>';
+            $html .= '<h4>Delete your account and remove all your connected accounts</h4>';
         }
         return $html;
     }
