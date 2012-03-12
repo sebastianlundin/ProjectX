@@ -59,6 +59,15 @@ class AuthHandler
         return false;
     }
 
+    public static function isOwnerByID($id) {
+        if (self::isLoggedIn()) {
+            if ($_SESSION['user']->getId() == $id  || self::isAdmin()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static function isAdmin() {
         if(self::getRole() == 2){
             return true;

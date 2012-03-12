@@ -33,7 +33,9 @@ class SnippetController
             if (isset($_GET['snippet'])) {
                 //Check if snippet exist
                 if($snippet = $this->_snippetHandler->getSnippetByID($_GET['snippet'])) {
-                    $this->_html .= $this->_snippetView->singleView($snippet);
+                    //Check if user is admin or owner of snippet
+                    $isOwner = AuthHandler::isOwnerByID($snippet->getAuthorId());
+                    $this->_html .= $this->_snippetView->singleView($snippet, $isOwner);
                     if(AuthHandler::isLoggedIn()) {
                         $this->_html .= $this->_snippetView->rateSnippet($_GET['snippet'], AuthHandler::getUser()->getId(), $this->_snippetHandler->getSnippetRating($_GET['snippet']));  
                     }
@@ -62,11 +64,16 @@ class SnippetController
             }
         } else if ($page == 'update') {
             $this->_html = null;
-            $this->_html .= $this->_snippetView->updateSnippet($this->_snippetHandler->getSnippetByID($_GET['snippet']));
+            $snippet = $this->_snippetHandler->getSnippetByID($_GET['snippet']);
+            $this->_html .= $this->_snippetView->updateSnippet($snippet);
             
             if ($this->_snippetView->triedToUpdateSnippet()) {
-                $this->_snippetHandler->updateSnippet($this->_snippetView->getUpdateSnippetName(), $this->_snippetView->getUpdateSnippetCode(), $this->_snippetView->getUpdateSnippetDesc(), $_GET['snippet'], $this->_snippetHandler->SetDate());
-                $_GET['page'] = 'listsnippets';
+                $snippet->setTitle($this->_snippetView->getUpdateSnippetName());
+                $snippet->setCode($this->_snippetView->getUpdateSnippetCode());
+                $snippet->setDesc($this->_snippetView->getUpdateSnippetDesc());
+                $snippet->setUpdatedDate($this->_snippetHandler->SetDate());
+                
+                $this->_snippetHandler->updateSnippet($snippet);
                 header("Location: " . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $_GET['snippet']);
                 exit();
             }

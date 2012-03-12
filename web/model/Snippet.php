@@ -15,7 +15,7 @@ class Snippet
     private $_updated;
     private $_language;
 
-    public function __construct($authorID, $author, $code, $title, $desc, $languageID, $created, $updated, $id = null, $language)
+    public function __construct($authorID, $author, $code, $title, $desc, $languageID, $created, $updated, $language, $id = null)
     {
         if ($id != null) {
             $this->_id = $id;
@@ -132,6 +132,26 @@ class Snippet
     public function getUpdatedDate()
     {
         return $this->_updated;
+    }
+    
+    public function setTitle($title)
+    {
+        $this->_title = $title;
+    }
+    
+    public function setCode($code)
+    {
+        $this->_code = $code;
+    }
+    
+    public function setDesc($desc)
+    {
+        $this->_desc = $desc;
+    }
+    
+    public function setUpdatedDate($updated)
+    {
+        $this->_updated = $updated;
     }
 
 }
