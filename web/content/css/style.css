@@ -1,10 +1,21 @@
 /*
  * BODY
  * ---------------------------- */
+html,body{height:100%}
+    #container{
+    height:100%;
+    min-height:100%;
+    background:red;
+    }
+    html>body #container{height:auto}/* not ie6- */
+
+ 
+ 
 body {
     font-family: Arial;
     font-size: 13px;
     background: #19556f;
+    height:100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -86,6 +97,9 @@ input, textarea, select  {
     background: #fff;
     padding: 10px;
     margin: 0 auto;
+    background-image:url('../image/paper.png');
+	background-repeat:no-repeat;
+	min-height:90%;
 }
 
 a {
@@ -102,12 +116,12 @@ a {
 
 .content .search {
     text-align: center;
-    margin: 100px 0 50px;
+    margin: 100px 0 100px;
 }
 
 .content .search img {
     display: block;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 60px auto;
 }
 
 .content .search input[type="text"] {
@@ -139,7 +153,10 @@ a {
  * ---------------------------- */
 .snippet-list-item {
     border-top: dashed 1px #ddd;
-    margin: 5px 0;
+    margin: 5px 5px;
+    width:930px;
+    text-align:center;
+    
 }
 
 .snippet-title {
@@ -190,13 +207,13 @@ a {
     margin: 5px 0;
 }
 
-#ratingbars .likes { 
+#ratingbars #likes { 
     background-color: #7FAF1B;
     float: left;
     height: 5px;
 }
 
-#ratingbars .dislikes {
+#ratingbars #dislikes {
     background-color: #A40802;
     float: left;
     height: 5px;
@@ -289,6 +306,10 @@ textarea {
     border-right: 1px solid black;
  }
 
+ /*
+  * INFO POPUL
+  * ---------------------------- */
+
  #info-popup-bg {
     position: absolute;
     top: 0px;
@@ -328,4 +349,10 @@ textarea {
 
  .clear {
     clear: both;
- }
+}
+
+#result img {
+	position:relative;
+	bottom:130px;
+	left:610px;
+}
