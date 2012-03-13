@@ -87,8 +87,7 @@ void SettingsDialog::on_saveButton_clicked()
     bool isAddressValid = regexCode1.exactMatch(ui2->apiAddressField->text());
     bool isActiveKeyValid = regexCode1.exactMatch(ui2->apiAddressField->text());
 
-    // Save values, if the fields got thru the regex
-    if (isAddressValid == true && isActiveKeyValid == true)
+    if (isAddressValid == true && isActiveKeyValid == true && ui2->apiAddressField->text() != "")
     {
         QSettings settings("ProjectX", "Snippt");
         settings.beginGroup("SnipptSettings");
@@ -119,6 +118,10 @@ void SettingsDialog::on_saveButton_clicked()
     {
         QMessageBox::warning(this, "Active key is not valid!", "Active key is not valid!\n\nOnly letters, plus and numbers is supported.\n\nTry again!");
     }
+    else if (ui2->apiAddressField->text() == "")
+    {
+        QMessageBox::warning(this, "No api adress!", "You haven't filled in an address to the API!\n\nTry again!");
+    }
 }
 
 // Close the window
@@ -143,5 +146,14 @@ void SettingsDialog::on_enableDisableGlobalShortcuts_clicked()
 // Clear the cache from all files in there
 void SettingsDialog::on_clearCacheButton_clicked()
 {
-
+    if (this->fileFuncs->DeleteAllCacheFilesAndDirectory() == true)
+    {
+        QMessageBox::information(this, "Cache files/folder deleted!", "All files and folders have been deleted!");
+        emit this->ClearCache();
+    }
+    else
+    {
+        QMessageBox::warning(this, "Cache files/folder not deleted!", "The cache (files and folder) have not been deleted!\n\n"
+                             "You can delete the folder and its files manually by removing the directory snippt_cache_files in your userfolder!");
+    }
 }

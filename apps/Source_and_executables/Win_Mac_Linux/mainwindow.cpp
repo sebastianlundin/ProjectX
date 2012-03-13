@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->listSnippets->setSortingEnabled(true);
 
     // Populate the list with previous searches, with exactly what it is - old searches
-    this->ListSearchFiles();
+    this->ListSearchFiles(); // REMEMBER TO COMMENT THIS WHEN BUILDING THE APP FOR WINDOWS
 
     // Setup some sort of eventlisteners with signal and slots
 
@@ -88,6 +88,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // When the preferences dialog saves its settings for storing it, update the settings in realtime
     // so the application can use directly
     connect(this->settingsDialog, SIGNAL(UpdateKeyboardSettings()), this, SLOT(KeyboardActions()));
+
+    // When the cache is cleared from the preferences dialog, update the interface for this window
+    connect(this->settingsDialog, SIGNAL(ClearCache()), this, SLOT(UpdateInterface()));
 
     // When the user clicks a header, sort the list of snippets by that selected column
     connect(ui->listSnippets->header(), SIGNAL(sectionClicked(int)), this, SLOT(SortSnippetsByColumn(int)));
@@ -380,6 +383,7 @@ MainWindow::~MainWindow()
     disconnect(ui->listSnippets, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(ShowSelectedSnippet(QTreeWidgetItem*,int)));
     disconnect(ui->previousSearchesList, SIGNAL(currentIndexChanged(int)), this, SLOT(FillListWithPrevSearches(int)));
     disconnect(ui->listSnippets->header(), SIGNAL(sectionClicked(int)), this, SLOT(SortSnippetsByColumn(int)));
+    disconnect(this->settingsDialog, SIGNAL(ClearCache()), this, SLOT(UpdateInterface()));
     delete this->apiFuncs;
     delete this->jsonFuncs;
     delete this->cacheFuncs;
@@ -617,7 +621,7 @@ void MainWindow::on_deleteSelectedPrevSearch_clicked()
     QString itemSearchFile = ui->previousSearchesList->itemData(selectedItemIndex).toString(); // File with json-data in it
 
     // Delete the file and celar some fields
-    if (this->fileFuncs->DeleteFile(itemSearchFile))
+    if (this->fileFuncs->DeleteFile(itemSearchFile) == true)
     {
         ui->previousSearchesList->removeItem(selectedItemIndex);
         ui->previousSearchesList->setCurrentIndex(0);
@@ -632,5 +636,19 @@ void MainWindow::on_deleteSelectedPrevSearch_clicked()
         {
             this->ShowAndHideElementsWithNewSearch();
         }
+    }
+}
+
+// When the cache is cleared update the interface (gui) by
+// clearing all input-fields and so on
+void MainWindow::UpdateInterface()
+{
+    if (ui->previousSearchesList->count() == 1)
+    {
+        ui->previousSearchesList->clear();
+        ui->listSnippets->clear();
+        this->ListSearchFiles();
+        this->ClearFields();
+        this->ShowAndHideElementsWithNewSearch();
     }
 }

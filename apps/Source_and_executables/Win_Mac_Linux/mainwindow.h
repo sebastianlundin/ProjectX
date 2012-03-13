@@ -122,6 +122,10 @@ private slots:
 
     // Delete a selected previous search
     void on_deleteSelectedPrevSearch_clicked();
+
+    // When the cache is cleared update the interface (gui) by
+    // clearing all input-fields and so on
+    void UpdateInterface();
 };
 // Ending of the class
 

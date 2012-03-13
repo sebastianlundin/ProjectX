@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'settingsdialog.ui'
 **
-** Created: Tue Mar 13 07:32:37 2012
+** Created: Tue Mar 13 09:19:33 2012
 **      by: Qt User Interface Compiler version 4.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -33,12 +33,16 @@ public:
     QGroupBox *settingsFrame;
     QGridLayout *gridLayout_2;
     QLineEdit *apiAddressField;
-    QFrame *frame;
+    QFrame *frameGlobalShortcut;
     QGridLayout *gridLayout_3;
     QCheckBox *enableDisableGlobalShortcuts;
     QLabel *keyboardShortcutActiveLabel;
     QLineEdit *activeShortcutField;
     QLabel *apiAddressLabel;
+    QFrame *frameClearCache;
+    QGridLayout *gridLayout_4;
+    QLabel *clearCacheLabel;
+    QPushButton *clearCacheButton;
     QPushButton *saveButton;
     QPushButton *closeButton;
 
@@ -47,14 +51,14 @@ public:
         if (SettingsDialog->objectName().isEmpty())
             SettingsDialog->setObjectName(QString::fromUtf8("SettingsDialog"));
         SettingsDialog->setWindowModality(Qt::NonModal);
-        SettingsDialog->resize(500, 250);
+        SettingsDialog->resize(500, 340);
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(SettingsDialog->sizePolicy().hasHeightForWidth());
         SettingsDialog->setSizePolicy(sizePolicy);
-        SettingsDialog->setMinimumSize(QSize(500, 250));
-        SettingsDialog->setMaximumSize(QSize(500, 250));
+        SettingsDialog->setMinimumSize(QSize(500, 340));
+        SettingsDialog->setMaximumSize(QSize(500, 340));
         QFont font;
         font.setPointSize(11);
         SettingsDialog->setFont(font);
@@ -81,20 +85,20 @@ public:
 
         gridLayout_2->addWidget(apiAddressField, 2, 0, 1, 1);
 
-        frame = new QFrame(settingsFrame);
-        frame->setObjectName(QString::fromUtf8("frame"));
-        frame->setFrameShape(QFrame::StyledPanel);
-        frame->setFrameShadow(QFrame::Raised);
-        gridLayout_3 = new QGridLayout(frame);
+        frameGlobalShortcut = new QFrame(settingsFrame);
+        frameGlobalShortcut->setObjectName(QString::fromUtf8("frameGlobalShortcut"));
+        frameGlobalShortcut->setFrameShape(QFrame::StyledPanel);
+        frameGlobalShortcut->setFrameShadow(QFrame::Raised);
+        gridLayout_3 = new QGridLayout(frameGlobalShortcut);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        enableDisableGlobalShortcuts = new QCheckBox(frame);
+        enableDisableGlobalShortcuts = new QCheckBox(frameGlobalShortcut);
         enableDisableGlobalShortcuts->setObjectName(QString::fromUtf8("enableDisableGlobalShortcuts"));
         enableDisableGlobalShortcuts->setFont(font);
         enableDisableGlobalShortcuts->setFocusPolicy(Qt::StrongFocus);
 
         gridLayout_3->addWidget(enableDisableGlobalShortcuts, 0, 0, 1, 1);
 
-        keyboardShortcutActiveLabel = new QLabel(frame);
+        keyboardShortcutActiveLabel = new QLabel(frameGlobalShortcut);
         keyboardShortcutActiveLabel->setObjectName(QString::fromUtf8("keyboardShortcutActiveLabel"));
         keyboardShortcutActiveLabel->setFont(font);
         keyboardShortcutActiveLabel->setLineWidth(2);
@@ -102,14 +106,14 @@ public:
 
         gridLayout_3->addWidget(keyboardShortcutActiveLabel, 1, 0, 1, 1);
 
-        activeShortcutField = new QLineEdit(frame);
+        activeShortcutField = new QLineEdit(frameGlobalShortcut);
         activeShortcutField->setObjectName(QString::fromUtf8("activeShortcutField"));
         activeShortcutField->setFont(font);
 
         gridLayout_3->addWidget(activeShortcutField, 2, 0, 1, 1);
 
 
-        gridLayout_2->addWidget(frame, 3, 0, 1, 1);
+        gridLayout_2->addWidget(frameGlobalShortcut, 3, 0, 1, 1);
 
         apiAddressLabel = new QLabel(settingsFrame);
         apiAddressLabel->setObjectName(QString::fromUtf8("apiAddressLabel"));
@@ -122,6 +126,29 @@ public:
         apiAddressLabel->setLineWidth(4);
 
         gridLayout_2->addWidget(apiAddressLabel, 1, 0, 1, 1);
+
+        frameClearCache = new QFrame(settingsFrame);
+        frameClearCache->setObjectName(QString::fromUtf8("frameClearCache"));
+        frameClearCache->setFrameShape(QFrame::StyledPanel);
+        frameClearCache->setFrameShadow(QFrame::Raised);
+        gridLayout_4 = new QGridLayout(frameClearCache);
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
+        clearCacheLabel = new QLabel(frameClearCache);
+        clearCacheLabel->setObjectName(QString::fromUtf8("clearCacheLabel"));
+        clearCacheLabel->setFont(font);
+        clearCacheLabel->setLineWidth(2);
+        clearCacheLabel->setWordWrap(true);
+
+        gridLayout_4->addWidget(clearCacheLabel, 0, 0, 1, 1);
+
+        clearCacheButton = new QPushButton(frameClearCache);
+        clearCacheButton->setObjectName(QString::fromUtf8("clearCacheButton"));
+        clearCacheButton->setFont(font);
+
+        gridLayout_4->addWidget(clearCacheButton, 1, 0, 1, 1);
+
+
+        gridLayout_2->addWidget(frameClearCache, 4, 0, 1, 1);
 
 
         gridLayout->addWidget(settingsFrame, 0, 0, 1, 2);
@@ -154,10 +181,14 @@ public:
     {
         SettingsDialog->setWindowTitle(QApplication::translate("SettingsDialog", "Preferences", 0, QApplication::UnicodeUTF8));
         settingsFrame->setTitle(QString());
-        enableDisableGlobalShortcuts->setText(QApplication::translate("SettingsDialog", "Enable global shortcuts", 0, QApplication::UnicodeUTF8));
+        enableDisableGlobalShortcuts->setText(QApplication::translate("SettingsDialog", "Enable global shortcuts (also activates copy snippet with: Ctrl+Alt+C)", 0, QApplication::UnicodeUTF8));
         keyboardShortcutActiveLabel->setText(QApplication::translate("SettingsDialog", "Choose a keyboard shortcut for make the app active \n"
 "(for example: Ctrl+l):", 0, QApplication::UnicodeUTF8));
+        activeShortcutField->setPlaceholderText(QApplication::translate("SettingsDialog", "Fill in a keyboard shortcut if you want to use this feature", 0, QApplication::UnicodeUTF8));
         apiAddressLabel->setText(QApplication::translate("SettingsDialog", "Api address (for example http://tmpn.se/api):", 0, QApplication::UnicodeUTF8));
+        clearCacheLabel->setText(QApplication::translate("SettingsDialog", "Clear the cache\n"
+" (if you wan't to be sure all files are gone regarding searches and snippets):", 0, QApplication::UnicodeUTF8));
+        clearCacheButton->setText(QApplication::translate("SettingsDialog", "Clear cache", 0, QApplication::UnicodeUTF8));
         saveButton->setText(QApplication::translate("SettingsDialog", "Save changes and close this window", 0, QApplication::UnicodeUTF8));
         closeButton->setText(QApplication::translate("SettingsDialog", "Close without saving", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

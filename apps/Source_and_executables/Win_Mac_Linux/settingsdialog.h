@@ -57,6 +57,10 @@ signals:
     // When settings are updated, update the mainwindow
     // with the api address and keyboardsettings
     void UpdateKeyboardSettings();
+
+    // When the cache is cleared, send a signal to mainwindow
+    // for updating the interface
+    void ClearCache();
 };
 // Ending of the class
 

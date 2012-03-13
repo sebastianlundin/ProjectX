@@ -132,6 +132,9 @@
              <pointsize>11</pointsize>
             </font>
            </property>
+           <property name="placeholderText">
+            <string>Fill in a keyboard shortcut if you want to use this feature</string>
+           </property>
           </widget>
          </item>
         </layout>
