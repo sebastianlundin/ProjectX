@@ -138,9 +138,7 @@ void MainWindow::ShowAllElements()
     this->setMinimumHeight(470);
     this->resize(909, 470);
     this->CenterWindow();
-    this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    // Show the title, closebutton, minimizebutton and maximizebutton for the window
-    this->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint | Qt::CustomizeWindowHint);
+    this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     this->show();
 }
 
@@ -168,6 +166,7 @@ void MainWindow::ShowAndHideElementsWithNewSearch()
     ui->copySnippet->hide();
 
     this->setMinimumHeight(160);
+    this->setMaximumHeight(160);
     this->resize(1, 1);
     this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     // Show the title, closebutton and the minimizebutton only

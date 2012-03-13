@@ -43,7 +43,7 @@ macx: INCLUDEPATH += $$PWD/libs/executables/macosx
 macx: DEPENDPATH += $$PWD/libs/executables/macosx
 
 # Includes the qjson-lib for Windows
-win32: LIBS += -L$$PWD/libs/executables/windows -lqjson
+win32: LIBS += -L$$PWD/libs/executables/windows -lqjson0
 
 # Includes the libqxt-libs for Windows
 win32: LIBS += -L$$PWD/libs/executables/windows -lQxtCore
