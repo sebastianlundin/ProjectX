@@ -339,18 +339,14 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
     }
 
     // Set witdh of columns
-    for(int i = 0; i < 8; i++)
-    {
-        ui->listSnippets->resizeColumnToContents(i);
-    }
-    ui->listSnippets->setColumnWidth();
-    ui->listSnippets->setColumnWidth(1, 200);
-    ui->listSnippets->setColumnWidth(2, 150);
-    ui->listSnippets->setColumnWidth(5, 90);
-    ui->listSnippets->setColumnWidth(6, 90);
-    ui->listSnippets->setColumnWidth(7, 10);
-    ui->listSnippets->setColumnWidth(8, 10);
-    ui->listSnippets->resizeColumnToContents(5);
+    ui->listSnippets->setColumnWidth(0, 120);
+    ui->listSnippets->setColumnWidth(1, 180);
+    ui->listSnippets->setColumnWidth(2, 80);
+    ui->listSnippets->setColumnWidth(3, 80);
+    ui->listSnippets->setColumnWidth(4, 125);
+    ui->listSnippets->setColumnWidth(5, 125);
+    ui->listSnippets->setColumnWidth(6, 80);
+    ui->listSnippets->setColumnWidth(7, 80);
 }
 
 // List files of cached searches
