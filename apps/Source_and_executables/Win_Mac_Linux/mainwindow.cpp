@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Set the headers for the treeview, who holds the snippets and its categories
     QStringList snippetListHeaders;
-    snippetListHeaders << "Languages" << "Title" << "Description" << "By user" << "Added/Changed" << "Rating";
+    snippetListHeaders << "Languages" << "Title" << "Description" << "By user" << "Created" << "Updated" << "Thumbs Up" << "Thumbs Down";
     ui->listSnippets->setHeaderLabels(snippetListHeaders);
 
     // Test the connection to the api (thru another method in another class), and show a message, if its an error with it
@@ -305,8 +305,10 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
         QString id = map.value("id").toString(); // Id for the snippet
         QString description = map.value("description").toString(); // Description for the snippet
         QString username = map.value("username").toString(); // Username for the snippet
-        QString date = map.value("date").toString(); // Date and time for the snippet
-        QString rating = map.value("rating").toString(); // Rating for the snippet
+        QString date = map.value("date").toString(); // Date and time for the snippet (When was the snippet created)
+        QString update = map.value("updated").toString(); // Date and time for the snippet (When was the snippet updated)
+        QString thumbsup = map.value("thumbsup").toString(); // If the user likes the snippet
+        QString thumbsdown = map.value("thumbsdown").toString(); // If the user don't likes the snippet
 
         // Point to the items in tree
         QList<QTreeWidgetItem*> items = ui->listSnippets->findItems(language, Qt::MatchExactly, 0);
@@ -329,18 +331,26 @@ void MainWindow::FillListWithSnippets(QVariantList a_jsonObject)
         child->setText(2, description);
         child->setText(3, username);
         child->setText(4, date);
-        child->setText(5, rating);
+        child->setText(5, update);
+        child->setText(6, thumbsup);
+        child->setText(7, thumbsdown);
         QVariant idData(id);
         child->setData(1, Qt::UserRole,idData); // Set the id of every snippet to its own title (hidden data)
     }
 
     // Set witdh of columns
-    for(int i = 0; i < 6; i++)
+    for(int i = 0; i < 8; i++)
     {
         ui->listSnippets->resizeColumnToContents(i);
     }
+    ui->listSnippets->setColumnWidth();
     ui->listSnippets->setColumnWidth(1, 200);
     ui->listSnippets->setColumnWidth(2, 150);
+    ui->listSnippets->setColumnWidth(5, 90);
+    ui->listSnippets->setColumnWidth(6, 90);
+    ui->listSnippets->setColumnWidth(7, 10);
+    ui->listSnippets->setColumnWidth(8, 10);
+    ui->listSnippets->resizeColumnToContents(5);
 }
 
 // List files of cached searches
@@ -392,7 +402,7 @@ void MainWindow::on_aboutSnippt_triggered()
 {
     QMessageBox::about(this, "About Snippt", "Snippt is a platform for searching snippets of code thru "
                        "an API and some client-applications for the web etc.\n\n"
-                       "This is the client for Windows/Mac OS X/Linux");
+                       "This is the client for Windows and Mac OS X");
 }
 
 // Open preferences dialog
@@ -575,7 +585,7 @@ void MainWindow::SortSnippetsByColumn(int a_column)
     // Sort snippets by ascending order
     if (ui->listSnippets->header()->sortIndicatorOrder() == Qt::AscendingOrder)
     {
-        for(int i = 0; i < 6; i++)
+        for(int i = 0; i < 8; i++)
         {
             ui->listSnippets->sortItems(i, Qt::AscendingOrder);
         }
