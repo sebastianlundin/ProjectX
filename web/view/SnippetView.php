@@ -25,6 +25,11 @@ class SnippetView
 		    $html .= "<a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
 		    <a href='?page=updatesnippet&snippet=" . $snippet->getID() . "'>Update</a>";
 	    }
+        $html .= '<br /><a id="report" href="#">Report this snippet!</a>';
+        $html .= '<div id="report-wrap"><form action="#" method="POST" name="reportsnippet">
+                    <textarea placeholder="What is wrong with the snippet?" name="report-message"></textarea>
+                    <input type="submit" name="send-report" value="Report!" />
+                </form></div>';
 		
 		$html .= "</span>
 	          </div>";
@@ -65,9 +70,9 @@ class SnippetView
                     <input type="text" name="snippetTitle" placeholder="Title" />
                     <input type="text" name="snippetDescription" placeholder="Description" />
                     <select name="snippetLanguage">
-                        <option >Choose language</option>';
-        foreach ($languages as $languages) {
-            $html .= '<option value="' . $languages['id'] . '">' . $languages['name'] . '</option>';
+                        <option>Choose language</option>';
+        foreach ($languages as $language) {
+            $html .= '<option value="' . $language->getLangId() . '">' . $language->getLanguage() . '</option>';
         }
         $html .= '</select>
                     <textarea name="createSnippetCodeInput" maxlength="1500" placeholder="Your snippet"></textarea>
@@ -129,6 +134,7 @@ class SnippetView
                                 if (data === '1') {
                                     $('#test').html((likes + 1) + ' likes, ' + dislikes + ' dislikes');
                                     $('#likes').css('width', ((total + 1) != 0 ? Math.round(((likes + 1) / (total + 1)) * 100) : 0) + '%');
+                                    $('#dislikes').css('width', ((total + 1) != 0 ? Math.round(((dislikes) / (total + 1)) * 100) : 0) + '%');
                                     $('#message').html('<p>Thank you for voting!</p>');
                                 } else if (data === '0') {
                                     $('#message').html('<p>You have already voted on this snippet</p>');
@@ -149,6 +155,7 @@ class SnippetView
                                 if (data === '1') {
                                     $('#test').html(likes + ' likes, ' + (dislikes + 1) + ' dislikes');
                                     $('#dislikes').css('width', ((total + 1) != 0 ? Math.round(((dislikes + 1) / (total + 1)) * 100) : 0) + '%');
+                                    $('#likes').css('width', ((total + 1) != 0 ? Math.round(((likes) / (total + 1)) * 100) : 0) + '%');
                                     $('#message').html('<p>Thank you for voting!</p>');
                                 } else if (data === '0') {
                                     $('#message').html('<p>You have already voted on this snippet</p>');
@@ -310,6 +317,14 @@ class SnippetView
     {
         if (isset($_POST['gotoCreateSnippetViewButton'])) {
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getReportMessage() {
+        if (isset($_POST['report-message'])) {
+            return $_POST['report-message'];
         } else {
             return false;
         }
