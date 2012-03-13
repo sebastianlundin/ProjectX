@@ -10,7 +10,7 @@ DisableDirPage=yes
 DefaultGroupName=Snippt
 DisableProgramGroupPage=yes
 OutputDir=C:\Documents and Settings\Administrator\Desktop
-OutputBaseFilename=Snippt_1.0
+OutputBaseFilename=Snippt
 Compression=lzma
 SolidCompression=yes
 
