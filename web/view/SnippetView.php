@@ -12,13 +12,16 @@ class SnippetView
     {
         $sh = new Functions();
         
-        $html = "<h2 class='snippet-title'>" . $snippet->getTitle() . "</h2>
+        $html = "<h2 class='snippet-title' id='snippetTitle'>" . $snippet->getTitle() . "</h2>
 		<div class='snippet-description'>
 			<p>" . $snippet->getDesc() . "</p>	
 		</div>
-		<div class='snippet-code'>
-			<code>" . $sh->geshiHighlight($snippet->getCode(), $snippet->getLanguage()) . "</code>
+		<div class='snippet-code' id='snippet-text'>
+			<code id='code' class='snippet-text'>" . $sh->geshiHighlight($snippet->getCode(), $snippet->getLanguage()) . "</code>
 		</div>
+
+        <div id='hidden'>".$snippet->getCode()."</div>
+        
 		<div class='snippet-author'>
 			<span>Posted by " . $snippet->getAuthor();
         if ($isOwner ){
@@ -28,9 +31,29 @@ class SnippetView
 		
 		$html .= "</span>
 	          </div>";
+              
+        $html .= "  <form action='' method='post'>
+                        <input type='submit' name='sendSnippetByMail' id='mail' value='Send Snippet by Mail' />
+                    </form>";
         
         return $html;
     }
+    
+    public function mailView()
+    {
+        $html = '<div class="mail">
+            		<form id="formmail" action="" method ="POST">
+            			<label>Your mail :</label>
+            			<input type="text" name="mail" id="mailAddress" />
+            			<input type="submit" id="sendByMail" name="sendByMail" value="send mail" />
+            		</form>
+                    <div id="response">
+                    </div>
+        	</div>';
+
+        return $html;
+    }    
+
 
     /**
      * Transform an array of snippets to html-code
@@ -160,7 +183,7 @@ class SnippetView
                 
         return $html;
     }
-
+    
     public function triedToCreateSnippet()
     {
         if (isset($_POST['createSnippetSaveButton'])) {
@@ -314,5 +337,23 @@ class SnippetView
             return false;
         }
     }
+    
+    public function sendByMail()
+    {
+        if (isset($_POST['sendByMail'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }      
+    
+    public function wantsToSendByMail()
+    {
+        if (isset($_POST['sendSnippetByMail'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }  
 
 }

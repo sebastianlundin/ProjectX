@@ -9,10 +9,18 @@ class Settings
 
     public function __construct()
     {
-        $this->_dbname = "projectX";
-        $this->_password = "";
-        $this->_host = "localhost";
-        $this->_username = "root";
+//        $this->_dbname = "maxstudio_se";
+//        $this->_password = "fFTyUhzc";
+//        $this->_host = "localhost";
+//        $this->_username = "maxstudio_se";
+//        $this->_dbname = "longislanddiver";
+//        $this->_password = "87TDufgU";
+//        $this->_host = "longislanddivers.com.mysql";
+//        $this->_username = "longislanddiver";
+            $this->_dbname = "lillansgardiner";
+            $this->_password = "4cKMLj3j";
+            $this->_host = "lillansgardiner.se.mysql";
+            $this->_username = "lillansgardiner";
     }
 
     /**
