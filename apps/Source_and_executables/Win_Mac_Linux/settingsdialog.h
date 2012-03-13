@@ -27,6 +27,12 @@ public:
     // Constructor
     explicit SettingsDialog(QWidget *parent = 0);
 
+    // Close the window, and shows a box if the API address is not filled in
+    void CloseWindow();
+
+    // When a user closes the window with the button in the titlebar
+    void closeEvent(QCloseEvent *a_event);
+
     // Destructor
     ~SettingsDialog();
     

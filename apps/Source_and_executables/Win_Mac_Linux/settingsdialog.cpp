@@ -72,6 +72,27 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::S
     this->fileFuncs = new FileFuncs();
 }
 
+// Close the window, and shows a box if the API address is not filled in
+void SettingsDialog::CloseWindow()
+{
+    if (ui2->apiAddressField->text() == "")
+    {
+        QMessageBox::warning(this, "No api adress!", "You haven't filled in an address to the API!\n\nTry again!");
+        ui2->apiAddressField->setFocus();
+    }
+    else
+    {
+        this->close();
+    }
+}
+
+// Listen to events in the window. This one listens to when the window closes
+// and shows a box if the API address is not filled in
+void SettingsDialog::closeEvent(QCloseEvent *a_event)
+{
+    this->CloseWindow();
+}
+
 // Destruktor
 SettingsDialog::~SettingsDialog()
 {
@@ -108,7 +129,7 @@ void SettingsDialog::on_saveButton_clicked()
 
         QMessageBox::information(this, "Preferences", "Preferences has been saved!");
         emit UpdateKeyboardSettings();
-        this->close();
+        this->CloseWindow();
     }
     else if (isAddressValid == false)
     {
@@ -127,7 +148,7 @@ void SettingsDialog::on_saveButton_clicked()
 // Close the window
 void SettingsDialog::on_closeButton_clicked()
 {
-    this->close();
+    this->CloseWindow();
 }
 
 // Enables/disables the keyboard shortcut field
@@ -150,6 +171,7 @@ void SettingsDialog::on_clearCacheButton_clicked()
     {
         QMessageBox::information(this, "Cache files/folder deleted!", "All files and folders have been deleted!");
         emit this->ClearCache();
+        this->close();
     }
     else
     {

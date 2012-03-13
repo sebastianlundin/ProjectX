@@ -39,7 +39,8 @@ private:
     CacheFuncs *cacheFuncs; // Pointer to the CacheFuncs-class
     SettingsFuncs *settingsFuncs; // Pointer to the SettingsFuncs-class
     FileFuncs *fileFuncs; // Pointer to the FileFuncs-class
-    QTimer *animationTimer; // Pointer to QTimer-class
+    QTimer *animationTimer; // Pointer to QTimer-class (For the Searching...-animation)
+    QTimer *animationTimer2; // Pointer to QTimer-class (For the Loading...-animation)
     QxtGlobalShortcut *keyboardShortcutActiveKey; // Pointer to the QxtGlobalShortcut-class (for set the window as active)
     QxtGlobalShortcut *keyboardShortcutCopyKey; // Pointer to the QxtGlobalShortcut-class (for copy a selected snippet to clipboard)
     SettingsDialog *settingsDialog; // Pointer to the SettingsDialog-class
@@ -94,6 +95,10 @@ private slots:
     // Update the search animation with dots and stop the timer if the api
     // find something to put inside the tree with snippets
     void UpdateSearchAnimation();
+
+    // Update loading animation for a snippet, so the user knows that a snippet is loading from
+    // the api or the cache
+    void UpdateLoadSnippetAnimation();
 
     // Show the selected snippet
     void ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column);

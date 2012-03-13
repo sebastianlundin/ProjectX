@@ -169,12 +169,9 @@ bool FileFuncs::DeleteAllCacheFilesAndDirectory()
             dir.remove(files.at(file).fileName());
         }
 
-        // If the folder is empty, remove the folder as well
-        if (dir.count() == 0)
-        {
-            dir.rmdir(dir.path());
-            return true;
-        }
+        // Remove the folder as well
+        dir.rmdir(dir.path());
+        return true;
     }
     return false;
 }

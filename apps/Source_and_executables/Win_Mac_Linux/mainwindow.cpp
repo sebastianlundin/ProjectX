@@ -40,7 +40,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->cacheFuncs = new CacheFuncs(); // Instance of the CacheFuncs-class
     this->settingsFuncs = new SettingsFuncs(); // Instance of the SettingsFuncs-class
     this->fileFuncs = new FileFuncs(); // Instance of the FileFuncs-class
-    this->animationTimer = new QTimer(this); // Instance of the QTimer-class
+    this->animationTimer = new QTimer(this); // Instance of the QTimer-class (For the Searching...-animation)
+    this->animationTimer2 = new QTimer(this); // Instance of the QTimer-class (For the Loading...-animation)
     this->keyboardShortcutActiveKey = new QxtGlobalShortcut(this); // Instance of the QxtGlobalShortcut-class
     this->keyboardShortcutCopyKey = new QxtGlobalShortcut(this); // Instance of the QxtGlobalShortcut-class
     this->settingsDialog = new SettingsDialog(); // Instance of the SettingsDialog-class
@@ -96,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->listSnippets->header(), SIGNAL(sectionClicked(int)), this, SLOT(SortSnippetsByColumn(int)));
 
     // Listen for events regarding the mainwindow (not globally)
-    this->installEventFilter(this);
+    this->installEventFilter(this); // REMEMBER TO COMMENT THIS WHEN BUILDING FOR WINDOWS
 
     // Show just a few elements (like searchfield, searchbutton, previous searches and deletebutton) in the window
     this->ShowAndHideElementsWithNewSearch();
@@ -390,6 +391,7 @@ MainWindow::~MainWindow()
     delete this->settingsFuncs;
     delete this->fileFuncs;
     delete this->animationTimer;
+    delete this->animationTimer2;
     delete this->keyboardShortcutActiveKey;
     delete this->keyboardShortcutCopyKey;
     delete this->settingsDialog;
@@ -471,9 +473,27 @@ void MainWindow::UpdateSearchAnimation()
     }
 }
 
+// Update loading animation for a snippet, so the user knows that a snippet is loading from
+// the api or the cache
+void MainWindow::UpdateLoadSnippetAnimation()
+{
+    QString oldText = ui->selectedSnippetLabel->text();
+    ui->selectedSnippetLabel->setText(oldText + ".");
+
+    if (ui->selectedSnippet->toPlainText() != "")
+    {
+        this->animationTimer2->stop();
+        ui->selectedSnippetLabel->setText("Selected snippet:");
+    }
+}
+
 // Show the selected snippet
 void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 {
+    connect(this->animationTimer2, SIGNAL(timeout()), this, SLOT(UpdateLoadSnippetAnimation()));
+    ui->selectedSnippetLabel->setText("Loading");
+    animationTimer2->start(500); // Update the timer every half second
+
     // Get the hidden id about the snippet (from the title)
     // so the loaded snippet code can have its own uniq name
     QString cacheSelectedSnippetFilename = a_item->data(1, Qt::UserRole).toString();
@@ -617,7 +637,6 @@ void MainWindow::on_searchSnippet_clicked()
 void MainWindow::on_deleteSelectedPrevSearch_clicked()
 {
     int selectedItemIndex = ui->previousSearchesList->currentIndex(); // Get current selected search in previous searches
-    QString itemSearchString = ui->previousSearchesList->itemText(selectedItemIndex).toUtf8(); // Searchstring
     QString itemSearchFile = ui->previousSearchesList->itemData(selectedItemIndex).toString(); // File with json-data in it
 
     // Delete the file and celar some fields
@@ -643,12 +662,9 @@ void MainWindow::on_deleteSelectedPrevSearch_clicked()
 // clearing all input-fields and so on
 void MainWindow::UpdateInterface()
 {
-    if (ui->previousSearchesList->count() == 1)
-    {
-        ui->previousSearchesList->clear();
-        ui->listSnippets->clear();
-        this->ListSearchFiles();
-        this->ClearFields();
-        this->ShowAndHideElementsWithNewSearch();
-    }
+    ui->previousSearchesList->clear();
+    ui->listSnippets->clear();
+    this->ListSearchFiles();
+    this->ClearFields();
+    this->ShowAndHideElementsWithNewSearch();
 }
