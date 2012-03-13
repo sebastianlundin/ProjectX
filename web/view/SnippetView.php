@@ -25,6 +25,11 @@ class SnippetView
 		    $html .= "<a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
 		    <a href='?page=updatesnippet&snippet=" . $snippet->getID() . "'>Update</a>";
 	    }
+        $html .= '<br /><a id="report" href="#">Report this snippet!</a>';
+        $html .= '<div id="report-wrap"><form action="#" method="POST" name="reportsnippet">
+                    <textarea placeholder="What is wrong with the snippet?" name="report-message"></textarea>
+                    <input type="submit" name="send-report" value="Report!" />
+                </form></div>';
 		
 		$html .= "</span>
 	          </div>";
@@ -310,6 +315,14 @@ class SnippetView
     {
         if (isset($_POST['gotoCreateSnippetViewButton'])) {
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getReportMessage() {
+        if (isset($_POST['report-message'])) {
+            return $_POST['report-message'];
         } else {
             return false;
         }

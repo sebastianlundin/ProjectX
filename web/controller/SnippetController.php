@@ -44,6 +44,16 @@ class SnippetController
                     return false;
                 }
             }
+            if(isset($_POST['send-report'])) {
+                $userId = -1;
+                $message = $this->_snippetView->getReportMessage();
+                $snippetId = $_GET['snippet'];
+                if(AuthHandler::isLoggedIn()) {
+                    $userId = AuthHandler::getUser()->getId();
+                } 
+                $this->_snippetHandler->reportSnippet($snippetId, $userId, $message); 
+                
+            }
         } else if ($page == 'add') {
             if (AuthHandler::isLoggedIn()) {
                 $this->_html = null;
