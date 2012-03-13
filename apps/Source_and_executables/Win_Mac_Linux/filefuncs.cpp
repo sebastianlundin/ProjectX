@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QDateTime>
+#include <QFileInfoList>
 
 // Get the absolute path for the folder with cache-files (~/snippets_cache/files/)
 QString FileFuncs::GetUserDir()
@@ -151,5 +152,29 @@ bool FileFuncs::DeleteFile(QString a_filename)
     }
 
     file.close();
+    return false;
+}
+
+// Deletes directory with cache-files
+bool FileFuncs::DeleteAllCacheFilesAndDirectory()
+{
+    if (this->CheckIfCacheDirExists() == true)
+    {
+        QDir dir(this->GetUserDir());
+        QFileInfoList files = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files);
+
+        // Deletes all files in the folder
+        for(int file=0; file < files.count(); file++)
+        {
+            dir.remove(files.at(file).fileName());
+        }
+
+        // If the folder is empty, remove the folder as well
+        if (dir.count() == 0)
+        {
+            dir.rmdir(dir.path());
+            return true;
+        }
+    }
     return false;
 }

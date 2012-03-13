@@ -44,6 +44,9 @@ public:
 
     // Delete the selected cache-file
     bool DeleteFile(QString a_filename);
+
+    // Deletes directory with cache-files
+    bool FileFuncs::DeleteAllCacheFilesAndDirectory();
 };
 // Ending of the class
 
