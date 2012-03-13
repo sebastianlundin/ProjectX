@@ -9,6 +9,7 @@
 #include <QDialog>
 #include <QObject>
 #include <QEvent>
+#include "filefuncs.h"
 
 // Namespace for the class
 namespace Ui {
@@ -41,9 +42,13 @@ private slots:
     // Enables/disables the keyboard shortcut field
     void on_enableDisableGlobalShortcuts_clicked();
 
-// Member variables of the class
+    // Clear the cache from all files in there
+    void on_clearCacheButton_clicked();
+
+// Member variables for the class
 private:
     Ui::SettingsDialog *ui2; // Pointer to the interface-file (settingsdialog)
+    FileFuncs *fileFuncs; // Pointer to the FileFuncs-class
 
 // Signals for the class (a signal is a thing, like a event to listen for and opens a
 // slot (a method) when its cached)

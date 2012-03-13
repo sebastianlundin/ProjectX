@@ -67,12 +67,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent), ui2(new Ui::S
     regexCode2.setCaseSensitivity(Qt::CaseInsensitive);
     regexValidator2->setRegExp(regexCode2);
     ui2->activeShortcutField->setValidator(regexValidator2);
+
+    // Creating an instance of the FileFuncs-class, so we can clear the cache from files
+    this->fileFuncs = new FileFuncs();
 }
 
 // Destruktor
 SettingsDialog::~SettingsDialog()
 {
-    delete ui2;
+    delete this->fileFuncs; // Deletes the instance of the FileFuncs-class
+    delete ui2; // Deletes the GUI from memory
 }
 
 // Save the given settings and close the window
@@ -134,4 +138,10 @@ void SettingsDialog::on_enableDisableGlobalShortcuts_clicked()
     {
         ui2->activeShortcutField->setEnabled(true);
     }
+}
+
+// Clear the cache from all files in there
+void SettingsDialog::on_clearCacheButton_clicked()
+{
+
 }
