@@ -38,6 +38,8 @@ class CommentHandler
      */
     private function getJson($url) {
         if($content = @file_get_contents($url)) {
+            $header = get_headers($url);
+            if($header[0] != 'HTTP/1.1 200 OK') return false;
             if($json = json_decode($content)) {
                 return $json;
             }
@@ -47,7 +49,7 @@ class CommentHandler
     }
 
     public function getComments($id) {
-        $url = $this->_api->GetURL() . 'comments?snippetid=' . $id;  
+        $url = $this->_api->GetURL() . 'comments?snippetid=' . $id;
         if($json = $this->getJson($url)) {
             $comments = array();
             foreach($json as $j) {

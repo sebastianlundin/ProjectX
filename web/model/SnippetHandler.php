@@ -299,6 +299,23 @@ class SnippetHandler
 
         return $rating;
     }
+
+    public function reportSnippet($snippetId, $userId, $message) {
+        $this->_dbHandler->__wakeup();
+        $result = false;
+        if($stmt = $this->_dbHandler->prepareStatement("INSERT INTO reported_snippet (message, user_id, snippet_id) VALUES (?,?,?)")){
+            $stmt->bind_param('sii', $message, $userId, $snippetId);
+            $stmt->execute();
+            $stmt->store_result();
+            if($stmt->affected_rows == 1) {
+                $result = true;
+            }
+        } 
+
+        $this->_dbHandler->close();
+        $stmt->close();
+        return $result;
+    }
     
     public function SetDate()
     {
