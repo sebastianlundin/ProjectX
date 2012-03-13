@@ -4,6 +4,7 @@ require_once 'DbHandler.php';
 require_once 'Snippet.php';
 require_once 'API.php';
 require_once 'AuthHandler.php';
+require_once 'Language.php';
 
 class SnippetHandler
 {
@@ -222,26 +223,16 @@ class SnippetHandler
      */
     public function getLanguageByID($id)
     {
-        $language = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet_language WHERE id = ?")) {
-
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-
-            $stmt->bind_result($id, $name);
-            while ($stmt->fetch()) {
-                $language = array('id' => $id, 'name' => $name);
+        $language = null;
+        $url = $this->_api->GetURL() . "languages?languageid=" . $id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $language = new Language($j->languageId, $j->language);
             }
-
-            $stmt->close();
-
-        } else {
-            return null;
+            return $language;
         }
-        $this->_dbHandler->Close();
-        return $language;
-
+        return false;
     }
 
     /**
@@ -250,24 +241,16 @@ class SnippetHandler
      */
     public function getLanguages()
     {
-        $languages = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet_language")) {
-            $stmt->execute();
-
-            $stmt->bind_result($id, $name);
-            while ($stmt->fetch()) {
-                $language = array('id' => $id, 'name' => $name);
-                array_push($languages, $language);
+        $languages = null;
+        $url = $this->_api->GetURL() . "languages";
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $languages[] = new Language($j->languageId, $j->language);
             }
-
-            $stmt->close();
-
-        } else {
-            return null;
+            return $languages;
         }
-        $this->_dbHandler->Close();
-        return $languages;
+        return false;
     }
 
     /**
@@ -277,27 +260,18 @@ class SnippetHandler
      */
     public function getSnippetRating($id)
     {
-        $rating = array();
-
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT COUNT(IF(`rating` = 1, 1, null)) AS Likes, COUNT(IF(`rating` = 0, 1, null)) AS Dislikes FROM `rating` WHERE `snippetId` = ?")) {
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-
-            $stmt->bind_result($likes, $dislikes);
-            if ($stmt->fetch()) {
-                $rating['total'] = $likes + $dislikes;
-                $rating['likes'] = $likes;
-                $rating['dislikes'] = $dislikes;
+        $rating = null;
+        $url = $this->_api->GetURL() . "snippets?id=" . $id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $rating['total'] = $j->thumbsup + $j->thumbsdown;
+                $rating['likes'] = $j->thumbsup;
+                $rating['dislikes'] = $j->thumbsdown;
             }
-
-            $stmt->close();
-
+            return $rating;
         }
-
-        $this->_dbHandler->Close();
-
-        return $rating;
+        return false;
     }
     
     public function SetDate()
