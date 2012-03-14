@@ -28,6 +28,10 @@ Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\Qt
 Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QtNetwork4.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QxtCore.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\QxtGui.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\msvcp100.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\msvcp100d.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\msvcr100.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Documents and Settings\Administrator\Desktop\Snippt_install\Filer\msvcr100d.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\Snippt"; Filename: "{app}\Snippt.exe"
