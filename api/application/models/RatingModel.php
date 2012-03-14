@@ -1,4 +1,11 @@
 <?php
+// 
+//  RatingModel.php
+//  ProjectX
+//  
+//  Created by Pontus & Tomas on 2012-03-12.
+//  Copyright 2012 Pontus & Tomas. All rights reserved.
+//
 
 require_once APPLICATION_PATH . '/helpers/DbHandler.php';
 require_once 'RequestObjectRating.php';
@@ -44,9 +51,9 @@ class RatingModel
             }
             $stmt->execute();
 
-            $stmt->bind_result($ratingId, $snippetId, $userId, $rating, $rating_created_date, $username, $email, $apikey);
+            $stmt->bind_result($ratingId, $snippetId, $userId, $rating, $rating_created_date, $username, $apikey, $title);
             while ($stmt->fetch()) {
-                $rating = array('ratingId' => $ratingId, 'snippetId' => $snippetId, 'userId' =>
+                $rating = array('ratingId' => $ratingId, 'snippetId' => $snippetId, 'title' => $title, 'userId' =>
                     $userId, 'rating' => $rating, 'rating_created_date' => $rating_created_date, 'username' => $username);
                 array_push($ratings, $rating);
             }
@@ -58,7 +65,7 @@ class RatingModel
         if (count($ratings) > 0) {
             return $ratings;
         } else {
-            throw new RestException(404);
+            throw new RestException(204);
         }
     }
 
@@ -78,7 +85,7 @@ class RatingModel
     private function validateSnippetOwner($userId, $snippetid)
     {
         $this->_dbHandler->__wakeup();
-        $databaseQuery = $this->_dbHandler->PrepareStatement("SELECT userid FROM snippet WHERE id = ?");
+        $databaseQuery = $this->_dbHandler->PrepareStatement("SELECT userId FROM snippet WHERE id = ?");
         $databaseQuery->bind_param('s', $snippetid);
         $databaseQuery->execute();
         $databaseQuery->bind_result($snippetUserId);
@@ -95,7 +102,7 @@ class RatingModel
     private function hasAlreadyBeenRated($userId, $snippetid)
     {
         $this->_dbHandler->__wakeup();
-        $databaseQuery = $this->_dbHandler->PrepareStatement("SELECT userid FROM rating WHERE snippetId = ? AND userId = ?");
+        $databaseQuery = $this->_dbHandler->PrepareStatement("SELECT userId FROM rating WHERE snippetId = ? AND userId = ?");
         $databaseQuery->bind_param('ss', $snippetid, $userId);
         $databaseQuery->execute();
         
@@ -150,7 +157,7 @@ class RatingModel
 
 
         if ($this->validateUser($userid, $apikey)) {
-            if ($databaseQuery = $this->_dbHandler->PrepareStatement("UPDATE rating SET rating= ? WHERE ratingid = ? AND userid = ?")) {
+            if ($databaseQuery = $this->_dbHandler->PrepareStatement("UPDATE rating SET rating= ? WHERE ratingId = ? AND userId = ?")) {
                 $databaseQuery->bind_param('sss', $rating, $ratingid, $userid);
                 $databaseQuery->execute();
                 if ($databaseQuery->affected_rows == null) {
@@ -181,7 +188,7 @@ class RatingModel
         
 
         if ($this->validateUser($userid, $apikey)) {
-            if ($databaseQuery = $this->_dbHandler->PrepareStatement("DELETE FROM rating WHERE ratingid = ? AND userid = ?")) {
+            if ($databaseQuery = $this->_dbHandler->PrepareStatement("DELETE FROM rating WHERE ratingId = ? AND userId = ?")) {
                 $databaseQuery->bind_param('ii', $ratingid, $userid);
                 $databaseQuery->execute();
                 if ($databaseQuery->affected_rows == null) {

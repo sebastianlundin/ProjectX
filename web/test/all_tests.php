@@ -14,6 +14,7 @@ class AllTests extends TestSuite
         $this->addFile(dirname(__FILE__) . '/FunctionsTest.php');
         $this->addFile(dirname(__FILE__) . '/SnippetTest.php');
         $this->addFile(dirname(__FILE__) . '/PagingTest.php');
+        $this->addFile(dirname(__FILE__) . '/BlogTest.php');
     }
 
 }

@@ -1,7 +1,15 @@
 <?php
+// 
+//  RequestObjectComment.php
+//  ProjectX
+//  
+//  Created by Pontus & Tomas on 2012-03-12.
+//  Copyright 2012 Pontus & Tomas. All rights reserved.
+//
 
 class RequestObjectComment
 {
+	private $_userid;
     private $_username;
     private $_date;
     private $_sort;
@@ -23,7 +31,8 @@ class RequestObjectComment
     
     public function __construct()
     {
-        $this->_username = null;
+        $this->_userid = null;
+    	$this->_username = null;
         $this->_date = null;
         $this->_sort = null;
         $this->_language = null;
@@ -72,9 +81,12 @@ class RequestObjectComment
         }
     }
     
+    //This fuctions is used to create dynamic calls for snippets without the 
+    //concern of parameter order. 
     public function select()
     {
-        $select = "SELECT commentId, snippetId, comment.userId, comment, comment_created_date, username, email, apikey FROM comment LEFT JOIN user on comment.userid = user.userid";
+        $select = "	SELECT commentId, snippetId, comment.userId, comment, comment_created_date, user.username, apikey, title
+        			FROM comment LEFT JOIN user on comment.userid = user.userid LEFT JOIN snippet on comment.snippetId = snippet.id";
         $type = '';
         $paramvalue = array();
 
@@ -86,7 +98,11 @@ class RequestObjectComment
         foreach ($this as $key => $value) {
             if ($value != null) {
                 if ($key != '_datefrom' && $key != '_dateto' && $key != '_sort' && $key != '_desc' && $key != '_page' && $key != '_limit') {					
-					if ($first) {
+					if ($key == '_userid') {
+						$key = '_comment.userid';
+					}
+                	
+                	if ($first) {
 						if ($key == '_date') {
 							$select .= ' WHERE DATE(comment_created_date) = ?';
 						} else {

@@ -8,7 +8,7 @@ class SnippetView
      * @param Snippet a snippet Object
      * @return String
      */
-    public function singleView($snippet)
+    public function singleView($snippet, $isOwner)
     {
         $sh = new Functions();
         
@@ -21,12 +21,43 @@ class SnippetView
 		</div>
 		<div class='snippet-author'>
 			<span>Posted by " . $snippet->getAuthor();
-        
+        if ($isOwner ){
 		    $html .= "<a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
 		    <a href='?page=updatesnippet&snippet=" . $snippet->getID() . "'>Update</a>";
+	    }
+        $html .= '<br /><a id="report" href="#">Report this snippet!</a>';
+        $html .= '<div id="report-wrap"><form action="#" method="POST" name="reportsnippet">
+                    <textarea placeholder="What is wrong with the snippet?" name="report-message"></textarea>
+                    <input type="submit" name="send-report" value="Report!" />
+                </form></div>';
 		
 		$html .= "</span>
 	          </div>";
+        
+        return $html;
+    }
+
+    /**
+     * Transform an array of snippets to html-code
+     * @param array $aSnippets is an array of snippets
+     * @return string
+     */
+    public function listView($snippets)
+    {
+        $html = '<h1>Snippets</h1>';
+
+        foreach ($snippets as $snippet) {
+            $html .= '
+                <div class="snippet-list-item">
+                    <div class="snippet-title">
+                        <p><a href="?page=listsnippets&snippet=' . $snippet->getID() . '">' . $snippet->getTitle() . '</a></p>
+                    </div>
+                    <div class="snippet-author">
+                        <p>' . $snippet->getDesc() . '</p>
+                    </div>
+                </div>
+            ';
+        }
         
         return $html;
     }
@@ -39,9 +70,9 @@ class SnippetView
                     <input type="text" name="snippetTitle" placeholder="Title" />
                     <input type="text" name="snippetDescription" placeholder="Description" />
                     <select name="snippetLanguage">
-                        <option>Choose language</option>';
-        foreach ($languages as &$languages) {
-            $html .= '<option value="' . $languages['id'] . '">' . $languages['name'] . '</option>';
+                        <option >Choose language</option>';
+        foreach ($languages as $language) {
+            $html .= '<option value="' . $language->getLangId() . '">' . $language->getLanguage() . '</option>';
         }
         $html .= '</select>
                     <textarea name="createSnippetCodeInput" maxlength="1500" placeholder="Your snippet"></textarea>
@@ -73,19 +104,23 @@ class SnippetView
      * @param int $snippet_id, array $rating with total, likes and dislikes
      * @return string
      */
-    public function rateSnippet($snippet_id, $user_id,$rating) {
+    public function rateSnippet($snippet_id, $user_id, $rating) {
         $html = '<div id="rating">
                     <button name="like" type="button" id="like"><img src="content/image/like.png" title="Like!" /></button>
                     <button name="dislike" type="button" id="dislike"><img src="content/image/dislike.png" title="Dislike!" /></button>
                 
                     <div id="ratingbars">
-                        <div class="likes" style="width: ' . ($rating['total'] != 0 ? round($rating['likes'] / $rating['total'] * 100) : 0) . '%"></div>
-                        <div class="dislikes" style="width: ' . ($rating['total'] != 0 ? round($rating['dislikes'] / $rating['total'] * 100) : 0) . '%"></div>
+                        <div id="likes" style="width: ' . ($rating['total'] != 0 ? round($rating['likes'] / $rating['total'] * 100) : 0) . '%"></div>
+                        <div id="dislikes" style="width: ' . ($rating['total'] != 0 ? round($rating['dislikes'] / $rating['total'] * 100) : 0) . '%"></div>
                     </div>
-                    <p>' . $rating['likes'] . ' likes, ' . $rating['dislikes'] . ' dislikes</p>
+                    <p id="test">' . $rating['likes'] . ' likes, ' . $rating['dislikes'] . ' dislikes</p>
                     <div id="message"></div>
                 </div>';
         $html .= "<script>
+                    var likes = " . $rating['likes'] . ";
+                    var dislikes = " . $rating['dislikes'] . ";
+                    var total = " . $rating['total'] . ";
+
                     $('#like').click(function(){
                          $.ajax({ type: 'POST',
                             url: 'model/RateSnippet.php',
@@ -96,7 +131,14 @@ class SnippetView
                             },
                             dataType: 'html',
                             success: function(data) {
-                                $('#message').html(data);
+                                if (data === '1') {
+                                    $('#test').html((likes + 1) + ' likes, ' + dislikes + ' dislikes');
+                                    $('#likes').css('width', ((total + 1) != 0 ? Math.round(((likes + 1) / (total + 1)) * 100) : 0) + '%');
+                                    $('#dislikes').css('width', ((total + 1) != 0 ? Math.round(((dislikes) / (total + 1)) * 100) : 0) + '%');
+                                    $('#message').html('<p>Thank you for voting!</p>');
+                                } else if (data === '0') {
+                                    $('#message').html('<p>You have already voted on this snippet</p>');
+                                }
                             }
                         });
                     });
@@ -110,7 +152,14 @@ class SnippetView
                             },
                             dataType: 'html',
                             success: function(data) {
-                                $('#message').html(data);
+                                if (data === '1') {
+                                    $('#test').html(likes + ' likes, ' + (dislikes + 1) + ' dislikes');
+                                    $('#dislikes').css('width', ((total + 1) != 0 ? Math.round(((dislikes + 1) / (total + 1)) * 100) : 0) + '%');
+                                    $('#likes').css('width', ((total + 1) != 0 ? Math.round(((likes) / (total + 1)) * 100) : 0) + '%');
+                                    $('#message').html('<p>Thank you for voting!</p>');
+                                } else if (data === '0') {
+                                    $('#message').html('<p>You have already voted on this snippet</p>');
+                                }
                             }
                         });
                     });
@@ -268,6 +317,14 @@ class SnippetView
     {
         if (isset($_POST['gotoCreateSnippetViewButton'])) {
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getReportMessage() {
+        if (isset($_POST['report-message'])) {
+            return $_POST['report-message'];
         } else {
             return false;
         }

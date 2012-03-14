@@ -20,15 +20,22 @@ class HeaderView
                             <a href='?page=addsnippet'>Add snippet</a> |
                         </li>
                         <li>
-                            <a href='#'>News</a> |
-                        </li>
-                        <li>
+                            <a href='?page=listblogposts'>Blog</a> |
+                        </li>";
+                        
+                        if (Authhandler::isAdmin()) {
+                            $html .= "<li>
+                                <a href='?page=addblogpost'>Add blogpost</a> |
+                            </li>";    
+                        }
+                        
+                        $html .= "<li>
                             <a href='#'>Downloads</a> |
                         </li>
                         <li>
-                            <a href='#'>About</a>
+                            <a id='about' href='#'>About</a>
                         </li>
-                        <li class ='right' id='logout-topbar'>
+                        <li class='right' id='logout-topbar'>
                             <a href='?logout=true'>Sign out</a>
                         </li>
 
@@ -59,13 +66,13 @@ class HeaderView
                             <a href='index.php'>Home</a> |
                         </li>
                         <li>
-                            <a href='#'>News</a> |
+                            <a href='?page=listblogposts'>Blog</a> /
                         </li>
                         <li>
                             <a href='#'>Downloads</a> |
                         </li>
                         <li>
-                            <a href='#'>About</a>
+                            <a id='about' href='#'>About</a>
                         </li>
                         <li class='right'>
                             <a class='janrainEngage' href='#'>Sign in</a>
@@ -77,5 +84,4 @@ class HeaderView
 
         return $html;
     }
-
 }
