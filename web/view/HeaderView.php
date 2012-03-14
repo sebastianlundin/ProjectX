@@ -17,29 +17,33 @@ class HeaderView
                             <a href='index.php'>Home</a> |
                         </li>
                         <li>
-                            <a href='?page=listsnippets'>Browse</a> |
-                        </li>
-                        <li>
                             <a href='?page=addsnippet'>Add snippet</a> |
                         </li>
                         <li>
-                            <a href='#'>News</a> |
-                        </li>
-                        <li>
+                            <a href='?page=listblogposts'>Blog</a> |
+                        </li>";
+                        
+                        if (Authhandler::isAdmin()) {
+                            $html .= "<li>
+                                <a href='?page=addblogpost'>Add blogpost</a> |
+                            </li>";    
+                        }
+                        
+                        $html .= "<li>
                             <a href='#'>Downloads</a> |
                         </li>
                         <li>
-                            <a href='#'>About</a>
+                            <a id='about' href='#'>About</a>
                         </li>
-                        <li class ='right' id='logout-topbar'>
-                            <a href='?logout=true'>Logga ut</a>
+                        <li class='right' id='logout-topbar'>
+                            <a href='?logout=true'>Sign out</a>
                         </li>
 
                         <li class='right'>
-                            <a href='/profile'>$name</a>
+                            <a href='?page=profile'>" . $name . "</a>
                         </li>
                         <li class='right'>
-                            <img id='topAvatar' src='$userPic' alt='as' />
+                            <img id='topAvatar' src='" . $userPic . "' alt='as' />
                         </li>
                     </ul>
                 </div>
@@ -59,28 +63,19 @@ class HeaderView
                 <div class='topbar-inner'>
                     <ul class='nav'>
                         <li>
-                            <a href='index.php'>Home</a> /
+                            <a href='index.php'>Home</a> |
                         </li>
                         <li>
-                            <a href='?page=listsnippets'>Snippets</a> /
+                            <a href='?page=listblogposts'>Blog</a> /
                         </li>
                         <li>
-                        <a href='?page=addsnippet'>Add snippet</a> /
+                            <a href='#'>Downloads</a> |
                         </li>
                         <li>
-                            <a href='#'>News</a> /
-                        </li>
-                        <li>
-                            <a href='#'>Downloads</a> /
-                        </li>
-                        <li>
-                            <a href='#'>About</a> /
-                        </li>
-                        <li>
-                            <a href='#'>Register</a>
+                            <a id='about' href='#'>About</a>
                         </li>
                         <li class='right'>
-                            <a class='janrainEngage' href='#'>Logga in</a>
+                            <a class='janrainEngage' href='#'>Sign in</a>
                         </li>
                     </ul>
                 </div>
@@ -89,5 +84,4 @@ class HeaderView
 
         return $html;
     }
-
 }

@@ -3,6 +3,8 @@
 require_once 'DbHandler.php';
 require_once 'Snippet.php';
 require_once 'API.php';
+require_once 'AuthHandler.php';
+require_once 'Language.php';
 
 class SnippetHandler
 {
@@ -17,81 +19,37 @@ class SnippetHandler
     }
 
     /**
+     * Check response and content
+     * @param string URL, url to API
+     * @return json content on succsess or FALSE failiure
+     */
+    private function getJson($url) {
+        if($content = @file_get_contents($url)) {
+            if($json = json_decode($content)) {
+                return $json;
+            }
+        }
+        return false;
+    }
+
+    /**
      *Get a snippet by id
      * @param int $aID id of a snippet
      * @return Snippet
      */
-//    public function getSnippetByID($id)
-//    {
-//        
-//        $snippet = null;
-//        $this->_dbHandler->__wakeup();
-//        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet WHERE id = ?")) {
-//
-//            $stmt->bind_param("i", $id);
-//            $stmt->execute();
-//
-//            $stmt->bind_result($snippetID, $author, $code, $title, $desc, $language, $created, $updated);
-//            while ($stmt->fetch()) {
-//                $snippet = new Snippet($author, $code, $title, $desc, $language, $created, $updated, $snippetID);
-//            }
-//
-//            $stmt->close();
-//
-//        }
-//        $this->_dbHandler->Close();
-//        return $snippet;
-//    }
-    //by API
     public function getSnippetByID($id)
     {
         $snippet = null;
-        $json = json_decode(file_get_contents($this->_api->GetURL() . "snippets/?id=".$id));
-        foreach($json as $j)
-        {
-            $snippet = new Snippet($j->username, $j->code, $j->title, $j->description, $j->languageid, $j->date, "0000-00-00 00:00:00", $j->id);
+        $url = $this->_api->GetURL() . "snippets/?id=" . $id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $snippet = new Snippet($j->userid, $j->username, $j->code, $j->title, $j->description, $j->languageid, $j->date, $j->updated, $j->language, $j->id);
+            }
+            
+            return $snippet;
         }
-        
-        return $snippet;
-    }
-//    public function getAllSnippets()
-//    {
-//        $snippets = array();
-//        $created = 
-//        
-//        $this->_dbHandler->__wakeup();
-//        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet")) {
-//            $stmt->execute();
-//
-//            $stmt->bind_result($id, $code, $author, $title, $description, $language, $created, $updated);
-//            while ($stmt->fetch()) {
-//                $snippet = new Snippet($code, $author, $title, $description, $language, $id, $created, $updated);
-//                array_push($snippets, $snippet);
-//            }
-//
-//            $stmt->close();
-//        }
-//        $this->_dbHandler->close();
-//
-//        return $snippets;
-//    }
-    
-    //by API
-//    /**
-//     * Get all the snippets
-//     * @return array
-//     */
-    public function getAllSnippets()
-    {
-        $snippets = array();
-        
-        $jsonsnippet = json_decode(file_get_contents($this->_api->GetURL() . "snippets"));
-
-        foreach ($jsonsnippet as $snippet) {
-            $snippets[] = new Snippet($snippet->username, $snippet->code, $snippet->title, $snippet->description, $snippet->languageid, $snippet->date, "0000-00-00 00:00:00", $snippet->id);
-        }
-        
-        return $snippets;
+        return false;
     }
 
     /**
@@ -99,27 +57,18 @@ class SnippetHandler
      * @param id of user
      *
      */
-    public function getSnippetsByUser($id)
+    public function getSnippetsByUser($userid)
     {
-        $snippetArr = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM snippet WHERE user_id = ?")) {
-            $stmt->bind_param('i', $id);
-            $stmt->execute();
-            $stmt->bind_result($id, $userID, $code, $title, $description, $languageID, $created, $updated);
-
-            while ($stmt->fetch()) {
-                $temtSnippet = new Snippet($userID, $code, $title, $description, $languageID, $created, $updated, $id);
-                array_push($snippetArr, $temtSnippet);
+        $snippets = null;
+        $url = $this->_api->GetURL() . "snippets/?userid=" . $userid;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $snippets[] = new Snippet($j->userid, $j->username, $j->code, $j->title, $j->description, $j->languageid, $j->date, $j->updated, $j->language, $j->id);
             }
-            $stmt->close();
-        } else {
-            $stmt->close();
-            $this->_dbHandler->close();
-            return false;
+            return $snippets;
         }
-        $this->_dbHandler->close();
-        return $snippetArr;
+        return false;
     }
 
     /**
@@ -140,7 +89,7 @@ class SnippetHandler
             $stmt->execute();
             $stmt->bind_result($id, $title, $description, $lang);
             while ($stmt->fetch()) {
-                $snippet = new Snippet(null, null, $title, $description, $lang, null, null, $id);
+                $snippet = new Snippet(null, null, $title, $description, $lang, null, null, null, $id);
                 array_push($snippetArr, $snippet);
             }
             $stmt->close();
@@ -178,92 +127,93 @@ class SnippetHandler
         $this->_dbHandler->close();
         return $snippetArr;
     }
-
+    
+    /**
+     * Creates a snippet via the API
+     * @param Snippet $snippet
+     * @return bool
+     */
     public function createSnippet(Snippet $snippet)
     {
-        $this->_dbHandler->__wakeup();
-        $author = $snippet->getAuthorId();
-        $code = $snippet->getCode();
-        $title = $snippet->getTitle();
-        $desc = $snippet->getDesc();
-        $language = $snippet->getLanguageID();
-        $created = $snippet->getCreatedDate();
+        
+        $url = $this->_api->GetURL() . "snippets";
+        $query = array('userid' => $snippet->getAuthorId(), 'code' => $snippet->getCode(), 'desc' => $snippet->getDesc(), 'title' => $snippet->getTitle(), 'languageid' => $snippet->getLanguageID(), 'apikey' => AuthHandler::getApiKey());
+        
+        $fields = '';
+        foreach ($query as $key => $value) {
+            $fields .= $key . '=' . $value . '&';
+        }
+        rtrim($fields, '&');
+        
+        $post = curl_init();
 
-        $inserterId = null;
-        if ($databaseQuery = $this->_dbHandler->PrepareStatement("INSERT INTO snippet (user_id, code, title, description, language, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-            $databaseQuery->bind_param('sssssss', $author, $code, $title, $desc, $language, $created, $updated);
-            $databaseQuery->execute();
-            if ($databaseQuery->affected_rows != 1) {
-                $databaseQuery->close();
-                return false;
-            }
-            $inserterId = $databaseQuery->insert_id; 
-            $databaseQuery->close();
-        } else {
+        curl_setopt($post, CURLOPT_URL, $url);
+        curl_setopt($post, CURLOPT_POST, count($query));
+        curl_setopt($post, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($post, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = json_decode(curl_exec($post));
+
+        curl_close($post);
+        
+        if(!$result) {
+            Log::apiError('could not create snippet', $url);
             return false;
         }
 
-        $this->_dbHandler->close();
-        return $inserterId;
-    }
-
-    //kom ihåg att anropa snippetHandler->SetDate i Controllen för att få $updated korrekt
-    public function updateSnippet($snippetName, $snippetCode, $snippetID, $updated)
-    {
-        $databaseQuery = $this->_dbHandler->PrepareStatement("UPDATE SnippetsTable SET snippetName = ?, snippetCode = ?, updated = ? WHERE snippetID = ?");
-        $databaseQuery->bind_param('ssis', $snippetName, $snippetCode, $snippetID, $updated);
-        $databaseQuery->execute();
-        if ($databaseQuery->affected_rows == null) {
-            return false;
-        }
-        $databaseQuery->close();
-        return true;
-    }
-
-    public function deleteSnippet($id)
-    {
-        $this->_dbHandler->__wakeup();
-        $databaseQuery = $this->_dbHandler->PrepareStatement("DELETE FROM snippet WHERE id = ?");
-        $databaseQuery->bind_param('i', $id);
-        $databaseQuery->execute();
-        if ($databaseQuery->affected_rows == null) {
-            return false;
-        }
-        $databaseQuery->close();
-        return true;
+        if(!is_numeric($result->id)) return false;
+        return $result->id;
     }
 
     /**
-     * returns a defined number of snippets
-     * @param int number of snippets to return
-     * @return array with snippets
+     * Updates a snippet via the API
+     * @param string $snippetName, string $snippetCode, string $snippetDesc, int $snippetID, date $updated
+     * @return bool
      */
-    public function getNrOfSnippets($nr)
+    public function updateSnippet(Snippet $snippet)
     {
-        if ($nr <= 0) {
-            $nr = 1;
+        $url = $this->_api->GetURL() . "snippets";
+        $query = array('id' => $snippet->getID(), 'userid' => $snippet->getAuthorId(), 'code' => $snippet->getCode(), 'desc' => $snippet->getDesc(), 'title' => $snippet->getTitle(), 'languageid' => $snippet->getLanguageID(), 'apikey' => AuthHandler::getApiKey());
+        
+        $fields = '';
+        foreach ($query as $key => $value) {
+            $fields .= $key . '=' . $value . '&';
         }
-        $snippets = array();
+        rtrim($fields, '&');
+        
+        $post = curl_init();
+        
+        curl_setopt($post, CURLOPT_URL, $url);
+        curl_setopt($post, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($post, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($post, CURLOPT_RETURNTRANSFER, 1);
 
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet LIMIT ?")) {
-            $stmt->bind_param("i", $nr);
-            $stmt->execute();
+        $result = curl_exec($post);
 
-            $stmt->bind_result($id, $code, $author, $title, $description, $language, $created, $updated);
-            while ($stmt->fetch()) {
-                $snippet = new Snippet($author, $code, $title, $description, $language, $created, $updated, $id);
-                array_push($snippets, $snippet);
-            }
-
-            $stmt->close();
-        } else {
-            return null;
+        curl_close($post);
+        if(!$post) {
+            Log::apiError('could not update snippe:'. $snippetID, $url);
         }
 
-        $this->_dbHandler->close();
+        return $result;
+    }
 
-        return $snippets;
+    public function deleteSnippet(Snippet $snippet)
+    {
+        $url = $this->_api->GetURL() . 'snippets/' . $snippet->getID() . '/' . $snippet->getAuthorId() . '/' . AuthHandler::getApiKey();
+        $ch = curl_init($url);
+        
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        $result = curl_exec($ch);
+
+        if(!$result) {
+            Log::apiError('could not delete snippet:' . $snippet->getID(), $url);
+        }
+        
+        return $result;
     }
 
     /**
@@ -273,26 +223,16 @@ class SnippetHandler
      */
     public function getLanguageByID($id)
     {
-        $language = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet_language WHERE id = ?")) {
-
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-
-            $stmt->bind_result($id, $name);
-            while ($stmt->fetch()) {
-                $language = array('id' => $id, 'name' => $name);
+        $language = null;
+        $url = $this->_api->GetURL() . "languages?languageid=" . $id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $language = new Language($j->languageId, $j->language);
             }
-
-            $stmt->close();
-
-        } else {
-            return null;
+            return $language;
         }
-        $this->_dbHandler->Close();
-        return $language;
-
+        return false;
     }
 
     /**
@@ -301,24 +241,16 @@ class SnippetHandler
      */
     public function getLanguages()
     {
-        $languages = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT * FROM snippet_language")) {
-            $stmt->execute();
-
-            $stmt->bind_result($id, $name);
-            while ($stmt->fetch()) {
-                $language = array('id' => $id, 'name' => $name);
-                array_push($languages, $language);
+        $languages = null;
+        $url = $this->_api->GetURL() . "languages";
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $languages[] = new Language($j->languageId, $j->language);
             }
-
-            $stmt->close();
-
-        } else {
-            return null;
+            return $languages;
         }
-        $this->_dbHandler->Close();
-        return $languages;
+        return false;
     }
 
     /**
@@ -328,157 +260,36 @@ class SnippetHandler
      */
     public function getSnippetRating($id)
     {
-        $rating = array();
-
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT COUNT(IF(`rating` = 1, 1, null)) AS Likes, COUNT(IF(`rating` = 0, 1, null)) AS Dislikes FROM `rating` WHERE `snippetId` = ?")) {
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-
-            $stmt->bind_result($likes, $dislikes);
-            if ($stmt->fetch()) {
-                $rating['total'] = $likes + $dislikes;
-                $rating['likes'] = $likes;
-                $rating['dislikes'] = $dislikes;
+        $rating = null;
+        $url = $this->_api->GetURL() . "snippets?id=" . $id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $rating['total'] = $j->thumbsup + $j->thumbsdown;
+                $rating['likes'] = $j->thumbsup;
+                $rating['dislikes'] = $j->thumbsdown;
             }
-
-            $stmt->close();
-
+            return $rating;
         }
-
-        $this->_dbHandler->Close();
-
-        return $rating;
+        return false;
     }
 
-    public function searchByTitle($title)
+    public function reportSnippet($snippetId, $userId, $message)
     {
-        $titles = array();
         $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author ,code, title, description, language, created, updated FROM (snippet) WHERE MATCH title AGAINST (?) ")) {
-            $stmt->bind_param("s", $title);
+        $result = false;
+        if($stmt = $this->_dbHandler->prepareStatement("INSERT INTO reported_snippet (message, user_id, snippet_id) VALUES (?,?,?)")){
+            $stmt->bind_param('sii', $message, $userId, $snippetId);
             $stmt->execute();
-
-            $stmt->bind_result($id, $author,$code,$title,$description,$language, $created, $updated);
-            while ($stmt->fetch()) {
-                $answer = new Snippet($author, $code, $title, $description, $language, $id, $created, $updated);
-                array_push($titles, $answer);
+            $stmt->store_result();
+            if($stmt->affected_rows == 1) {
+                $result = true;
             }
+        } 
 
-            $stmt->close();
-
-        } else {
-            return null;
-        }
-        $this->_dbHandler->Close();
-        return $titles;
-    }
-
-    public function searchByDescription($description)
-    {
-        $titles = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author,code,title,description,language, created, updated FROM (snippet) WHERE MATCH description AGAINST (?) ")) {
-            $stmt->bind_param("s", $description);
-            $stmt->execute();
-
-            $stmt->bind_result($id, $author,$code,$title,$description,$language, $created, $updated);
-            while ($stmt->fetch()) {
-                $answer = new Snippet($author, $code, $title, $description, $language, $id, $created, $updated);
-                array_push($titles, $answer);
-            }
-
-            $stmt->close();
-
-        } else {
-            return null;
-        }
-        $this->_dbHandler->Close();
-        return $titles;
-    }
-
-    public function searchByCode($code)
-    {
-        $titles = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->PrepareStatement("SELECT id, author,code,title,description,language, created, updated FROM (snippet) WHERE MATCH code AGAINST (?) ")) {
-            $stmt->bind_param("s", $code);
-            $stmt->execute();
-            $stmt->bind_result($id, $author,$code,$title,$description,$language, $created, $updated);
-            
-            while ($stmt->fetch()) {
-                $answer = new Snippet($author, $code, $title, $description, $language, $id, $created, $updated);
-                array_push($titles, $answer);
-            }
-
-            $stmt->close();
-
-        } else {
-            return null;
-        }
-        $this->_dbHandler->Close();
-        return $titles;
-    }
-
-    public function fullSearch($q)
-    {
-        $titles = array();
-        $this->_dbHandler->__wakeup();
-                
-        $sqlQuery = "   SELECT snippet.id, snippet.author, snippet.code, snippet.title, snippet.description, snippet.language, snippet.created, snippet.updated
-                        FROM snippet
-                        WHERE MATCH code, title, description
-                        AGAINST (? IN BOOLEAN MODE)";
-        
-
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->bind_param("s", $q);
-            $stmt->execute();
-
-            $stmt->bind_result($id, $author, $code, $title, $description, $language, $created, $updated);
-            while ($stmt->fetch()) {
-                $answer = new Snippet($author, $code, $title, $description, $language, $id, $created, $updated);
-                array_push($titles, $answer);
-            }
-
-            $stmt->close();
-
-        } else {
-            return null;
-        }
-        $this->_dbHandler->Close();
-        return $titles;
-    }
-
-    public function fullSearchWithLang($q, $lang)
-    {
-        $titles = array();
-        $this->_dbHandler->__wakeup();
-        
-        $sqlQuery = "   SELECT snippet.id, snippet.author, snippet.code, snippet.title, snippet.description, snippet.language, snippet.created, snippet.updated
-                        FROM snippet
-                        LEFT JOIN snippet_language ON snippet.language = snippet_language.id
-                        WHERE MATCH code, title, description
-                        AGAINST (? IN BOOLEAN MODE)
-                        AND snippet_language.id = ?";
-
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->bind_param("si", $q, $lang);
-            $stmt->execute();
-            $stmt->bind_result($id, $author,$code,$title,$description,$language, $created, $updated);
-
-            while ($stmt->fetch()) {
-                $answer = new Snippet($author, $code, $title, $description, $language, $id, $created, $updated);
-                array_push($titles, $answer);
-            }
-
-            $stmt->close();
-
-        } else {
-            return null;
-        }
-        $this->_dbHandler->Close();
-        return $titles;
+        $this->_dbHandler->close();
+        $stmt->close();
+        return $result;
     }
     
     public function SetDate()

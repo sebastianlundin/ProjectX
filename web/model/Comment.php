@@ -12,6 +12,7 @@ class Comment
     private $_getCommentDown;
     private $_commentDate;
     private $_username;
+    private $_created;
 
     /**
      * Comment::__construct()
@@ -21,12 +22,13 @@ class Comment
      * @param int $aUserId
      * @param int $aCommentText
      */
-    public function __construct($snippetId, $commentId, $userId, $commentText)
+    public function __construct($snippetId, $commentId, $userId, $commentText, $commentDate)
     {
         $this->_snippetId = $snippetId;
         $this->_commentId = $commentId;
         $this->_userId = $userId;
         $this->_commentText = $commentText;
+        $this->_commentDate = $commentDate;
     }
 
     /**
@@ -122,7 +124,7 @@ class Comment
     /**
      * Comment::getCommentUp()
      *
-     * @return int, how many finds the comment usefull
+     * @return int, how many finds the comment useful
      */
     public function getCommentUp()
     {
@@ -132,11 +134,11 @@ class Comment
     /**
      * Comment::getCommentDown()
      *
-     * @return inte, how many dosn't' find the comment usefull
+     * @return int, how many dosn't' find the comment useful
      */
     public function getCommentDown()
     {
-        return $this->_getCommentDownt;
+        return $this->_getCommentDown;
     }
 
 }

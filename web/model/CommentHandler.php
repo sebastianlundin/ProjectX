@@ -3,49 +3,64 @@
 require_once 'DbHandler.php';
 require_once 'Comment.php';
 require_once 'User.php';
+require_once 'API.php';
 
 class CommentHandler
 {
 
     private $_dbHandler;
-
+    private $_api;
+    
     public function __construct()
     {
         $this->_dbHandler = new DbHandler();
+        $this->_api = new API();
     }
 
     /**
-     * CommentHandler::getAllCommentsForSnippet()
-     *
-     * @return an array with all comments for one snippet
-     * together with data of the User object
+     * Format array before posting via curl
+     * @param Array data
+     * @return Array
      */
-    public function getAllCommentsForSnippet($snippetId)
-    {
-
-        $commentsArray = array();
-        $sqlQuery = "SELECT comment.snippet_id, comment.id, comment.comment, user.name, user.id
-                        FROM comment
-                        INNER JOIN user 
-                        ON user.id= comment.user_id
-                        WHERE comment.snippet_id = ?
-                        ORDER by comment.id DESC
-        ";
-
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->bind_param('i', $snippetId);
-            $stmt->execute();
-            $stmt->bind_result($snippetId, $commentId, $commentText, $username, $userId);
-
-            while ($stmt->fetch()) {
-                $comment = new Comment($snippetId, $commentId, $userId, $commentText);
-                $comment->setUsername($username);
-                array_push($commentsArray, $comment);
-            }
-            $stmt->close();
+    private function formtaData($data) {
+        $fields = '';
+        foreach ($data as $key => $value) {
+            $fields .= $key . '=' . $value . '&';
         }
+        rtrim($fields, '&');
+        return $data;
+    }
 
-        return $commentsArray;
+    /**
+     * Check response and content
+     * @param string URL, url to API
+     * @return json content on succsess or FALSE failiure
+     */
+    private function getJson($url) {
+        if($content = @file_get_contents($url)) {
+            $header = get_headers($url);
+            if($header[0] != 'HTTP/1.1 200 OK') return false;
+            if($json = json_decode($content)) {
+                return $json;
+            }
+        }
+        Log::apiError('could not get content ' , $url);
+        return false;
+    }
+
+    public function getComments($id) {
+
+        $comments = array();
+        $url = $this->_api->GetURL() . 'comments?snippetid=' . $id;  
+        if($json = $this->getJson($url)) {
+            if (!$json->error) {
+                foreach($json as $j) {
+                    $comments[] = new Comment($j->snippetId, $j->commentId, $j->userId, $j->comment, $j->comment_created_date);
+                }
+                return $comments;
+            }
+        }
+        return false;
     }
 
     /**
@@ -53,42 +68,51 @@ class CommentHandler
      *
      * @return true if successful
      * use it if you want to add a new commet för a snippet
-     * @param snippetId, commentText and userId
+     * @param snippetId, userId, commentText and apikey
      */
-    public function addComment($snippetId, $commentText, $userId)
-    {
-        $sqlQuery = "INSERT INTO comment (snippet_id, comment, user_id) VALUES(?,?,?)";
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->bind_param("isi", $snippetId, $commentText, $userId);
-            $stmt->execute();
-            $stmt->close();
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public function addComment($snippetID, $userID, $comment) {
+        $url = $this->_api->GetUrl() . 'comments';
+        $data = array('snippetid' => $snippetID, 'userid' => $userID, 'comment' => $comment, 'apikey' => AuthHandler::getApiKey());
+        $data = $this->formtaData($data);
 
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, count($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if($httpCode == 200) return true;
+
+        Log::apiError('could not create comment on snippet: ' . $snippetID, $url);
+        return $result;
+    }
     /**
      * CommentHandler::updateComment()
      *
      * @return true if successful
      * use it if you want to update a comment that exists in the database
-     * @param commentId, commentText
+     * @param commentId, userId, commentText and apikey
      */
-    public function updateComment($commentId, $commentText)
-    {
+    public function updateComment($commentID, $userID, $comment) {
+        $url = $this->_api->GetUrl() . 'comments';
+        $data = array('commentid' => $commentID, 'userid' => $userID, 'comment' => $comment, 'apikey' => AuthHandler::getApiKey());
+        $data = $this->formtaData($data);
 
-        $sqlQuery = "UPDATE comment SET comment = ? WHERE id = ?";
+        $ch = curl_init();      
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->bind_param("si", $commentText, $commentId);
-
-            if ($stmt->execute()) {
-                $stmt->close();
-                return true;
-            }
-        }
-        return false;
+        $result = curl_exec($ch);
+        curl_close($ch);
+        if(!$result) Log::apiError('could not update comment: ' . $commentID, $url);   
+        
+        return $result;
     }
 
     /**
@@ -98,39 +122,23 @@ class CommentHandler
      * use it if you want to delete a comment
      * @param an id of the comment to delete
      */
-    public function deleteComment($commentId)
+    public function deleteComment($comment)
     {
 
-        $sqlQuery = "DELETE FROM comment WHERE id=?";
+        $url = $this->_api->GetURL() . 'comments/' . $comment->getID() . '/' . $comment->getUserId() . '/' . AuthHandler::getApiKey();
+        $ch = curl_init($url);
+        
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        $result = curl_exec($ch);
 
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->bind_param("i", $commentId);
-
-            if ($stmt->execute()) {
-                $stmt->close();
-                return true;
-            }
+        if(!$result) {
+            Log::apiError('could not delete snippet:' . $comment->getID(), $url);
         }
-        return false;
-    }
-
-    /**
-     * CommentHandler::removeAllComments()
-     *
-     * @return true if successful
-     * taking away all comments from the db
-     */
-    public function removeAllComments()
-    {
-
-        $sqlQuery = "DELETE FROM comment";
-
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->execute();
-            $stmt->close();
-            return true;
-        }
-        return false;
+        
+        return $result;
     }
 
     /**
@@ -140,25 +148,18 @@ class CommentHandler
      * @param id of the comment you want to edit
      *
      */
-    public function getCommentByID($commentId)
+    public function getCommentByID($id)
     {
         $comment = null;
-        $sqlQuery = "   SELECT comment.snippet_id, comment.id, comment.comment, comment.user_id, user.username
-                        FROM comment
-                        INNER JOIN user ON user.id = comment.user_id
-                        WHERE comment.id = ?
-                    ";
-        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
-            $stmt->bind_param('i', $commentId);
-            $stmt->execute();
-            $stmt->bind_result($snippetId, $commentId, $commentText, $userId, $username);
-
-            if ($stmt->fetch()) {
-                $comment = new Comment($snippetId, $commentId, $userId, $commentText);
+        $url = $this->_api->GetURL() . "comments?commentid=" . $id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $comment = new Comment($j->snippetid, $j->commentid, $j->userid, $j->comment);
             }
+            return $comment;
         }
-        $stmt->close();
-        return $comment;
+        return false;
     }
 
     /**
@@ -168,25 +169,16 @@ class CommentHandler
      */
     public function getCommentsByUser($id)
     {
-        $commentArr = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM comment WHERE user_id = ?")) {
-            $stmt->bind_param('i', $id);
-            $stmt->execute();
-            $stmt->bind_result($id, $snippetID, $comment, $userID);
-
-            while ($stmt->fetch()) {
-                $tempComment = new Comment($snippetID, $id, $userID, $comment);
-                array_push($commentArr, $tempComment);
+        $comments = null;
+        $url = $this->_api->GetURL() . "api/comments?userid=" . $id;
+        if($json = $this->getJson($url)) {
+            foreach($json as $j)
+            {
+                $comments[] = new Comment($j->snippetid, $j->commentid, $j->userid, $j->comment);
             }
-            $stmt->close();
-        } else {
-            $stmt->close();
-            $this->_dbHandler->close();
-            return false;
+            return $comments;
         }
-        $this->_dbHandler->close();
-        return $commentArr;
+        return false;
     }
 
 }

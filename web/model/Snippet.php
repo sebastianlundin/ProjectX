@@ -10,27 +10,29 @@ class Snippet
     private $_code;
     private $_title;
     private $_desc;
-    private $_language;
     private $_languageID;
     private $_created;
     private $_updated;
+    private $_language;
 
-    public function __construct($author, $code, $title, $desc, $languageID, $created, $updated, $id = null)
+    public function __construct($authorID, $author, $code, $title, $desc, $languageID, $created, $updated, $language, $id = null)
     {
         if ($id != null) {
             $this->_id = $id;
         }
-        $this->_authorID = $author;
+        $this->_authorID = $authorID;
+        $this->_author = $author;
         $this->_code = $code;
         $this->_title = $title;
         $this->_desc = $desc;
         $this->_languageID = $languageID;
         $this->_created = $created;
         $this->_updated = $updated;
+        $this->_language = $language;
 
         //Get name of language and author
-        $this->getLangName();
-        $this->getAuthorName();
+        //$this->getLangName();
+        //$this->getAuthorName();
     }
 
     /**
@@ -51,8 +53,9 @@ class Snippet
     {
         if (isset($this->_languageID)) {
             $sh = new SnippetHandler();
+
             $lang = $sh->getLanguageByID($this->_languageID);
-            $this->_language = $lang['name'];
+            $this->_language = $lang->getLanguage();
         }
     }
 
@@ -129,6 +132,26 @@ class Snippet
     public function getUpdatedDate()
     {
         return $this->_updated;
+    }
+    
+    public function setTitle($title)
+    {
+        $this->_title = $title;
+    }
+    
+    public function setCode($code)
+    {
+        $this->_code = $code;
+    }
+    
+    public function setDesc($desc)
+    {
+        $this->_desc = $desc;
+    }
+    
+    public function setUpdatedDate($updated)
+    {
+        $this->_updated = $updated;
     }
 
 }

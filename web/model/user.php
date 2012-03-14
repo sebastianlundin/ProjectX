@@ -1,5 +1,7 @@
 <?php
 
+require_once 'UserHandler.php';
+
 class User
 {
     private $mUserId = null;
@@ -10,21 +12,21 @@ class User
     private $_username;
     private $_email;
     private $_apiKey;
-    private $_role;
+    private $_roleId;
 
     /**
      * User::__construct()
      *
      * @return new User object
      */
-    public function __construct($id, $name, $username, $email, $apiKey, $role)
+    public function __construct($id, $name, $username, $email, $apiKey, $roleId)
     {
         $this->_id = $id;
         $this->_name = $name;
         $this->_username = $username;
         $this->_email = $email;
         $this->_apiKey = $apiKey;
-        $this->_role = $role;
+        $this->_roleId = $roleId;
     }
 
     /**
@@ -64,7 +66,7 @@ class User
      */
     public function getRole()
     {
-        return $this->_role;
+        return $this->_roleId;
     }
 
     /**
@@ -88,10 +90,19 @@ class User
     */
     public function isAdmin() 
     {
-        if($this->_role == 'admin') {
+        if($this->getRoleName() == 'admin') {
             return true;
         }
         return false;    
     }
+
+    /**
+     *@return string name of the user role
+     */
+     public function getRoleName() {
+         $uh = new UserHandler();
+         $roleName = $uh->getRoleByID($this->_roleId);
+         return $roleName;
+     }
 
 }

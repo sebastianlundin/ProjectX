@@ -11,10 +11,19 @@ class AuthHandler
 
     public static function getRole()
     {
-        if($this->isLoggedIn()) {
-            return $this->getUser()->getRole();
+        if(self::isLoggedIn()) {
+            $role = self::getUser()->getRole();
+            return $role;
         }
         return null;
+    }
+
+    public static function getApiKey() {
+        if(self::isLoggedIn()) {
+            return '588887cd75e8943534d03c995bd499e582ebfe4f';
+            return self::getUser()->getApiKey();
+        }
+        return false;
     }
 
     public static function getUser()
@@ -43,10 +52,26 @@ class AuthHandler
 
     public static function isOwner($email)
     {
-        if (isset($_SESSION['user'])) {
+        if (self::isLoggedIn()) {
             if ($_SESSION['user']->getEmail() == $email) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static function isOwnerByID($id) {
+        if (self::isLoggedIn()) {
+            if ($_SESSION['user']->getId() == $id  || self::isAdmin()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function isAdmin() {
+        if(self::getRole() == 2){
+            return true;
         }
         return false;
     }

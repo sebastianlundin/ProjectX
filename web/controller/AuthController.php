@@ -52,11 +52,13 @@ class AuthController
                 //If provider is Twitter, check user database against
                 //account identifier instead of email
                 if ($result['profile']['providerName'] == 'Twitter') {
+                    //if user does not exists in out db, add user
                     if (!$this->_userHandler->twitterExists($identifier)) {
                         $this->_userHandler->addUser($identifier, $provider, $name);
                     }
                     $user = $this->_userHandler->getUserByIdentifier($identifier);
                 } else {
+                    //If user not exist, add users
                     if (!$this->_userHandler->doesUserExist($email)) {
                         $this->_userHandler->addUser($identifier, $provider, $name, $email);
                     } else if(!$this->_userHandler->getUserByIdentifier($identifier)) {
@@ -64,6 +66,7 @@ class AuthController
                         $user = $this->_userHandler->getUserByEmail($email);
                         $this->_userHandler->ExtendUser($email, $provider, $identifier, $user->getId());
                     }
+                    
                     if($user == null) {
                         $user = $this->_userHandler->getUserByEmail($email);
                     }
@@ -72,14 +75,14 @@ class AuthController
                 AuthHandler::login($user);
 
             } else {
-                echo "fel uppstod under inlogg";
+                Log::siteError('login failed, unknown user or serverproblem');
                 return false;
             }
         } else {
-            echo "token !isset";
+            Log::siteError('login failed, token not set');
         }
         
-        header('location: /');
+        header("Location: " . $_SERVER['PHP_SELF']);
     }
 
 }
