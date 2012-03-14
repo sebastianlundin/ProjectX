@@ -140,9 +140,14 @@ void MainWindow::ShowAllElements()
     ui->copySnippet->show();
 
     this->setMinimumHeight(470);
+    this->setMinimumWidth(909);
+    this->setMaximumHeight(16777215);
+    this->setMaximumWidth(16777215);
     this->resize(909, 470);
     this->CenterWindow();
-    this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    this->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    // Show the title, closebutton, minimizebutton and maximizebutton only
+    this->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint | Qt::CustomizeWindowHint);
     this->show();
 }
 
@@ -170,9 +175,11 @@ void MainWindow::ShowAndHideElementsWithNewSearch()
     ui->copySnippet->hide();
 
     this->setMinimumHeight(160);
+    this->setMinimumWidth(909);
     this->setMaximumHeight(160);
+    this->setMaximumWidth(909);
     this->resize(1, 1);
-    this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    this->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     // Show the title, closebutton and the minimizebutton only
     this->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint | Qt::CustomizeWindowHint);
     this->show();
@@ -490,9 +497,13 @@ void MainWindow::UpdateLoadSnippetAnimation()
 // Show the selected snippet
 void MainWindow::ShowSelectedSnippet(QTreeWidgetItem *a_item, int a_column)
 {
-    connect(this->animationTimer2, SIGNAL(timeout()), this, SLOT(UpdateLoadSnippetAnimation()));
-    ui->selectedSnippetLabel->setText("Loading");
-    animationTimer2->start(500); // Update the timer every half second
+    if (a_item->text(1) != "" || a_item->text(2) != "" || a_item->text(3) != "" || a_item->text(4) != ""
+             || a_item->text(5) != "" || a_item->text(6) != "" || a_item->text(7) != "" || a_item->text(8) != "")
+    {
+        connect(this->animationTimer2, SIGNAL(timeout()), this, SLOT(UpdateLoadSnippetAnimation()));
+        ui->selectedSnippetLabel->setText("Loading");
+        animationTimer2->start(500); // Update the timer every half second
+    }
 
     // Get the hidden id about the snippet (from the title)
     // so the loaded snippet code can have its own uniq name
