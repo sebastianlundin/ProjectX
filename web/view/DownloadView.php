@@ -19,6 +19,12 @@ class DownloadView {
 							<img src="content/image/snippt_downloadlink_macosx.png" alt="Download Snippt for Mac OS X" title="Download Snippt for Mac OS X" />
 						</a>
 					</p>
+
+					<p>
+						<a href="https://github.com/downloads/jensevertsson/ProjectX/snippt-1.0-3-i686.els">
+							<img src="content/image/snippt_downloadlink_enlisy.png" alt="Download Snippt for Enlisy" title="Download Snippt for Enlisy" />
+						</a>
+					</p>
 				</div>
 			';
             return $html;
