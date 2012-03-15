@@ -24,9 +24,12 @@ class SnippetHandler
      * @return json content on succsess or FALSE failiure
      */
     private function getJson($url) {
-        if($content = @file_get_contents($url)) {
-            if($json = json_decode($content)) {
-                return $json;
+        $header = get_headers($url);
+        if($header[0] == 'HTTP/1.1 200 OK') {
+            if($content = @file_get_contents($url)) {
+                if($json = json_decode($content)) {
+                    return $json;
+                }
             }
         }
         return false;
