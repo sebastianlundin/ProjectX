@@ -62,16 +62,16 @@ class MasterController
             }else if ($_GET['page'] == 'removeblogpost') {
                 $this->_blogController = new BlogController();
                 $this->_html .= $this->_blogController->doControll('remove');      
-            } 
+            }
         } else {
             $this->_searchController = new SearchController();
             $this->_html .= $this->_searchController->doControll();
         }
-
         if (!empty($_GET['logout']) && $_GET['logout'] == 'true') {
             AuthHandler::logout();
             header("Location: " . $_SERVER['PHP_SELF']);
         }
+         //mail('martajohnsson@gmail.com', 'subject', 'message från MasterControllen 444');
         return $this->_html;
     }
 

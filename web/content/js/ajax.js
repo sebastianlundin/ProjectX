@@ -1,14 +1,13 @@
  $(document).ready(function(){
-	$("#sendmail").click(function(){
+	$("#sendByMail").click(function(){
 		var valid = '';
 		var isr = ' is required.';
-		//var name = $("#name").val();
-		var mail = $("#mail").val();
-        var subject = $(".snippet-title").text();
-		var text = $("code.snippet-text").text();
-		/*if (name.length<1) {
-			valid += '<br />Name'+isr;
-		}*/
+		var mail = $("#mailAddress").val();
+        var subject = $("#snippetTitle").text();
+		//var text = $(".snippet-text").text();
+        var text = $("#hidden").text();
+		//var text = "snippet-text";
+
 		if (!mail.match(/^([a-z0-9._-]+@[a-z0-9._-]+\.[a-z]{2,4}$)/i)) {
 			valid += '<br />A valid Email'+isr;
 		}
@@ -25,7 +24,7 @@
 		else {
 			var datastr ='&mail=' + mail + '&subject=' + subject + '&text=' + text;
 			$("#response").css("display", "block");
-			$("#response").html("Sending message .... ");
+			$("#response").html("Sending message .... "+datastr);
 			$("#response").fadeIn("slow");
 			setTimeout("send('"+datastr+"')",2000);
 		}
