@@ -507,15 +507,18 @@ textarea {
 	padding-top: 100px;
 	height: 100%;
 }  
+
 #learn-more-content {
 	width: 600px;
 	margin: 40px auto;
 	font-family: 'courier new';
 }
-#learn-more-content p{
+
+#learn-more-content p {
 	padding: 10px;
 	font-size: 16px;
 }
+
 footer {
 	position: fixed;
 	bottom: 0px;
@@ -524,8 +527,10 @@ footer {
 	background: black;
 	color: white;
 	width: 100%;
+    display: none;
 }
-/*
+
+ /*
   * mail
   * ---------------------------- */
 .mail{
