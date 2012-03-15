@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->listSnippets->setSortingEnabled(true);
 
     // Populate the list with previous searches, with exactly what it is - old searches
-    this->ListSearchFiles(); // REMEMBER TO COMMENT THIS WHEN BUILDING THE APP FOR WINDOWS
+    this->ListSearchFiles();
 
     // Setup some sort of eventlisteners with signal and slots
 
@@ -97,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->listSnippets->header(), SIGNAL(sectionClicked(int)), this, SLOT(SortSnippetsByColumn(int)));
 
     // Listen for events regarding the mainwindow (not globally)
-    this->installEventFilter(this); // REMEMBER TO COMMENT THIS WHEN BUILDING FOR WINDOWS
+    this->installEventFilter(this); // REMEMBER TO COMMENT THIS WHEN BUILDING FOR WINDOWS AND LINUX
 
     // Show just a few elements (like searchfield, searchbutton, previous searches and deletebutton) in the window
     this->ShowAndHideElementsWithNewSearch();

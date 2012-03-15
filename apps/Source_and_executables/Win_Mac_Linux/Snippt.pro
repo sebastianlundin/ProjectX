@@ -59,3 +59,14 @@ win32:RC_FILE += Win32Icon.rc
 # Link against the lib-directory for windows-files
 win32: INCLUDEPATH += $$PWD/libs/executables/windows
 win32: DEPENDPATH += $$PWD/libs/executables/windows
+
+# Includes the qjson-lib for Linux
+unix!mac: LIBS += -L$$PWD/libs/executables/linux -lqjson
+
+# Includes the libqxt-libs for Linux
+unix!mac: LIBS += -L$$PWD/libs/executables/linux -lQxtCore
+unix!mac: LIBS += -L$$PWD/libs/executables/linux -lQxtGui
+
+# Link against the lib-directory for linux-files
+unix!mac: INCLUDEPATH += $$PWD/libs/executables/linux
+unix!mac: DEPENDPATH += $$PWD/libs/executables/linux
