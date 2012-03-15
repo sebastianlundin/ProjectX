@@ -24,9 +24,12 @@ class SnippetHandler
      * @return json content on succsess or FALSE failiure
      */
     private function getJson($url) {
-        if($content = @file_get_contents($url)) {
-            if($json = json_decode($content)) {
-                return $json;
+        $header = get_headers($url);
+        if($header[0] == 'HTTP/1.1 200 OK') {
+            if($content = @file_get_contents($url)) {
+                if($json = json_decode($content)) {
+                    return $json;
+                }
             }
         }
         return false;
@@ -289,6 +292,52 @@ class SnippetHandler
 
         $this->_dbHandler->close();
         $stmt->close();
+        return $result;
+    }
+
+    public function getReportedSnippets()
+    {
+        $this->_dbHandler->__wakeup();
+        $reports = array();
+        if($stmt = $this->_dbHandler->prepareStatement("SELECT r.id, r.message, r.snippet_id, u.name, u.id, u.username
+                                                        FROM reported_snippet as r
+                                                        inner join user as u
+                                                        on r.user_id = u.id")) {
+            $stmt->execute();
+            $stmt->bind_result($id, $message, $snippetId, $userName, $userId, $email);
+            
+            $i = 0;
+            while($stmt->fetch()) {
+                $reports[$i]['id'] = $id;
+                $reports[$i]['message'] = $message;
+                $reports[$i]['userid'] = $userId;
+                $reports[$i]['username'] = $userName;
+                $reports[$i]['snippetid'] = $snippetId;
+                $reports[$i]['email'] = $email;
+                $i++;
+            }
+            $stmt->close();
+        }
+        $this->_dbHandler->close();
+
+        return $reports;
+    }
+
+    public function deleteReport($id)
+    {   
+        $result = false;
+        $this->_dbHandler->__wakeup();
+        if($stmt = $this->_dbHandler->prepareStatement("DELETE FROM reported_snippet WHERE id = ?")) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if($stmt->affected_rows == 1){
+                $result = true;
+            }
+            $stmt->close();
+        }
+        $this->_dbHandler->close();
         return $result;
     }
     

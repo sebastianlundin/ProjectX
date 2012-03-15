@@ -63,8 +63,9 @@ class MasterController
                 $this->_html .= $this->_blogController->doControll('edit');            
             }else if ($_GET['page'] == 'removeblogpost') {
                 $this->_blogController = new BlogController();
-                $this->_html .= $this->_blogController->doControll('remove'); 
-            } else if ($_GET['page'] == 'downloads') {
+                $this->_html .= $this->_blogController->doControll('remove');      
+            }
+			} else if ($_GET['page'] == 'downloads') {
                 $this->_downloadController = new DownloadController();
                 $this->_html .= $this->_downloadController->doControll();			     
             } 
@@ -72,11 +73,11 @@ class MasterController
             $this->_searchController = new SearchController();
             $this->_html .= $this->_searchController->doControll();
         }
-
         if (!empty($_GET['logout']) && $_GET['logout'] == 'true') {
             AuthHandler::logout();
             header("Location: " . $_SERVER['PHP_SELF']);
         }
+         //mail('martajohnsson@gmail.com', 'subject', 'message från MasterControllen 444');
         return $this->_html;
     }
 

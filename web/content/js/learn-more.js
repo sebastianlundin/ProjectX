@@ -23,17 +23,20 @@ $(document).ready(function(){
 		aboutFx.toggle();
 	});
 
-	//About page from menu
-	var reportFx = new Fx.Slide('report-wrap', {
-		duration: 100,
-		transition: Fx.Transitions.linear
-	});
-	
-	reportFx.hide();
-	
-	//Toogle on click
-	$('#report').click(function() {
-		reportFx.toggle();
-	});
+	if($('#report-wrap').length > 0) {
+		//About page from menu
+		var reportFx = new Fx.Slide('report-wrap', {
+			duration: 100,
+			transition: Fx.Transitions.linear
+		});
+		
+		reportFx.hide();
+		
+		//Toogle on click
+		$('#report').click(function() {
+			reportFx.toggle();
+		});
+	}
+
 		
 });//End document ready

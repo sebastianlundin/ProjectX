@@ -300,31 +300,6 @@ WHERE auth.identifier = ?")) {
     }
 
     /**
-     * @param $searchString string
-     * @return Array user object, null if user dont exist
-     */
-    public function searchUser($searchString)
-    {
-        $userArr = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM user WHERE name LIKE '%$searchString%'")) {
-            //$stmt->bind_param('s', $searchString);
-            $stmt->execute();
-            $stmt->bind_result($id, $name, $username, $apiKey, $role);
-
-            while ($stmt->fetch()) {
-                $userArr[] = $user = new User($id, $name, $username, 'mail', $apiKey, $role);
-            }
-
-            $stmt->close();
-        } else {
-            return false;
-        }
-        $this->_dbHandler->close();
-        return $userArr;
-    }
-
-    /**
      * Get name of role from table user_role by the id
      * @param $roleId int id of role from table user_role
      * @return String name of role, false if query fails
