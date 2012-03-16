@@ -159,14 +159,12 @@ class SnippetHandler
 		
         curl_close($post);
         
-        var_dump($result);
-        
-        /*if($result) {
+        if(!isset($result->id)) {
             Log::apiError('could not create snippet', $url);
             return false;
-        }*/
+        }
 		
-       //return $result->id;
+        return $result->id;
     }
 
     /**

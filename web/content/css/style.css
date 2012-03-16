@@ -45,7 +45,8 @@ input, textarea, select  {
 	position:relative;
 	top:0px;
 	left:0px;
-	width:100%;
+	width:920px;
+	margin-left:10px;
     height: 30px;
     background: #000;
     color: #fff;
@@ -83,7 +84,7 @@ input, textarea, select  {
 }
 
 .topbar-inner {
-    width: 940px;
+    width: 900px;
     line-height: 30px;
     margin: 0 auto;
 }

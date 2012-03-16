@@ -5,7 +5,7 @@
         //extract($_POST);
 
         //set POST variables
-        $url = 'localhost/ProjectX/api/snippets';
+        $url = 'tmpn.se/api/snippets';
         $fields = array('userid' => '23', 'code' => 'Unika ord som glänser i solen', 'desc' => 'Blaster mobile IS GOOD TO EAT!', 'title' => 'DjSlim with HoodyShirt and Boxing Gloves', 'languageid' => '1', 'apikey' => '789209373dea333e71a1ad5194b43d7fc19f3ec1');
 
         tourl($url, $fields);

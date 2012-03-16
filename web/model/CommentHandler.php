@@ -83,7 +83,9 @@ class CommentHandler
 
         $result = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        curl_close($ch);     
+        
+        Log::apiError('could not create comment on snippet: ' . $snippetID . $userID . $comment, $url);   
 
         if($httpCode == 200) return true;
 

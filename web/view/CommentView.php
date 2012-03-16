@@ -16,6 +16,7 @@ class CommentView
 			var RecaptchaOptions = {
     		theme : 'clean'
  			};
+ 			</script>
         	<div id='comment'>
                     <h3>Post a comment</h3>
                     <form action='#' method='POST'>
