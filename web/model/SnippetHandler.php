@@ -149,23 +149,24 @@ class SnippetHandler
         rtrim($fields, '&');
         
         $post = curl_init();
-
+		
         curl_setopt($post, CURLOPT_URL, $url);
         curl_setopt($post, CURLOPT_POST, count($query));
         curl_setopt($post, CURLOPT_POSTFIELDS, $fields);
         curl_setopt($post, CURLOPT_RETURNTRANSFER, 1);
 
         $result = json_decode(curl_exec($post));
-
+		
         curl_close($post);
         
-        if(!$result) {
+        var_dump($result);
+        
+        /*if($result) {
             Log::apiError('could not create snippet', $url);
             return false;
-        }
-
-        if(!is_numeric($result->id)) return false;
-        return $result->id;
+        }*/
+		
+       //return $result->id;
     }
 
     /**

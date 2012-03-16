@@ -71,7 +71,7 @@ class SnippetController
                 	if($this->_recaptchaAnswer->is_valid) {
 	                    $authID = AuthHandler::getUser()->getID();
 	                    $authName = AuthHandler::getUser()->getName();
-	                    $snippet = new Snippet($authID, $authName, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate(), 'ett språk');
+	                    $snippet = new Snippet($authID, $authName, $this->_snippetView->getCreateSnippetCode(), $this->_snippetView->getSnippetTitle(), $this->_snippetView->getSnippetDescription(), $this->_snippetView->getSnippetLanguage(), $this->_snippetHandler->SetDate(), $this->_snippetHandler->SetDate(), "Ett språk");
 	                    if($id = $this->_snippetHandler->createSnippet($snippet)){
 	                        header("Location: " . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $id);
 	                        exit();
