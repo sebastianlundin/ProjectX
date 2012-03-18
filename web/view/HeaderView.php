@@ -66,7 +66,7 @@ class HeaderView
                             <a href='index.php'>Home</a> |
                         </li>
                         <li>
-                            <a href='?page=listblogposts'>Blog</a> /
+                            <a href='?page=listblogposts'>Blog</a> |
                         </li>
                         <li>
                             <a href='?page=downloads'>Downloads</a> |
