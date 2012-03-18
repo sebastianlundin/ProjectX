@@ -104,6 +104,7 @@ input, textarea, select  {
 -moz-border-radius: 0px 0px 20px 20px; 
 -webkit-border-radius: 0px 0px 20px 20px; 
 border: 0px solid #800000;
+margin-bottom:100px;
 }
 
 a {
@@ -548,13 +549,11 @@ textarea {
 footer {
 	position: fixed;
 	bottom: 0px;
-	height:20px;
+	padding-top:10px;
+	padding-bottom:10px;
 	background: #0D3B51;
 	color: white;
 	width: 100%;
-}
-footer p{
-	padding-left:700px;
 }
 #copy {
 	text-align:right;
