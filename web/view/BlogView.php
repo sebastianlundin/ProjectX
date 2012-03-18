@@ -50,16 +50,24 @@ class BlogView
                         <p>' . $blogpost->getTitle() . '</p>
                     </div>
                     <div class="blogpost-read-more">
-                        <p>' . $blogpost->getReadMoreContent() .'<a href="?page=listblogposts&blogpost=' . $blogpost->getId() . '">Read more</a></p>
+                        <p>' . strip_tags($blogpost->getReadMoreContent(), '<br>, <p>') .'</p>
+                        <p><a href="?page=listblogposts&blogpost=' . $blogpost->getId() . '">Read more</a></p>
                     </div>
                     <div class="blogpost-author">
                         <p>Posted by ' . $blogpost->getAuthor() . ' on ' . $blogpost->getDate() . '</p>
                     </div>
                 </div>
             ';
-        }
             
-            return $html;
+            if (AuthHandler::isAdmin()) {
+            $html .= "<div class='blogpost-edit'>
+                        Admin options:
+                        <a onclick=\"javascript: return confirm('Do you want to remove this blogpost?')\" href='?page=removeblogpost&blogpost=" . $blogpost->getId() . "'>Delete post</a> 
+                    </div>";
+            }
+        }
+        
+        return $html;
     }
     
     /**

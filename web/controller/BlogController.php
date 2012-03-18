@@ -4,6 +4,8 @@ require_once dirname(__FILE__) . '/../model/DbHandler.php';
 require_once dirname(__FILE__) . '/../model/BlogHandler.php';
 require_once dirname(__FILE__) . '/../view/BlogView.php';
 require_once dirname(__file__) . '/../model/AuthHandler.php';
+require_once dirname(__file__) . '/../model/PagingHandler.php';
+require_once dirname(__file__) . '/../view/PagingView.php';
 
 class BlogController
 {
@@ -11,7 +13,6 @@ class BlogController
     private $_blogHandler;
     private $_blogView;
     private $_html;
-    
     
     public function __construct()
     {
@@ -27,7 +28,7 @@ class BlogController
             if (isset($_GET['blogpost'])) {
                 $this->_html .= $this->_blogView->singleView($this->_blogHandler->getBlogpostById($_GET['blogpost']));     
             }else {
-                $this->_html .= $this->_blogView->listView($this->_blogHandler->getAllBlogposts());
+               $this->_html = $this->_blogView->listView($this->_blogHandler->getAllBlogPosts());
             }  
         }else if($page == 'add') {
             $this->_html .= $this->_blogView->addBlogpost();
