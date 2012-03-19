@@ -160,8 +160,9 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
-                                'user_id': ". $user_id .",
-                                rating: 1
+                                'user_id': " . $user_id .",
+                                'rating': 1,
+                                'api': '" . AuthHandler::getApiKey() . "'
                             },
                             dataType: 'html',
                             success: function(data) {
@@ -173,6 +174,9 @@ class SnippetView
                                 } else if (data === '0') {
                                     $('#message').html('<p>You have already voted on this snippet</p>');
                                 }
+                            },
+                            error: function() {
+                                alert('wat');
                             }
                         });
                     });
@@ -181,8 +185,9 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
-                                'user_id': ". $user_id .",
-                                rating: 0
+                                'user_id': " . $user_id .",
+                                'rating': 0,
+                                'api': '" . AuthHandler::getApiKey() . "'
                             },
                             dataType: 'html',
                             success: function(data) {
