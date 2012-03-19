@@ -122,6 +122,17 @@ class Comment
     }
 
     /**
+     * Comment::setCommentText()
+     *
+     * @return string; updates the text of the comment
+     */
+    public function setCommentText($commentText)
+    {
+        $this->_commentText = $commentText;
+        return $this->_commentText;
+    }
+
+    /**
      * Comment::getCommentUp()
      *
      * @return int, how many finds the comment useful
