@@ -6,7 +6,6 @@ class ProfileView
     public function profile($avatar, $name, $data, $user)
     {
         $html = $this->doProfileMenu($data['isAdmin'], $data['isOwner'], $data['email']);
-
         $html .= "
                 <div id='profile-stats'>
                     <h3>Hi there " . $name . "</h3><br />
@@ -31,9 +30,12 @@ class ProfileView
     {
         $html = "<h3>Liked snippets</h3>
                     <ul>";
-
-        foreach ($likedSnippets as $snippet) {
-            $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&amp;snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+        if($likedSnippets) {
+            foreach ($likedSnippets as $snippet) {
+                $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&amp;snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+            }
+        } else {
+            $html .= "y u no have dislike any snippets?";
         }
         $html .= "</ul>";
         return $html;
@@ -43,8 +45,12 @@ class ProfileView
     {
         $html = "<h3>Disliked snippets</h3>
                     <ul>";
-        foreach ($dislikedSnippets as $snippet) {
-            $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippetssnippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+        if($dislikedSnippets) {
+            foreach ($dislikedSnippets as $snippet) {
+                $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippetssnippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+            }
+        } else {
+            $html .= "y u no have liked any snippets?";
         }
         $html .= "</ul>";
         return $html;
@@ -69,8 +75,12 @@ class ProfileView
     {
         $html = "<h3>Commented snippets</h3>
                     <ul>";
-        foreach ($commentedSnippets as $snippet) {
-            $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $snippet['id'] . "'>" . $snippet['title'] . '</a><br />' . $snippet['comment'] . '</li>';
+        if($commentedSnippets) {
+            foreach ($commentedSnippets as $snippet) {
+                $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $snippet['id'] . "'>" . $snippet['title'] . '</a><br />' . $snippet['comment'] . '</li>';
+            }
+        } else {
+            $html .= "y u no have comment any snippets?";
         }
         $html .= "</ul>";
         return $html;

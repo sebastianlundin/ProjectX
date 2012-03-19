@@ -255,6 +255,13 @@ class SnippetHandler
         return false;
     }
 
+    /**
+     * Report a snippet
+     * @param int snipppetId
+     * @param int userId
+     * @param string message
+     * @return true on success
+     */
     public function reportSnippet($snippetId, $userId, $message)
     {
         $this->_dbHandler->__wakeup();
@@ -273,6 +280,9 @@ class SnippetHandler
         return $result;
     }
 
+    /**
+     * Get all reports of reported snippets
+     */
     public function getReportedSnippets()
     {
         $this->_dbHandler->__wakeup();
