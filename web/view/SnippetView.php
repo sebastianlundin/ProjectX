@@ -15,7 +15,7 @@ class SnippetView
     {
         $sh = new Functions();
         
-        $html = "<h2 class='snippet-title' id='snippetTitle'>" .  $snippet->getTitle() . "</h2>
+        $html = "<h2 class='snippet-title' id='snippetTitle'>" . $snippet->getTitle() . "</h2>
 		<div class='snippet-description'>
 			<p>" . $snippet->getDesc() . "</p>	
 		</div>
