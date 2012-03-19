@@ -78,8 +78,7 @@ class MasterController
         }
 
         return $this->_html;
-    }
-
+	}
     public function doHeader()
     {
         $html = $this->_headerController->doControll();
