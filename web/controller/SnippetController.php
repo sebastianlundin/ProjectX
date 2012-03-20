@@ -27,11 +27,11 @@ class SnippetController
         $this->_dbHandler = new DbHandler();
         $this->_snippetHandler = new SnippetHandler($this->_dbHandler);
         $this->_snippetView = new SnippetView();
-        $this->_commentController = new CommentController($this->_dbHandler);
         //$this->_mailController = new MailController();
         $this->_html = '';
 		$this->_privateKey = '6LcjpsoSAAAAAH7uTWckrCZL87jizsHpUQuP-dRy';
 		$this->_recaptchaAnswer = recaptcha_check_answer ($this->_privateKey, $_SERVER["REMOTE_ADDR"], $this->_snippetView->getRecaptchaChallenge(), $this->_snippetView->getRecaptchaResponse());
+		$this->_commentController = new CommentController($this->_dbHandler);
     }
 
     public function doControll($page)
