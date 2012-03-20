@@ -47,7 +47,7 @@ class ProfileView
                     <ul>";
         if($dislikedSnippets) {
             foreach ($dislikedSnippets as $snippet) {
-                $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippetssnippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
+                $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&amp;snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . "</a> - (" . $snippet->getLanguage() . ")</li>";
             }
         } else {
             $html .= "You have not disliked any snippets.";
@@ -77,7 +77,7 @@ class ProfileView
                     <ul>";
         if($commentedSnippets) {
             foreach ($commentedSnippets as $snippet) {
-                $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $snippet['id'] . "'>" . $snippet['title'] . '</a><br />' . $snippet['comment'] . '</li>';
+                $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $snippet->getID() . "'>" . $snippet->getTitle() . '</a><br />' . $snippet->getTitle() . '</li>';
             }
         } else {
             $html .= "You have not commented on any snippets.";
@@ -90,12 +90,12 @@ class ProfileView
     {
         $html = "    
                 <ul id='profile-menu'>
-                <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=created&amp;username=" . $email . "'>Created snippets</a></li>
-                <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=commented&amp;username=" . $email . "'>Commented snippets</a></li>
-                <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=liked&amp;username=" . $email . "'>Liked snippets</a></li>
-	            <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=disliked&amp;username=" . $email . "'>Disliked snippets</a></li>";
+                <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=created'>Created snippets</a></li>
+                <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=commented'>Commented snippets</a></li>
+                <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=liked'>Liked snippets</a></li>
+	            <li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=disliked'>Disliked snippets</a></li>";
                 if($isOwner || $isAdmin) {
-                    $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=settings&amp;username=" . $email . "'>Settings</a></li>";
+                    $html .= "<li><a href='" . $_SERVER['PHP_SELF'] . "?page=profile&amp;p=settings'>Settings</a></li>";
                 }
                 
                 if($isAdmin) {
@@ -116,7 +116,7 @@ class ProfileView
         $html .= '<h4>This is your user role - change it if you want..</h4>';
         if($roles != null) {
             $html .= "<p><form action='#' method='POST' >
-                        <select name='role' style='float:left;'>";
+                        <select name='role'>";
                             foreach ($roles as $k => $value) {
                                 if($k == $currentRole) {
                                     $html .= "<option selected='selected' value='" . $k . "'>" . $value . "</option>";
@@ -127,11 +127,9 @@ class ProfileView
             $html .= "</select>
                         <input type='submit' value='save changes' name='changerole' />
                     </form></p>";
-
-            $html .= '<h4>These accounts are connected to your login</h4>';
-            $html .= '<h4>Delete your account and remove all your connected accounts</h4>';
         $html .= '</div>';
         }
+
         return $html;
     }
 

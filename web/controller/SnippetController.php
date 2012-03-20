@@ -52,19 +52,23 @@ class SnippetController
                     return false;
                 }
             }
-            if(isset($_POST['send-report'])) {
-                $userId = -1;
-                $message = $this->_snippetView->getReportMessage();
-                $snippetId = $_GET['snippet'];
-                if(AuthHandler::isLoggedIn()) {
-                    $userId = AuthHandler::getUser()->getId();
-                } 
-                $this->_snippetHandler->reportSnippet($snippetId, $userId, $message); 
-                
+            if(AuthHandler::isLoggedIn()) {
+                if(isset($_POST['send-report'])) {
+                    $userId = -1;
+                    $message = $this->_snippetView->getReportMessage();
+                    $snippetId = $_GET['snippet'];
+                    if(AuthHandler::isLoggedIn()) {
+                        $userId = AuthHandler::getUser()->getId();
+                    } 
+                    $this->_snippetHandler->reportSnippet($snippetId, $userId, $message);   
+                }
             }
         } else if ($page == 'add') {
             if (AuthHandler::isLoggedIn()) {
                 $this->_html = null;
+                $_SESSION['title'] = "";
+                $_SESSION['desc'] = "";
+                $_SESSION['code'] = "";
                 $this->_html .= $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
     
                 if ($this->_snippetView->triedToCreateSnippet()) {
@@ -79,7 +83,11 @@ class SnippetController
 	                    }
 	                    $this->_html .= "<p>Error, your snippet was not created. Please try again! ". $id ."</p>";
 					} else {
-						$this->_html .= "<p>The reCAPTCHA answer given is not correct</p>";	
+					    $_SESSION['title'] = $this->_snippetView->getSnippetTitle();
+                        $_SESSION['desc'] = $this->_snippetView->getSnippetDescription();
+                        $_SESSION['code'] = $this->_snippetView->getCreateSnippetCode();
+                        $this->_html = $this->_snippetView->createSnippet($this->_snippetHandler->getLanguages());
+						$this->_html .= "<p>The reCAPTCHA answer given is not correct</p>";
 					}
                 }
             } else {
