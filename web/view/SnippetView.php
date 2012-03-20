@@ -31,18 +31,20 @@ class SnippetView
 		    $html .= "<a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
 		    <a href='?page=updatesnippet&snippet=" . $snippet->getID() . "'>Update</a>";
 	    }
-        $html .= '<br /><a id="report" href="#">Report this snippet!</a>';
-        $html .= '<div id="report-wrap"><form action="#" method="POST" name="reportsnippet">
-                    <textarea placeholder="What is wrong with the snippet?" name="report-message"></textarea>
-                    <input type="submit" name="send-report" value="Report!" />
-                </form></div>';
+        if(AuthHandler::isLoggedIn()){    
+            $html .= '<br /><a id="report" href="#">Report this snippet!</a>';
+            $html .= '<div id="report-wrap"><form action="#" method="POST" name="reportsnippet">
+                        <textarea placeholder="What is wrong with the snippet?" name="report-message"></textarea>
+                        <input type="submit" name="send-report" value="Report!" />
+                    </form></div>';
+        }     
 		
 		$html .= "</span>
 	          </div>";
-              
+          
         $html .= "  <form action='' method='post'>
                         <input type='submit' name='sendSnippetByMail' id='mail' value='Send Snippet by Mail' />
-                    </form>";
+                    </form>";      
         
         return $html;
     }
