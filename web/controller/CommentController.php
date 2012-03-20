@@ -15,23 +15,27 @@ class CommentController
         $this->_dbHandler = new DbHandler();
 		$this->_commentView = new CommentView();
 		$this->_privateKey = '6LcjpsoSAAAAAH7uTWckrCZL87jizsHpUQuP-dRy';
-		$this->_recaptchaAnswer = recaptcha_check_answer($this->_privateKey, $_SERVER["REMOTE_ADDR"], $this->_commentView->getRecaptchaChallenge(), $this->_commentView->getRecaptchaResponse());
     }
 
     public function doControll()
     {
         $html = "<h2>Comments</h2>";
         $commentHandler = new CommentHandler($this->_dbHandler);
+		$_SESSION['comment'] = "";
 
         if (AuthHandler::isLoggedIn()) {
             //add Comment
             if ($this->_commentView->triedToSubmitComment()) {
-                if($recaptchaAnswer->is_valid) {
+            	$this->_recaptchaAnswer = recaptcha_check_answer($this->_privateKey, $_SERVER["REMOTE_ADDR"], $this->_commentView->getRecaptchaChallenge(), $this->_commentView->getRecaptchaResponse());
+                if($this->_recaptchaAnswer->is_valid) {
 	                $text = $this->_commentView->getCommentText();
 	                $author = AuthHandler::getUser()->getId();
 	                $id = $this->_commentView->whichSnippetToComment();
 	                
                     $result = $commentHandler->addComment($id, $author, $text);
+				} else {
+					$_SESSION['comment'] = $this->_commentView->getCommentText();
+					$html .= "<p>The reCAPTCHA answer given is not correct</p>";
 				}
             }
             //Delete Comments
