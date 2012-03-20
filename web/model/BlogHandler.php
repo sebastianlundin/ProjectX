@@ -43,6 +43,36 @@ class BlogHandler
     }
     
     /**
+     * Returns specific blogposts
+     * @return array
+     */
+    public function getSpecificBlogposts($start, $postsPerPage)
+    {
+        $blogposts = array();
+        $sqlQuery = "SELECT blogg.id, blogg.title, blogg.content, blogg.date, user.name, user.id  
+                        FROM blogg
+                        INNER JOIN user
+                        ON user.id = blogg.user_id
+                        ORDER by blogg.id DESC
+                        LIMIT " . $start . "," . $postsPerPage;
+        
+        if ($stmt = $this->_dbHandler->PrepareStatement($sqlQuery)) {
+            $stmt->execute();
+            $stmt->bind_result($blogId, $blogTitle, $blogContent, $date_posted, $username, $userId);
+            
+            while ($stmt->fetch()) {
+                $blogpost = new Blogpost($blogId, $blogTitle, $blogContent, $date_posted, $userId);
+                
+                array_push($blogposts, $blogpost);
+            }
+            
+            $stmt->close();    
+        }
+        
+        return $blogposts;   
+    }
+    
+    /**
      * Adds a blogpost
      * @param $title, $content, $userId
      * @return boolean

@@ -12,6 +12,8 @@ class BlogController
     private $_dbHandler;
     private $_blogHandler;
     private $_blogView;
+    private $_pagingHandler;
+    private $_pagingView;
     private $_html;
     
     public function __construct()
@@ -19,6 +21,8 @@ class BlogController
         $this->_dbHandler = new DbHandler();
         $this->_blogHandler = new BlogHandler();
         $this->_blogView = new BlogView();
+        $this->_pagingHandler = new PagingHandler($this->_blogHandler->getAllBlogposts(), 1, 10);
+        $this->_pagingView = new PagingView();
         $this->_html = '';
     }
     
@@ -28,7 +32,15 @@ class BlogController
             if (isset($_GET['blogpost'])) {
                 $this->_html .= $this->_blogView->singleView($this->_blogHandler->getBlogpostById($_GET['blogpost']));     
             }else {
-               $this->_html = $this->_blogView->listView($this->_blogHandler->getAllBlogPosts());
+               if (!isset($_GET['pagenumber'])) {
+                   $_GET['pagenumber'] = 1;
+               }
+               
+               $this->_pagingHandler->setPage($_GET['pagenumber']);
+               $this->_pagingHandler->setOffset($_GET['pagenumber']);
+               $this->_html = $this->_blogView->listView($this->_blogHandler->getSpecificBlogPosts($this->_pagingHandler->getOffset(), $this->_pagingHandler->getLimit()));
+               $path = "?page=listblogposts";
+               $this->_html .= $this->_pagingView->renderPaging($this->_pagingHandler->getLinks(), $this->_pagingHandler->getNext(), $this->_pagingHandler->getPrevious(), $this->_pagingHandler->getBeforeLinks(), $this->_pagingHandler->getAfterLinks(), $this->_pagingHandler->getTotal(), $path);
             }  
         }else if($page == 'add') {
             $this->_html .= $this->_blogView->addBlogpost();

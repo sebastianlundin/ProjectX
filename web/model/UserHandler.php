@@ -105,12 +105,11 @@ class UserHandler
     {
         $insertedKey = -1;
         $apiKey = $this->generateApiKey();
-        $apiKey = 'apikey';
         //@TODO ÄNDRA OM TILL TRANSAKTIONER OM MÖJLIGT
         //Insert data into user table
         $this->_dbHandler->__wakeup();
         if ($stmt = $this->_dbHandler->PrepareStatement("INSERT INTO user (name, username, api_key, role_id) VALUES (?, ?, ?, ?)")) {
-            $stmt->bind_param('ssis', $name, $email, $apiKey, $role);
+            $stmt->bind_param('ssss', $name, $email, $apiKey, $role);
             $stmt->execute();
             if ($stmt->affected_rows == null) {
                 $stmt->close();
@@ -298,31 +297,6 @@ WHERE auth.identifier = ?")) {
         }
         $this->_dbHandler->Close();
         return false;
-    }
-
-    /**
-     * @param $searchString string
-     * @return Array user object, null if user dont exist
-     */
-    public function searchUser($searchString)
-    {
-        $userArr = array();
-        $this->_dbHandler->__wakeup();
-        if ($stmt = $this->_dbHandler->prepareStatement("SELECT * FROM user WHERE name LIKE '%$searchString%'")) {
-            //$stmt->bind_param('s', $searchString);
-            $stmt->execute();
-            $stmt->bind_result($id, $name, $username, $apiKey, $role);
-
-            while ($stmt->fetch()) {
-                $userArr[] = $user = new User($id, $name, $username, 'mail', $apiKey, $role);
-            }
-
-            $stmt->close();
-        } else {
-            return false;
-        }
-        $this->_dbHandler->close();
-        return $userArr;
     }
 
     /**

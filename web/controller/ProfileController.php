@@ -3,6 +3,8 @@
 require_once dirname(__FILE__) . '/../view/ProfileView.php';
 require_once dirname(__FILE__) . '/../model/GravatarHandler.php';
 require_once dirname(__FILE__) . '/../model/UserHandler.php';
+require_once dirname(__FILE__) . '/../model/PagingHandler.php';
+require_once dirname(__FILE__) . '/../view/PagingView.php';
 
 class ProfileController
 {
@@ -21,7 +23,8 @@ class ProfileController
         $this->_gravatarHandler = new GravatarHandler();
         $this->_snippetHandler = new SnippetHandler();
         $this->_commentHandler = new CommentHandler();
-
+        $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getReportedSnippets(), 1, 5);
+        $this->_pagingView = new PagingView();
     }
 
     public function doControll()
@@ -50,6 +53,11 @@ class ProfileController
                     $this->showLikedSnippets($userId);
                 } else if ($page == 'disliked') {
                     $this->showDislikedSnippets($userId);
+                } else if ($page == 'reported') {
+                    if(isset($_GET['id'])) {
+                        $this->_snippetHandler->deleteReport($_GET['id']);
+                    }
+                    $this->showReportedSnippets();
                 } else {
                     if($page == 'settings') {
                         // True så länge allt inte är fixat på servern
@@ -61,19 +69,13 @@ class ProfileController
                         } else {
                             $this->_data['content'] = 'You must be the owner of to do this.';
                         }
-                    } else if($page == 'search') {
-                        if($user->isAdmin()) {
-                            $this->showUserSearch($userId);
-                        } else {
-                            $this->_data['content'] = 'You must be an admin to do this.';
-                        }
                     } else {
                         $this->_data['content'] = 'The page you are looking for does not exist.';
                     }
 
                 }
             } else {
-                $this->_data['content'] = '';
+                $this->showCreatedSnippets($userId);
             }
 
             //set stats of userActivities
@@ -204,19 +206,6 @@ class ProfileController
     }
 
     /**
-     *Search for a user
-     */
-    private function showUserSearch() 
-    {
-        //Search for user 
-        $users = null;
-        if($query = $this->_profileView->doSearch()) {
-            $users = $this->_userHandler->searchUser($query);
-        }
-        $this->_data['content'] = $this->_profileView->searchForUsers($users);
-    }
-
-    /**
      * change user role for a
      */
      private function changeUserRole(User $user)
@@ -226,6 +215,34 @@ class ProfileController
                 $role = $this->_profileView->GetUserRole();
                 $this->_userHandler->changeUserRole($id, $role);
             }
+        }
+     }
+
+     /**
+      *
+      */
+     private function showReportedSnippets() 
+     {
+        if(AuthHandler::isAdmin()) {
+            if (!isset($_GET['pagenumber'])) {
+                $_GET['pagenumber'] = 1;
+            }
+            $this->_pagingHandler->setPage($_GET['pagenumber']);
+            $this->_pagingHandler->setOffset($_GET['pagenumber']);
+            $reports = $this->_snippetHandler->getSpecificReportedSnippets($this->_pagingHandler->getOffset(), $this->_pagingHandler->getLimit());
+            $this->getAvatars($reports);
+            $path = "?page=profile&p=reported";
+            $this->_data['content'] = $this->_profileView->reportedSnippets($reports);
+            $this->_data['content'] .= $this->_pagingView->renderPaging($this->_pagingHandler->getLinks(), $this->_pagingHandler->getNext(), $this->_pagingHandler->getPrevious(), $this->_pagingHandler->getBeforeLinks(), $this->_pagingHandler->getAfterLinks(), $this->_pagingHandler->getTotal(), $path);
+        } else {
+            $this->_data['content'] = 'Nope, you do not belong here';
+        }
+     }
+
+     private function getAvatars(&$reports) {
+        foreach ($reports as &$report) {
+            $url = $this->_gravatarHandler->getPostGravatar($report['email']);
+            $report['gravatar'] = $url;
         }
      }
 }
