@@ -27,22 +27,24 @@ class SnippetView
         
 		<div class='snippet-author'>
 			<span>Posted by " . $snippet->getAuthor();
-        if ($isOwner ){
-		    $html .= "<a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
+        if ($isOwner) {
+		    $html .= " <a onclick=\"javascript: return confirm('Do you want to remove this snippet?')\" href='?page=removesnippet&snippet=" . $snippet->getID() . "'>Delete</a> 
 		    <a href='?page=updatesnippet&snippet=" . $snippet->getID() . "'>Update</a>";
 	    }
-        $html .= '<br /><a id="report" href="#">Report this snippet!</a>';
-        $html .= '<div id="report-wrap"><form action="#" method="POST" name="reportsnippet">
-                    <textarea placeholder="What is wrong with the snippet?" name="report-message"></textarea>
-                    <input type="submit" name="send-report" value="Report!" />
-                </form></div>';
+        if(AuthHandler::isLoggedIn()){    
+            $html .= '<br /><a id="report" href="#">Report this snippet!</a>';
+            $html .= '<div id="report-wrap"><form action="#" method="POST" name="reportsnippet">
+                        <textarea placeholder="What is wrong with the snippet?" name="report-message"></textarea>
+                        <input type="submit" name="send-report" value="Report!" />
+                    </form></div>';
+        }     
 		
 		$html .= "</span>
 	          </div>";
-              
+          
         $html .= "  <form action='' method='post'>
                         <input type='submit' name='sendSnippetByMail' id='mail' value='Send Snippet by Mail' />
-                    </form>";
+                    </form>";      
         
         return $html;
     }
@@ -100,15 +102,15 @@ class SnippetView
         <h1>Add a new snippet</h1>
             <div id="createSnippetContainer">
                 <form action="" method="post">
-                    <input type="text" name="snippetTitle" placeholder="Title" />
-                    <input type="text" name="snippetDescription" placeholder="Description" />
+                    <input type="text" name="snippetTitle" placeholder="Title" value="' . $_SESSION['title'] . '" />
+                    <input type="text" name="snippetDescription" placeholder="Description" value="' . $_SESSION['desc'] . '" />
                     <select name="snippetLanguage">
                         <option >Choose language</option>';
         foreach ($languages as $language) {
             $html .= '<option value="' . $language->getLangId() . '">' . $language->getLanguage() . '</option>';
         }
         $html .= '</select>
-                    <textarea name="createSnippetCodeInput" maxlength="1500" placeholder="Your snippet"></textarea>'
+                    <textarea name="createSnippetCodeInput" maxlength="1500" placeholder="Your snippet">' . $_SESSION['code'] . '</textarea>'
                     . recaptcha_get_html($this->_publicKey) .
                     '<input type="submit" name="createSnippetSaveButton" id="createSnippetSaveButton" value="Create snippet" />
                 </form>
@@ -144,8 +146,8 @@ class SnippetView
                     <button name="dislike" type="button" id="dislike"><img src="content/image/dislike.png" title="Dislike!" /></button>
                 
                     <div id="ratingbars">
-                        <div id="likes" style="width: ' . ($rating['total'] != 0 ? round($rating['likes'] / $rating['total'] * 100) : 0) . '%"></div>
-                        <div id="dislikes" style="width: ' . ($rating['total'] != 0 ? round($rating['dislikes'] / $rating['total'] * 100) : 0) . '%"></div>
+                        <div id="likes" style="width: ' . ($rating['total'] != 0 ? floor($rating['likes'] / $rating['total'] * 100) : 0) . '%"></div>
+                        <div id="dislikes" style="width: ' . ($rating['total'] != 0 ? floor($rating['dislikes'] / $rating['total'] * 100) : 0) . '%"></div>
                     </div>
                     <p id="test">' . $rating['likes'] . ' likes, ' . $rating['dislikes'] . ' dislikes</p>
                     <div id="message"></div>
@@ -160,8 +162,9 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
-                                'user_id': ". $user_id .",
-                                rating: 1
+                                'user_id': " . $user_id .",
+                                'rating': 1,
+                                'api': '" . AuthHandler::getApiKey() . "'
                             },
                             dataType: 'html',
                             success: function(data) {
@@ -173,6 +176,9 @@ class SnippetView
                                 } else if (data === '0') {
                                     $('#message').html('<p>You have already voted on this snippet</p>');
                                 }
+                            },
+                            error: function() {
+                                alert('wat');
                             }
                         });
                     });
@@ -181,8 +187,9 @@ class SnippetView
                             url: 'model/RateSnippet.php',
                             data: {
                                 'snippet_id': " . $snippet_id . ",
-                                'user_id': ". $user_id .",
-                                rating: 0
+                                'user_id': " . $user_id .",
+                                'rating': 0,
+                                'api': '" . AuthHandler::getApiKey() . "'
                             },
                             dataType: 'html',
                             success: function(data) {

@@ -21,7 +21,7 @@ class BlogController
         $this->_dbHandler = new DbHandler();
         $this->_blogHandler = new BlogHandler();
         $this->_blogView = new BlogView();
-        $this->_pagingHandler = new PagingHandler($this->_blogHandler->getAllBlogposts(), 1, 10);
+        $this->_pagingHandler = new PagingHandler($this->_blogHandler->getAllBlogposts(), 1, 1);
         $this->_pagingView = new PagingView();
         $this->_html = '';
     }

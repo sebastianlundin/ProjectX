@@ -23,8 +23,6 @@ class ProfileController
         $this->_gravatarHandler = new GravatarHandler();
         $this->_snippetHandler = new SnippetHandler();
         $this->_commentHandler = new CommentHandler();
-        $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getReportedSnippets(), 1, 5);
-        $this->_pagingView = new PagingView();
     }
 
     public function doControll()
@@ -120,7 +118,7 @@ class ProfileController
     {
         $user = AuthHandler::getUser(); 
         //Se ifall efterfrågade användaren finns
-        if($user->getRoleName() == 'admin' && isset($_GET['username'])){
+        if(AuthHandler::isAdmin() && isset($_GET['username'])){
             $user = $this->_userHandler->getUserByEmail($_GET['username']);
             
             //Om användaren inte existerar sätt den inloggade användaren
@@ -137,10 +135,21 @@ class ProfileController
      */
     private function setStats($id) 
     {
-        $this->_data['snippets'] = $this->_snippetHandler->getSnippetsByUser($id);
-        $this->_data['likes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
-        $this->_data['dislikes'] = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
-        $this->_data['comments'] = $this->_snippetHandler->getCommentedSnippetByUser($id);
+        //Get created snippets
+        $temp = $this->_snippetHandler->getSnippetsByUser($id);
+        $this->_data['snippets'] = ($temp == false) ? null : $temp;
+
+        //Get liked snippets
+        $temp = $this->_snippetHandler->getRatedSnippetsByUser($id, 1);
+        $this->_data['likes'] = ($temp == false) ? null : $temp;
+
+        //Get disliked snippets
+        $temp = $this->_snippetHandler->getRatedSnippetsByUser($id, 0);
+        $this->_data['dislikes'] = ($temp == false) ? null : $temp;
+
+        //get commented snippets
+        $temp = $this->_snippetHandler->getCommentedSnippetByUser($id);
+        $this->_data['comments'] = ($temp == false) ? null : $temp;
     }
 
     /**
@@ -210,7 +219,8 @@ class ProfileController
      */
      private function changeUserRole(User $user)
      {
-        if($user->isAdmin() || $user->isOwner()) {
+        if(true) {
+        //if($user->isAdmin() {
             if($this->_profileView->changingSuerRole()) {
                 $role = $this->_profileView->GetUserRole();
                 $this->_userHandler->changeUserRole($id, $role);
@@ -224,6 +234,8 @@ class ProfileController
      private function showReportedSnippets() 
      {
         if(AuthHandler::isAdmin()) {
+            $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getReportedSnippets(), 1, 1);
+            $this->_pagingView = new PagingView();
             if (!isset($_GET['pagenumber'])) {
                 $_GET['pagenumber'] = 1;
             }
@@ -231,9 +243,10 @@ class ProfileController
             $this->_pagingHandler->setOffset($_GET['pagenumber']);
             $reports = $this->_snippetHandler->getSpecificReportedSnippets($this->_pagingHandler->getOffset(), $this->_pagingHandler->getLimit());
             $this->getAvatars($reports);
-            $path = "?page=profile&p=reported";
             $this->_data['content'] = $this->_profileView->reportedSnippets($reports);
+            $path = "?page=profile&p=reported";
             $this->_data['content'] .= $this->_pagingView->renderPaging($this->_pagingHandler->getLinks(), $this->_pagingHandler->getNext(), $this->_pagingHandler->getPrevious(), $this->_pagingHandler->getBeforeLinks(), $this->_pagingHandler->getAfterLinks(), $this->_pagingHandler->getTotal(), $path);
+            //echo;
         } else {
             $this->_data['content'] = 'Nope, you do not belong here';
         }
