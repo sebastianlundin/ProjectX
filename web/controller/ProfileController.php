@@ -234,7 +234,7 @@ class ProfileController
      private function showReportedSnippets() 
      {
         if(AuthHandler::isAdmin()) {
-            $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getReportedSnippets(), 1, 1);
+            $this->_pagingHandler = new PagingHandler($this->_snippetHandler->getReportedSnippets(), 1, 5);
             $this->_pagingView = new PagingView();
             if (!isset($_GET['pagenumber'])) {
                 $_GET['pagenumber'] = 1;

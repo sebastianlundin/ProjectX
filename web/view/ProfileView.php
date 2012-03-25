@@ -136,32 +136,36 @@ class ProfileView
     public function reportedSnippets($reports) 
     {
         $html = '<h3>Reported snippets</h3>';
-        foreach ($reports as $report) {
-            $html .= "<div class='reported-snippet'>";
-                    $html .= "<div class='reported-delete'>
-                                <a href='" . $_SERVER['PHP_SELF'] . "?page=profile&p=reported&id=" . $report['id'] . "' >
-                                    <img src='content/image/del.png' />
-                                </a>
-                            </div>";
-
-                    $html .="<h4>".$report['username']." have reported a snippet</h4>";
-
-                    $html .="<div class='reported-gravatar'>
-                                <img src='".$report['gravatar']."' alt='gravatar' />
-                            </div>";
-
-                    $html .="<div class='reported-message'>
-                                <p>".$report['message']."</p>
-                            </div>";
-
-                    $html .="<div class='clear'></div>";
-                    $html .="<div class='reported-link'> 
-                                <a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $report['snippetid'] . "' >
-                                    <img src='content/image/go.png' />
-                                </a>
-                            </div>";
-                    $html .="<div class='clear'></div>";
-            $html .= "</div>";
+        if ($reports) {
+            foreach ($reports as $report) {
+                $html .= "<div class='reported-snippet'>";
+                        $html .= "<div class='reported-delete'>
+                                    <a href='" . $_SERVER['PHP_SELF'] . "?page=profile&p=reported&id=" . $report['id'] . "' >
+                                        <img src='content/image/del.png' />
+                                    </a>
+                                </div>";
+    
+                        $html .="<h4>".$report['username']." have reported a snippet</h4>";
+    
+                        $html .="<div class='reported-gravatar'>
+                                    <img src='".$report['gravatar']."' alt='gravatar' />
+                                </div>";
+    
+                        $html .="<div class='reported-message'>
+                                    <p>".$report['message']."</p>
+                                </div>";
+    
+                        $html .="<div class='clear'></div>";
+                        $html .="<div class='reported-link'> 
+                                    <a href='" . $_SERVER['PHP_SELF'] . "?page=listsnippets&snippet=" . $report['snippetid'] . "' >
+                                        <img src='content/image/go.png' />
+                                    </a>
+                                </div>";
+                        $html .="<div class='clear'></div>";
+                $html .= "</div>";
+            }
+        }else {
+            $html .= "There is no reported snippets."; 
         }
 
         return $html;
